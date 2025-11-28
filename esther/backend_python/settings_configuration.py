@@ -1,0 +1,38 @@
+# esther/backend_python/config.py
+from typing import List
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    # Pydantic Settings Configuration
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="allow"
+    )
+
+    # MongoDB
+    MONGODB_URL: str = "mongodb://localhost:27017"
+    MONGODB_DATABASE_NAME: str = "inclusive_learning"
+
+    # PostgreSQL (Optional/Future use)
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "password"
+    POSTGRES_DB: str = "inclusive_learning"
+    POSTGRES_HOST: str = "localhost"
+    POSTGRES_PORT: int = 5432
+
+    # JWT & Security
+    SECRET_KEY: str = "your-super-secret-key-change-this"
+    REFRESH_SECRET_KEY: str = "your-super-secret-refresh-key-change-this"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 10080  # 7 days
+
+    # CORS
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ]
+
+settings = Settings()
