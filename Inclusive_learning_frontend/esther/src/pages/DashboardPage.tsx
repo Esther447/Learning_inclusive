@@ -3,12 +3,12 @@
  * Role-based dashboard (Learner, Mentor, Administrator)
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
   Box,
-  Grid,
+  Grid2 as Grid,
   Card,
   CardContent,
   Button,
@@ -16,7 +16,7 @@ import {
   Chip,
   LinearProgress,
   List,
-  ListItem,
+  ListItemButton,
   ListItemText,
   ListItemIcon,
   Drawer,
@@ -25,7 +25,6 @@ import {
   IconButton,
 } from '@mui/material';
 import {
-  School as SchoolIcon,
   Add as AddIcon,
   Group as GroupIcon,
   Notifications as NotificationsIcon,
@@ -84,7 +83,7 @@ export const DashboardPage: React.FC = () => {
     { id: 3, title: 'Communication Skills', progress: 90, thumbnail: '🗣️' },
   ];
   
-  const [courses, setCourses] = useState(sampleCourses);
+  const [courses] = useState(sampleCourses);
 
   const availableCourses = [
     { id: 4, title: 'Mobile App Development', category: 'Technology', thumbnail: '📱' },
@@ -135,8 +134,7 @@ export const DashboardPage: React.FC = () => {
       </Toolbar>
       <List>
         {getNavigationItems().map((item) => (
-          <ListItem
-            button
+          <ListItemButton
             key={item.text}
             onClick={() => navigate(item.path)}
             sx={{
@@ -157,7 +155,7 @@ export const DashboardPage: React.FC = () => {
                 },
               }}
             />
-          </ListItem>
+          </ListItemButton>
         ))}
       </List>
     </Box>
@@ -166,7 +164,7 @@ export const DashboardPage: React.FC = () => {
   const renderLearnerDashboard = () => (
     <Grid container spacing={3}>
       {/* My Courses */}
-      <Grid item xs={12} md={8}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -181,7 +179,7 @@ export const DashboardPage: React.FC = () => {
             </Typography>
             <Grid container spacing={2}>
               {sampleCourses.map((course) => (
-                <Grid item xs={12} sm={6} key={course.id}>
+                <Grid size={{ xs: 12, sm: 6 }} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -248,7 +246,7 @@ export const DashboardPage: React.FC = () => {
             </Typography>
             <Grid container spacing={2}>
               {availableCourses.map((course) => (
-                <Grid item xs={12} sm={6} key={course.id}>
+                <Grid size={{ xs: 12, sm: 6 }} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -292,7 +290,7 @@ export const DashboardPage: React.FC = () => {
       </Grid>
 
       {/* Sidebar */}
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         {/* Notifications */}
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
@@ -369,7 +367,7 @@ export const DashboardPage: React.FC = () => {
 
   const renderMentorDashboard = () => (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={8}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -400,7 +398,7 @@ export const DashboardPage: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -427,7 +425,7 @@ export const DashboardPage: React.FC = () => {
 
   const renderAdminDashboard = () => (
     <Grid container spacing={3}>
-      <Grid item xs={12}>
+      <Grid size={12}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography

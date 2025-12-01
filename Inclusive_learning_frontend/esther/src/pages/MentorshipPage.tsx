@@ -3,7 +3,7 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
+  Grid2 as Grid,
   Card,
   CardContent,
   Button,
@@ -262,7 +262,7 @@ export const MentorshipPage: React.FC = () => {
       {/* My Sessions Tab */}
       <TabPanel value={currentTab} index={1}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Upcoming Sessions</Typography>
@@ -332,7 +332,7 @@ export const MentorshipPage: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Learning Progress</Typography>
@@ -362,7 +362,7 @@ export const MentorshipPage: React.FC = () => {
       {/* Messages Tab */}
       <TabPanel value={currentTab} index={2}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>My Mentor</Typography>
@@ -410,7 +410,7 @@ export const MentorshipPage: React.FC = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Card sx={{ height: 500 }}>
               <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

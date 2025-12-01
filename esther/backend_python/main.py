@@ -17,17 +17,15 @@ project_root = os.path.dirname(current_dir)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from backend_python.database import engine, Base
-from backend_python.routers import users, courses, enrollments, progress, accessibility, mentorship, quizzes, auth
-from backend_python.exceptions import ResourceNotFoundException, BadRequestException, UnauthorizedException
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from database import mongo_client, mongo_db, get_db
-from routers import (
-    auth, users, courses, accessibility,
-    admin, enrollments, mentorship, progress, quizzes
+from backend_python.database import engine, Base, mongo_client
+from backend_python.routers import (
+    auth, users, courses, enrollments, progress, 
+    accessibility, mentorship, quizzes, admin
 )
+from backend_python.settings_configuration import settings
+from backend_python.exceptions import ResourceNotFoundException, BadRequestException, UnauthorizedException
+from sqlalchemy.exc import OperationalError
+from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -41,61 +39,53 @@ async def lifespan(app: FastAPI):
     # Shutdown: Close DB connection
     mongo_client.close()
 
-app = FastAPI(lifespan=lifespan)
 
-# CORS Configuration
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Include Routers
-app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
-app.include_router(users.router, prefix="/api/users", tags=["Users"])
-app.include_router(courses.router, prefix="/api/courses", tags=["Courses"])
-app.include_router(accessibility.router, prefix="/api/accessibility", tags=["Accessibility"])
-app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
-app.include_router(enrollments.router, prefix="/api/enrollments", tags=["Enrollments"])
-app.include_router(mentorship.router, prefix="/api/mentorship", tags=["Mentorship"])
-app.include_router(progress.router, prefix="/api/progress", tags=["Progress"])
-app.include_router(quizzes.router, prefix="/api/quizzes", tags=["Quizzes"])
-
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Inclusive Learning API"}
-
+# Instantiate the app once, with the lifespan manager so the MongoDB
+# ping and other startup/shutdown logic works as intended.
 app = FastAPI(
     title="Inclusive Learning Platform API",
     description="Backend API for the Inclusive Learning & Skills Platform",
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
-# ==================== Configure CORS ====================
+# CORS Configuration
+# Allow all localhost origins for development
+# Note: Vite can use different ports, so we allow common ones
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5175",
+    "http://127.0.0.1:5175",
+]
+
+# Add CORS middleware - must be added before routes
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # Allow all methods including OPTIONS
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,  # Cache preflight for 1 hour
 )
 
-# ==================== Include Routers ====================
+# Include Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(courses.router, prefix="/api/courses", tags=["Courses"])
 app.include_router(accessibility.router, prefix="/api/accessibility", tags=["Accessibility"])
 app.include_router(progress.router, prefix="/api/progress", tags=["Progress"])
 app.include_router(mentorship.router, prefix="/api/mentorship", tags=["Mentorship"])
+app.include_router(quizzes.router, prefix="/api/quizzes", tags=["Quizzes"])
+app.include_router(enrollments.router, prefix="/api/enrollments", tags=["Enrollments"])
+app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 
 # ==================== Startup Event ====================
 @app.on_event("startup")
@@ -105,8 +95,21 @@ def on_startup():
         User, Course, Enrollment, AccessibilitySettings,
         Progress, MentorshipGroup, MentorshipMembership
     )
-    # Create tables if they do not exist
-    Base.metadata.create_all(bind=engine)
+    # Create tables if they do not exist. If the SQL database is unreachable
+    # (e.g. wrong credentials or not running), log a friendly warning and
+    # continue running so other services (MongoDB, endpoints) remain available.
+    try:
+        Base.metadata.create_all(bind=engine)
+        try:
+            # Log the SQL database URL in use (sqlite or postgres)
+            print(f"🔗 SQL database url: {engine.url}")
+        except Exception:
+            print("🔗 SQL database: unknown or not used")
+    except OperationalError as e:
+        print(f"⚠️  Warning: could not create PostgreSQL tables: {e}")
+    except Exception as e:
+        # Catch-all in case other errors arise during table creation
+        print(f"⚠️  Warning: database setup encountered an unexpected error: {e}")
     print("🚀 Inclusive Learning Platform API started!")
     print(f"📚 Documentation available at: http://localhost:8001/docs")
 
@@ -142,6 +145,12 @@ def health_check():
         "version": "1.0.0"
     }
 
+# ==================== CORS Test Endpoint ====================
+@app.get("/api/test-cors", tags=["Health"])
+def test_cors():
+    """Test endpoint to verify CORS is working"""
+    return {"message": "CORS is working!", "cors_enabled": True}
+
 # ==================== Global Exception Handlers ====================
 @app.exception_handler(ResourceNotFoundException)
 async def resource_not_found_handler(request: Request, exc: ResourceNotFoundException):
@@ -173,7 +182,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=8001,
         reload=True,
         log_level="info"
     )

@@ -31,7 +31,8 @@ class User(Base):
     # store role as a plain string to avoid DB enum label mismatches
     role = Column(String(50), nullable=False, default=UserRole.learner.value)
     created_at = Column(DateTime, default=datetime.utcnow)
-    full_name = Column(String, nullable=False)
+    # 'name' is used across the app and in frontend payloads, use same column name
+    name = Column(String, nullable=True)
 
     accessibility_settings = relationship("AccessibilitySettings", back_populates="user", uselist=False)
     progress_entries = relationship("Progress", back_populates="user", cascade="all, delete-orphan")

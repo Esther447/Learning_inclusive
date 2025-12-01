@@ -18,7 +18,6 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  Button,
 } from "@mui/material";
 
 import SearchIcon from "@mui/icons-material/Search";
@@ -145,7 +144,7 @@ export const CoursePage: React.FC = () => {
                 announceOnClick
                 announcementText={`Opening course ${course.title}`}
                 onClick={() => {
-                  window.location.href = `/course/${course._id}`;
+                  window.location.href = `/course/${course.id}`;
                 }}
               >
                 View Course

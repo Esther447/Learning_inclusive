@@ -6,7 +6,7 @@ import {
   CardContent,
   Button,
   TextField,
-  Grid,
+  Grid2 as Grid,
   Tabs,
   Tab,
   Paper,
@@ -197,7 +197,7 @@ export const PracticeEnvironment: React.FC<PracticeEnvironmentProps> = ({
           {/* Code Editor Tab */}
           <TabPanel value={currentTab} index={0}>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
                   <Button
                     variant="contained"

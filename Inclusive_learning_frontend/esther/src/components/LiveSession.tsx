@@ -5,7 +5,7 @@ import {
   CardContent,
   Typography,
   Button,
-  Grid,
+  Grid2 as Grid,
   TextField,
   IconButton,
   Paper,
@@ -160,7 +160,7 @@ export const LiveSession: React.FC<LiveSessionProps> = ({
 
       <Grid container sx={{ flex: 1 }}>
         {/* Video/Audio Area */}
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* Video Display */}
             <Box sx={{ flex: 1, bgcolor: '#000', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -235,7 +235,7 @@ export const LiveSession: React.FC<LiveSessionProps> = ({
         </Grid>
 
         {/* Chat Area */}
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6" sx={{ mb: 2 }}>Chat</Typography>

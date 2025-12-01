@@ -13,7 +13,7 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
-  Grid,
+  Grid2 as Grid,
   Alert,
   Stepper,
   Step,
@@ -28,7 +28,7 @@ import {
   Accessibility as AccessibilityIcon,
 } from '@mui/icons-material';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
-import { CalendarService, CalendarEvent } from '../services/calendarService';
+import { CalendarService, type CalendarEvent } from '../services/calendarService';
 
 interface SessionBookingProps {
   mentorId: number;
@@ -224,7 +224,7 @@ export const SessionBooking: React.FC<SessionBookingProps> = ({
             <StepLabel>Select Date & Time</StepLabel>
             <StepContent>
               <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     label="Preferred Date"
@@ -235,7 +235,7 @@ export const SessionBooking: React.FC<SessionBookingProps> = ({
                     inputProps={{ min: new Date().toISOString().split('T')[0] }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <FormControl fullWidth>
                     <InputLabel>Preferred Time</InputLabel>
                     <Select
@@ -338,14 +338,14 @@ export const SessionBooking: React.FC<SessionBookingProps> = ({
                   <Typography variant="h6" sx={{ mb: 2 }}>Session Summary</Typography>
                   
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                    <Grid size={6}>
                       <Typography variant="body2"><strong>Mentor:</strong></Typography>
                       <Typography variant="body2"><strong>Type:</strong></Typography>
                       <Typography variant="body2"><strong>Date:</strong></Typography>
                       <Typography variant="body2"><strong>Time:</strong></Typography>
                       <Typography variant="body2"><strong>Topic:</strong></Typography>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid size={6}>
                       <Typography variant="body2">{mentorName}</Typography>
                       <Typography variant="body2">{sessionTypes.find(t => t.value === sessionType)?.label}</Typography>
                       <Typography variant="body2">{date}</Typography>

@@ -8,7 +8,7 @@ import {
   TextField,
   Button,
   Avatar,
-  Grid,
+  Grid2 as Grid,
   Switch,
   FormControlLabel,
   Chip,
@@ -470,12 +470,12 @@ export const EnhancedProfilePage: React.FC = () => {
       {/* Personal Information Tab */}
       <TabPanel value={currentTab} index={0}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={8}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Personal Information</Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
                       label="Full Name"
                       value={profile.name}
@@ -484,7 +484,7 @@ export const EnhancedProfilePage: React.FC = () => {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <TextField
                       label="Email"
                       value={profile.email}
@@ -493,7 +493,7 @@ export const EnhancedProfilePage: React.FC = () => {
                       fullWidth
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Box sx={{ display: 'flex', gap: 1 }}>
                       <FormControl sx={{ minWidth: 80 }}>
                         <InputLabel>Code</InputLabel>
@@ -520,7 +520,7 @@ export const EnhancedProfilePage: React.FC = () => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <FormControl fullWidth>
                       <InputLabel>Country</InputLabel>
                       <Select
@@ -537,7 +537,7 @@ export const EnhancedProfilePage: React.FC = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <TextField
                       label="Bio"
                       value={profile.bio}
@@ -557,7 +557,7 @@ export const EnhancedProfilePage: React.FC = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Activity Summary</Typography>
@@ -577,7 +577,7 @@ export const EnhancedProfilePage: React.FC = () => {
       {/* Accessibility Preferences Tab */}
       <TabPanel value={currentTab} index={1}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Content Preferences</Typography>
@@ -615,7 +615,7 @@ export const EnhancedProfilePage: React.FC = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Assistance Tools</Typography>
@@ -645,7 +645,7 @@ export const EnhancedProfilePage: React.FC = () => {
       {userRole === 'learner' && (
         <TabPanel value={currentTab} index={2}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+            <Grid size={{ xs: 12, md: 8 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>My Courses</Typography>
@@ -662,7 +662,7 @@ export const EnhancedProfilePage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>My Mentor</Typography>
@@ -747,7 +747,7 @@ export const EnhancedProfilePage: React.FC = () => {
       {userRole === 'administrator' && (
         <TabPanel value={currentTab} index={2}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>System Overview</Typography>
@@ -758,7 +758,7 @@ export const EnhancedProfilePage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>Quick Actions</Typography>
@@ -806,7 +806,7 @@ export const EnhancedProfilePage: React.FC = () => {
           <CardContent>
             <Typography variant="h6" sx={{ mb: 2 }}>Account Security</Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField label="Current Password" type="password" fullWidth sx={{ mb: 2 }} />
                 <TextField label="New Password" type="password" fullWidth sx={{ mb: 2 }} />
                 <TextField label="Confirm Password" type="password" fullWidth sx={{ mb: 2 }} />
@@ -820,7 +820,7 @@ export const EnhancedProfilePage: React.FC = () => {
                   Update Password
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="subtitle1" sx={{ mb: 1 }}>Login History</Typography>
                 <Typography variant="body2">Last login: {activityData.lastLogin}</Typography>
                 <Typography variant="body2">Previous: {activityData.previousLogin}</Typography>
@@ -854,7 +854,7 @@ export const EnhancedProfilePage: React.FC = () => {
               Preview how the platform appears with different accessibility settings.
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Button
                   variant={previewMode === 'screen-reader' ? 'contained' : 'outlined'}
                   fullWidth
@@ -863,7 +863,7 @@ export const EnhancedProfilePage: React.FC = () => {
                   Screen Reader Mode
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Button
                   variant={previewMode === 'high-contrast' ? 'contained' : 'outlined'}
                   fullWidth
@@ -872,7 +872,7 @@ export const EnhancedProfilePage: React.FC = () => {
                   High Contrast Mode
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Button
                   variant={previewMode === 'captions' ? 'contained' : 'outlined'}
                   fullWidth
@@ -881,7 +881,7 @@ export const EnhancedProfilePage: React.FC = () => {
                   Caption-Only Mode
                 </Button>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Button
                   variant={previewMode === 'low-vision' ? 'contained' : 'outlined'}
                   fullWidth
