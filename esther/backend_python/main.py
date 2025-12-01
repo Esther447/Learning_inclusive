@@ -108,7 +108,7 @@ def on_startup():
     # Create tables if they do not exist
     Base.metadata.create_all(bind=engine)
     print("🚀 Inclusive Learning Platform API started!")
-    print(f"📚 Documentation available at: http://localhost:8000/docs")
+    print(f"📚 Documentation available at: http://localhost:8001/docs")
 
 # ==================== Shutdown Event ====================
 @app.on_event("shutdown")
