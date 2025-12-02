@@ -25,7 +25,7 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
-    return UserResponse.from_orm(user)
+    return UserResponse.model_validate(user)
 
 @router.get("api/users/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)):
@@ -38,4 +38,4 @@ def get_user(user_id: UUID, current_user: User = Depends(get_current_user), db: 
     user = db.query(User).filter(User.id == str(user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return UserResponse.from_orm(user)
+    return UserResponse.model_validate(user)

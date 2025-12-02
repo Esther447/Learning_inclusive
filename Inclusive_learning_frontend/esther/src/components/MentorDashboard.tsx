@@ -4,7 +4,7 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid2 as Grid,
+  Grid,
   Avatar,
   Button,
   Chip,
@@ -311,7 +311,7 @@ export const MentorDashboard: React.FC = () => {
       {/* Analytics Tab */}
       <TabPanel value={currentTab} index={2}>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6 }}>
+           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Learner Progress Overview</Typography>
@@ -326,7 +326,7 @@ export const MentorDashboard: React.FC = () => {
             </Card>
           </Grid>
           
-          <Grid size={{ xs: 12, md: 6 }}>
+           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
                 <Typography variant="h6" sx={{ mb: 2 }}>Session Statistics</Typography>

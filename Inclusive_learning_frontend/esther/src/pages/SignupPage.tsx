@@ -9,14 +9,25 @@ export const SignupPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [localError, setLocalError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError('');
+    
+    // Basic validation
+    if (password.length < 6) {
+      setLocalError('Password must be at least 6 characters long');
+      return;
+    }
+    
     try {
       await signup({ email, password, name });
-      navigate('/dashboard');
+      // Redirect to login page after successful signup
+      navigate('/login');
     } catch (err) {
-      console.error('Signup failed');
+      // Error is already handled by the store and displayed
+      console.error('Signup failed:', err);
     }
   };
 
@@ -27,9 +38,9 @@ export const SignupPage: React.FC = () => {
           Create Account
         </Typography>
 
-        {error && (
+        {(error || localError) && (
           <Typography color="error" sx={{ mb: 2 }}>
-            {error}
+            {localError || error}
           </Typography>
         )}
 
@@ -58,6 +69,7 @@ export const SignupPage: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            helperText="Password must be at least 6 characters"
             sx={{ mb: 3 }}
           />
           <Button

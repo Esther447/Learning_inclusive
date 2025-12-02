@@ -29,15 +29,20 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Ping DB
+    # Startup: Ping DB (optional - don't fail if MongoDB isn't available)
     try:
         await mongo_client.admin.command('ping')
-        print("Successfully connected to MongoDB")
+        print("✅ Successfully connected to MongoDB")
     except Exception as e:
-        print(f"Failed to connect to MongoDB: {e}")
+        print(f"⚠️  Warning: MongoDB not available: {e}. Continuing without MongoDB.")
+    print("🚀 Server starting up...")
     yield
     # Shutdown: Close DB connection
-    mongo_client.close()
+    try:
+        mongo_client.close()
+    except Exception:
+        pass
+    print("👋 Server shutting down...")
 
 
 # Instantiate the app once, with the lifespan manager so the MongoDB
@@ -51,9 +56,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS Configuration
+# CORS Configuration - Very permissive for development
 # Allow all localhost origins for development
-# Note: Vite can use different ports, so we allow common ones
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -63,16 +67,19 @@ origins = [
     "http://127.0.0.1:3000",
     "http://localhost:5175",
     "http://127.0.0.1:5175",
+    "http://localhost:5176",
+    "http://127.0.0.1:5176",
 ]
 
 # Add CORS middleware - must be added before routes
+# Very permissive CORS for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Allow all origins in development (change in production!)
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods including OPTIONS
-    allow_headers=["*"],
-    expose_headers=["*"],
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
+    expose_headers=["*"],  # Expose all headers
     max_age=3600,  # Cache preflight for 1 hour
 )
 
@@ -152,29 +159,69 @@ def test_cors():
     return {"message": "CORS is working!", "cors_enabled": True}
 
 # ==================== Global Exception Handlers ====================
+def add_cors_headers(response: JSONResponse, request: Request) -> JSONResponse:
+    """Add CORS headers to any response"""
+    origin = request.headers.get("origin", "*")
+    response.headers["Access-Control-Allow-Origin"] = origin
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
+
 @app.exception_handler(ResourceNotFoundException)
 async def resource_not_found_handler(request: Request, exc: ResourceNotFoundException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    response = JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    return add_cors_headers(response, request)
 
 @app.exception_handler(BadRequestException)
 async def bad_request_handler(request: Request, exc: BadRequestException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    response = JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    return add_cors_headers(response, request)
 
 @app.exception_handler(UnauthorizedException)
 async def unauthorized_handler(request: Request, exc: UnauthorizedException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    response = JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    return add_cors_headers(response, request)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return JSONResponse(status_code=422, content={"detail": exc.errors()})
+    response = JSONResponse(status_code=422, content={"detail": exc.errors()})
+    return add_cors_headers(response, request)
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    response = JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    return add_cors_headers(response, request)
 
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
-    return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+    import traceback
+    print(f"Unhandled exception: {exc}")
+    print(traceback.format_exc())
+    origin = request.headers.get("origin", "*")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+        }
+    )
+
+# Add OPTIONS handler for CORS preflight (backup, CORS middleware should handle this)
+@app.options("/{full_path:path}")
+async def options_handler(request: Request, full_path: str):
+    origin = request.headers.get("origin", "*")
+    return JSONResponse(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Max-Age": "3600",
+        }
+    )
 
 # ==================== Run Uvicorn ====================
 if __name__ == "__main__":

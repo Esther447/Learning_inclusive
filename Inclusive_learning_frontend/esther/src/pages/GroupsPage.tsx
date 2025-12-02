@@ -8,7 +8,7 @@ import {
   Container,
   Typography,
   Box,
-  Grid2 as Grid,
+  Grid,
   Card,
   CardContent,
   Button,
@@ -116,7 +116,7 @@ export const GroupsPage: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Groups List */}
-        <Grid size={{ xs: 12, md: 4 }}>
+        <Grid item xs={12} md={4}>
           <Card>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 2 }}>
@@ -163,7 +163,7 @@ export const GroupsPage: React.FC = () => {
                         </Box>
                       }
                     />
-                  </ListItem>
+                  </ListItemButton>
                 ))}
               </List>
             </CardContent>
@@ -171,7 +171,7 @@ export const GroupsPage: React.FC = () => {
         </Grid>
 
         {/* Chat Area */}
-        <Grid size={{ xs: 12, md: 8 }}>
+          <Grid item xs={12} md={8}>
           {selectedGroup ? (
             <Card sx={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ borderBottom: 1, borderColor: 'divider' }}>

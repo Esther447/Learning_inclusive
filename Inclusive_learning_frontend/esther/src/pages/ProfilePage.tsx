@@ -8,7 +8,7 @@ import {
   Container,
   Typography,
   Box,
-  Grid2 as Grid,
+  Grid,
   Card,
   CardContent,
   TextField,
@@ -62,7 +62,7 @@ export const ProfilePage: React.FC = () => {
 
       <Grid container spacing={3}>
         {/* Profile Information */}
-        <Grid size={{ xs: 12, md: 6 }}>
+         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -125,7 +125,7 @@ export const ProfilePage: React.FC = () => {
         </Grid>
 
         {/* Accessibility Settings */}
-        <Grid size={{ xs: 12, md: 6 }}>
+         <Grid item xs={12} md={6}>
           <Card>
             <CardContent>
               <Typography variant="h6" sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>

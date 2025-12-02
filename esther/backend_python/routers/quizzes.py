@@ -17,7 +17,7 @@ def create_quiz(payload: QuizCreate, db: Session = Depends(get_db), current_user
     db.add(q)
     db.commit()
     db.refresh(q)
-    return QuizOut.from_orm(q)
+    return QuizOut.model_validate(q)
 
 @router.post("/{quiz_id}/questions", status_code=status.HTTP_201_CREATED)
 def add_question(quiz_id: UUID, payload: QuestionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -45,4 +45,4 @@ def submit_quiz(quiz_id: UUID, payload: SubmissionIn, db: Session = Depends(get_
     db.add(s)
     db.commit()
     db.refresh(s)
-    return SubmissionOut.from_orm(s)
+    return SubmissionOut.model_validate(s)

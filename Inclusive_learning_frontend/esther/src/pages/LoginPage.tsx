@@ -25,7 +25,12 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await signup({ email, password, name });
-      navigate('/dashboard');
+      // Switch to login tab after successful signup
+      setTab(0);
+      // Clear form fields
+      setName('');
+      setPassword('');
+      setEmail('');
     } catch (err) {
       console.error('Signup failed');
     }

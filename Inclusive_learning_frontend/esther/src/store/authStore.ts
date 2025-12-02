@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand';
-import { api } from '../services/api';
+import { api, setTokens } from '../services/api';
 import type { User, Learner, Mentor, Administrator, LoginCredentials, RegisterData } from '../types';
 import { UserRole, DisabilityType } from '../types';
 
@@ -30,9 +30,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await api.post('/auth/login', credentials);
-      const { access_token, user } = response.data;
+      const { access_token, refresh_token, user } = response.data;
       
-      localStorage.setItem('token', access_token);
+      // Use setTokens to store both access and refresh tokens consistently
+      setTokens(access_token, refresh_token);
       
       set({
         user,
@@ -41,7 +42,18 @@ export const useAuthStore = create<AuthState>((set) => ({
         error: null,
       });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.detail || 'Login failed';
+      // Handle validation errors from FastAPI
+      let errorMessage = 'Login failed';
+      if (error.response?.data) {
+        if (Array.isArray(error.response.data.detail)) {
+          // FastAPI validation errors format
+          errorMessage = error.response.data.detail.map((err: any) => 
+            `${err.loc?.join('.')}: ${err.msg}`
+          ).join(', ');
+        } else if (typeof error.response.data.detail === 'string') {
+          errorMessage = error.response.data.detail;
+        }
+      }
       set({
         error: errorMessage,
         isLoading: false,
@@ -55,10 +67,24 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       await api.post('/auth/signup', data);
-      // Auto-login after signup
-      await useAuthStore.getState().login({ email: data.email, password: data.password });
+      // Signup successful - user should login manually
+      set({
+        isLoading: false,
+        error: null,
+      });
     } catch (error: any) {
-      const errorMessage = error.response?.data?.detail || 'Signup failed';
+      // Handle validation errors from FastAPI
+      let errorMessage = 'Signup failed';
+      if (error.response?.data) {
+        if (Array.isArray(error.response.data.detail)) {
+          // FastAPI validation errors format
+          errorMessage = error.response.data.detail.map((err: any) => 
+            `${err.loc?.join('.')}: ${err.msg}`
+          ).join(', ');
+        } else if (typeof error.response.data.detail === 'string') {
+          errorMessage = error.response.data.detail;
+        }
+      }
       set({
         error: errorMessage,
         isLoading: false,
@@ -122,7 +148,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     set({
       user: null,
       isAuthenticated: false,

@@ -66,7 +66,7 @@ def signup(payload: SignupIn, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    return UserResponse.from_orm(user)
+    return UserResponse.model_validate(user)
 
 
 @router.post("/login", response_model=TokenOut)
@@ -82,7 +82,7 @@ def login(payload: LoginIn, db: Session = Depends(get_db)):
     return TokenOut(
         access_token=access,
         refresh_token=refresh,
-        user=UserResponse.from_orm(user)
+        user=UserResponse.model_validate(user)
     )
 
 
@@ -105,5 +105,5 @@ def refresh_token(payload: RefreshIn = Body(...), db: Session = Depends(get_db))
     return TokenOut(
         access_token=access,
         refresh_token=refresh,
-        user=UserResponse.from_orm(user)
+        user=UserResponse.model_validate(user)
     )

@@ -8,7 +8,7 @@ import {
   Container,
   Typography,
   Box,
-  Grid2 as Grid,
+  Grid,
   Card,
   CardContent,
   Button,
@@ -16,6 +16,7 @@ import {
   Chip,
   LinearProgress,
   List,
+  ListItem,
   ListItemButton,
   ListItemText,
   ListItemIcon,
@@ -164,7 +165,7 @@ export const DashboardPage: React.FC = () => {
   const renderLearnerDashboard = () => (
     <Grid container spacing={3}>
       {/* My Courses */}
-      <Grid size={{ xs: 12, md: 8 }}>
+      <Grid item xs={12} md={8}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -179,7 +180,7 @@ export const DashboardPage: React.FC = () => {
             </Typography>
             <Grid container spacing={2}>
               {sampleCourses.map((course) => (
-                <Grid size={{ xs: 12, sm: 6 }} key={course.id}>
+                <Grid item xs={12} sm={6} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -246,7 +247,7 @@ export const DashboardPage: React.FC = () => {
             </Typography>
             <Grid container spacing={2}>
               {availableCourses.map((course) => (
-                <Grid size={{ xs: 12, sm: 6 }} key={course.id}>
+                <Grid item xs={12} sm={6} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -290,7 +291,7 @@ export const DashboardPage: React.FC = () => {
       </Grid>
 
       {/* Sidebar */}
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid item xs={12} md={4}>
         {/* Notifications */}
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
@@ -367,7 +368,7 @@ export const DashboardPage: React.FC = () => {
 
   const renderMentorDashboard = () => (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, md: 8 }}>
+      <Grid item xs={12} md={8}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -398,7 +399,7 @@ export const DashboardPage: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid item xs={12} md={4}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -425,7 +426,7 @@ export const DashboardPage: React.FC = () => {
 
   const renderAdminDashboard = () => (
     <Grid container spacing={3}>
-      <Grid size={12}>
+      <Grid item xs={12}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography

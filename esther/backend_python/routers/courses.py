@@ -29,7 +29,7 @@ def create_course(payload: CourseCreate, db: Session = Depends(get_db), current_
     db.add(course)
     db.commit()
     db.refresh(course)
-    return CourseResponse.from_orm(course)
+    return CourseResponse.model_validate(course)
 
 @router.get("/", response_model=List[CourseResponse])
 def list_courses(category: Optional[str] = Query(None), difficulty: Optional[str] = Query(None), db: Session = Depends(get_db)):
@@ -39,14 +39,14 @@ def list_courses(category: Optional[str] = Query(None), difficulty: Optional[str
     if difficulty:
         q = q.filter(Course.difficulty == difficulty)
     courses = q.all()
-    return [CourseResponse.from_orm(c) for c in courses]
+    return [CourseResponse.model_validate(c) for c in courses]
 
 @router.get("/{course_id}", response_model=CourseResponse)
 def get_course(course_id: UUID = Path(...), db: Session = Depends(get_db)):
     course = db.query(Course).filter(Course.id == str(course_id)).first()
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    return CourseResponse.from_orm(course)
+    return CourseResponse.model_validate(course)
 
 @router.post("/{course_id}/captions")
 def upload_captions(course_id: UUID, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

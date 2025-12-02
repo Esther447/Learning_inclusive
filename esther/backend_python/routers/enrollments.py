@@ -22,9 +22,9 @@ def enroll(course_id: UUID, db: Session = Depends(get_db), current_user: User = 
     db.add(enrollment)
     db.commit()
     db.refresh(enrollment)
-    return EnrollmentOut.from_orm(enrollment)
+    return EnrollmentOut.model_validate(enrollment)
 
 @router.get("/me", response_model=list[EnrollmentOut])
 def my_enrollments(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     rows = db.query(Enrollment).filter(Enrollment.user_id == str(current_user.id)).all()
-    return [EnrollmentOut.from_orm(r) for r in rows]
+    return [EnrollmentOut.model_validate(r) for r in rows]

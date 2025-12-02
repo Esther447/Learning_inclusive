@@ -6,7 +6,7 @@ import {
   CardContent,
   Button,
   Chip,
-  Grid2 as Grid,
+  Grid,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -361,7 +361,7 @@ export const CourseContent: React.FC<CourseContentProps> = ({
           </Typography>
           
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+             <Grid item xs={12} sm={6}>
               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}
@@ -371,7 +371,7 @@ export const CourseContent: React.FC<CourseContentProps> = ({
                 Download All Materials
               </Button>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+             <Grid item xs={12} sm={6}>
               <Button
                 variant="outlined"
                 startIcon={<AssignmentIcon />}
