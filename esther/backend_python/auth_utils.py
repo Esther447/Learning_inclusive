@@ -5,11 +5,9 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 import logging
 
-from .database import get_db
-from .models import User
+from .mongodb_db import get_users_collection, dict_to_user
 from .settings_configuration import settings
 
 # ==================== Password / JWT Config ====================
@@ -52,18 +50,18 @@ def decode_token(token: str, refresh: bool = False) -> Optional[dict]:
         return None
 
 # ==================== Current User Dependency ====================
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    from .mongodb_models import UserDocument
     payload = decode_token(token)
     if not payload or payload.get("type") != "access":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
     sub = payload.get("sub")
     if not sub:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
-    try:
-        user_id = UUID(sub)
-    except ValueError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid user ID")
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
+    
+    users_collection = get_users_collection()
+    user_doc = await users_collection.find_one({"_id": sub})
+    if not user_doc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
-    return user
+    
+    return dict_to_user(user_doc)

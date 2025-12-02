@@ -5,8 +5,15 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Check if we're in the right directory
-if (-not (Test-Path "main.py")) {
-    Write-Host "❌ Error: main.py not found!" -ForegroundColor Red
+# If we're in backend_python, go up one level
+if (Test-Path "main.py") {
+    Write-Host "⚠️  Warning: You're in backend_python directory" -ForegroundColor Yellow
+    Write-Host "Changing to parent directory (esther)..." -ForegroundColor Yellow
+    cd ..
+}
+
+if (-not (Test-Path "backend_python\main.py")) {
+    Write-Host "❌ Error: backend_python\main.py not found!" -ForegroundColor Red
     Write-Host "Please run this script from the esther directory" -ForegroundColor Yellow
     Write-Host "Current directory: $(Get-Location)" -ForegroundColor Yellow
     exit 1

@@ -1,10 +1,6 @@
-/**
- * Profile Page
- * User profile with accessibility preferences
- */
-
-import React, { useState } from 'react';
+import React from 'react';
 import {
+<<<<<<< HEAD
   Container,
   Typography,
   Box,
@@ -22,44 +18,54 @@ import {
   Avatar,
   Chip,
   Divider,
+=======
+    Container,
+    Box,
+    Typography,
+    Card,
+    CardContent,
+    CardActions,
+    TextField,
+    Avatar,
+    Button,
+>>>>>>> 057eeb401a084d1154eddfb8769e31d000f9ab83
 } from '@mui/material';
-import {
-  Save as SaveIcon,
-  Edit as EditIcon,
-  Accessibility as AccessibilityIcon,
-} from '@mui/icons-material';
-import { useAuthStore } from '../store/authStore';
+import Grid from '@mui/material/Unstable_Grid2'; // ✅ Correct Grid2 import
 import { useAccessibilityStore } from '../store/accessibilityStore';
-import { useNavigate } from 'react-router-dom';
 
 export const ProfilePage: React.FC = () => {
-  const navigate = useNavigate();
-  const { user, updateUser } = useAuthStore();
-  const { settings, updateSettings } = useAccessibilityStore();
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-  });
+    const { updateSettings } = useAccessibilityStore();
 
-  const handleSaveProfile = () => {
-    if (user) {
-      updateUser({ ...user, ...profileData });
-      setIsEditing(false);
-      alert('Profile updated successfully!');
-    }
-  };
+    return (
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
+            <Typography variant="h4" gutterBottom>
+                My Profile
+            </Typography>
 
-  const handleAccessibilityChange = (setting: string, value: any) => {
-    updateSettings({ [setting]: value });
-  };
+            <Grid container spacing={4}>
+                {/* LEFT COLUMN */}
+                <Grid xs={12} md={4}>
+                    <Card>
+                        <CardContent sx={{ textAlign: 'center' }}>
+                            <Avatar sx={{ width: 120, height: 120, margin: '0 auto' }} />
+                            <Typography variant="h6" sx={{ mt: 2 }}>
+                                John Doe
+                            </Typography>
+                            <Typography color="text.secondary">Student</Typography>
 
-  return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
-        Profile Settings
-      </Typography>
+                            <Box sx={{ mt: 3 }}>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    label="Learning Preference Description"
+                                    placeholder="Describe your learning preferences..."
+                                    variant="outlined"
+                                />
+                            </Box>
+                        </CardContent>
 
+<<<<<<< HEAD
       <Grid container spacing={3}>
         {/* Profile Information */}
          <Grid item xs={12} md={6}>
@@ -74,56 +80,55 @@ export const ProfilePage: React.FC = () => {
                   <Chip label={user?.role} color="primary" size="small" />
                 </Box>
               </Box>
+=======
+                        <CardActions>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                onClick={() =>
+                                    updateSettings({
+                                        fontSize: 'medium',
+                                        highContrastMode: false, // ✅ only existing keys
+                                    })
+                                }
+                            >
+                                Analyze Preferences
+                            </Button>
+                        </CardActions>
+                    </Card>
+                </Grid>
+>>>>>>> 057eeb401a084d1154eddfb8769e31d000f9ab83
 
-              <Box sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Full Name"
-                  value={profileData.name}
-                  onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                  disabled={!isEditing}
-                  sx={{ mb: 2 }}
-                />
-                <TextField
-                  fullWidth
-                  label="Email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                  disabled={!isEditing}
-                />
-              </Box>
+                {/* RIGHT COLUMN */}
+                <Grid xs={12} md={8}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h6" gutterBottom>
+                                Personal Information
+                            </Typography>
 
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                {isEditing ? (
-                  <>
-                    <Button
-                      variant="contained"
-                      startIcon={<SaveIcon />}
-                      onClick={handleSaveProfile}
-                    >
-                      Save Changes
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      onClick={() => setIsEditing(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    startIcon={<EditIcon />}
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Edit Profile
-                  </Button>
-                )}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+                            <Grid container spacing={2}>
+                                <Grid xs={12} sm={6}>
+                                    <TextField fullWidth label="Full Name" defaultValue="John Doe" />
+                                </Grid>
+                                <Grid xs={12} sm={6}>
+                                    <TextField fullWidth label="Email" defaultValue="john@example.com" />
+                                </Grid>
+                                <Grid xs={12}>
+                                    <TextField fullWidth label="Phone" defaultValue="+123456789" />
+                                </Grid>
+                                <Grid xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={3}
+                                        label="Bio"
+                                        placeholder="Write something about yourself..."
+                                    />
+                                </Grid>
+                            </Grid>
 
+<<<<<<< HEAD
         {/* Accessibility Settings */}
          <Grid item xs={12} md={6}>
           <Card>
@@ -222,4 +227,15 @@ export const ProfilePage: React.FC = () => {
       </Grid>
     </Container>
   );
+=======
+                            <Button variant="contained" sx={{ mt: 3 }}>
+                                Save Profile
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+        </Container>
+    );
+>>>>>>> 057eeb401a084d1154eddfb8769e31d000f9ab83
 };

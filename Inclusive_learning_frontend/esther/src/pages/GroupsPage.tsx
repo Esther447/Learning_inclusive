@@ -8,7 +8,6 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   Card,
   CardContent,
   Button,
@@ -25,16 +24,20 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import Grid from "@mui/material/Grid";
 import {
   Add as AddIcon,
   Group as GroupIcon,
   Send as SendIcon,
   AttachFile as AttachIcon,
 } from '@mui/icons-material';
+
 import { useAccessibilityStore } from '../store/accessibilityStore';
 
 export const GroupsPage: React.FC = () => {
-  const { settings } = useAccessibilityStore();
+  // Removed unused variable to avoid ESLint error
+  useAccessibilityStore(); // ensures accessibility store loads without warnings
+
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
   const [message, setMessage] = useState('');
   const [openCreateGroup, setOpenCreateGroup] = useState(false);
@@ -85,10 +88,6 @@ export const GroupsPage: React.FC = () => {
     }
   };
 
-  const handleJoinGroup = (groupId: number) => {
-    alert(`Joined group ${groupId}!`);
-  };
-
   const handleFileShare = () => {
     const input = document.createElement('input');
     input.type = 'file';
@@ -103,6 +102,7 @@ export const GroupsPage: React.FC = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
+      {/* Header */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4">Groups</Typography>
         <Button
@@ -122,6 +122,7 @@ export const GroupsPage: React.FC = () => {
               <Typography variant="h6" sx={{ mb: 2 }}>
                 My Groups
               </Typography>
+
               <List>
                 {groups.map((group) => (
                   <ListItemButton
@@ -131,7 +132,8 @@ export const GroupsPage: React.FC = () => {
                     sx={{
                       borderRadius: 1,
                       mb: 1,
-                      backgroundColor: selectedGroup === group.id ? 'primary.light' : 'transparent',
+                      backgroundColor:
+                        selectedGroup === group.id ? 'primary.light' : 'transparent',
                     }}
                   >
                     <ListItemAvatar>
@@ -139,9 +141,16 @@ export const GroupsPage: React.FC = () => {
                         <GroupIcon />
                       </Avatar>
                     </ListItemAvatar>
+
                     <ListItemText
                       primary={
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}
+                        >
                           <Typography variant="subtitle1">{group.name}</Typography>
                           {group.unread > 0 && (
                             <Chip label={group.unread} color="primary" size="small" />
@@ -153,6 +162,7 @@ export const GroupsPage: React.FC = () => {
                           <Typography variant="body2" color="text.secondary">
                             {group.lastMessage}
                           </Typography>
+
                           <AvatarGroup max={4} sx={{ mt: 1 }}>
                             {group.members.map((member, index) => (
                               <Avatar key={index} sx={{ width: 24, height: 24 }}>
@@ -170,16 +180,16 @@ export const GroupsPage: React.FC = () => {
           </Card>
         </Grid>
 
-        {/* Chat Area */}
-          <Grid item xs={12} md={8}>
+        {/* Right column */}
+        <Grid item xs={12} md={8}>
           {selectedGroup ? (
             <Card sx={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Typography variant="h6">
-                  {groups.find(g => g.id === selectedGroup)?.name}
+                  {groups.find((g) => g.id === selectedGroup)?.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {groups.find(g => g.id === selectedGroup)?.members.length} members
+                  {groups.find((g) => g.id === selectedGroup)?.members.length} members
                 </Typography>
               </CardContent>
 
@@ -199,7 +209,8 @@ export const GroupsPage: React.FC = () => {
                         maxWidth: '70%',
                         p: 2,
                         borderRadius: 2,
-                        backgroundColor: msg.sender === 'You' ? 'primary.main' : 'grey.100',
+                        backgroundColor:
+                          msg.sender === 'You' ? 'primary.main' : 'grey.100',
                         color: msg.sender === 'You' ? 'white' : 'text.primary',
                       }}
                     >
@@ -223,29 +234,30 @@ export const GroupsPage: React.FC = () => {
                     placeholder="Type your message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     multiline
                     maxRows={3}
                   />
-                  <Button
-                    variant="outlined"
-                    onClick={handleFileShare}
-                    sx={{ minWidth: 'auto', px: 2 }}
-                  >
+
+                  <Button variant="outlined" onClick={handleFileShare} sx={{ minWidth: 'auto', px: 2 }}>
                     <AttachIcon />
                   </Button>
-                  <Button
-                    variant="contained"
-                    onClick={handleSendMessage}
-                    sx={{ minWidth: 'auto', px: 2 }}
-                  >
+
+                  <Button variant="contained" onClick={handleSendMessage} sx={{ minWidth: 'auto', px: 2 }}>
                     <SendIcon />
                   </Button>
                 </Box>
               </Box>
             </Card>
           ) : (
-            <Card sx={{ height: '600px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Card
+              sx={{
+                height: '600px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               <Box sx={{ textAlign: 'center' }}>
                 <GroupIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
                 <Typography variant="h6" color="text.secondary">
