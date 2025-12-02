@@ -24,8 +24,7 @@ import {
     DialogContent,
     DialogActions,
 } from '@mui/material';
-import Grid from "@mui/material/Grid";
-
+import Grid from "@mui/material/Unstable_Grid2";
 import {
     Add as AddIcon,
     Group as GroupIcon,
@@ -117,7 +116,7 @@ export const GroupsPage: React.FC = () => {
 
             <Grid container spacing={3}>
                 {/* Groups List */}
-                <Grid item xs={12} md={4}>
+                <Grid xs={12} md={4}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" sx={{ mb: 2 }}>
@@ -182,7 +181,7 @@ export const GroupsPage: React.FC = () => {
                 </Grid>
 
                 {/* Right column */}
-                <Grid item xs={12} md={8}>
+                <Grid xs={12} md={8}>
                     {selectedGroup ? (
                         <Card sx={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
                             <CardContent sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -235,7 +234,7 @@ export const GroupsPage: React.FC = () => {
                                         placeholder="Type your message..."
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                         multiline
                                         maxRows={3}
                                     />
