@@ -24,7 +24,6 @@ import {
   Toolbar,
   IconButton,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
 import {
   Add as AddIcon,
   Group as GroupIcon,
@@ -163,9 +162,9 @@ export const DashboardPage: React.FC = () => {
   );
 
   const renderLearnerDashboard = () => (
-    <Grid2 container spacing={3}>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
       {/* My Courses */}
-      <Grid2 xs={12} md={8}>
+      <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 66.666%' } }}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -178,9 +177,9 @@ export const DashboardPage: React.FC = () => {
             >
               My Courses
             </Typography>
-            <Grid2 container spacing={2}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
               {sampleCourses.map((course) => (
-                <Grid2 xs={12} sm={6} key={course.id}>
+                <Box key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -226,9 +225,9 @@ export const DashboardPage: React.FC = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </Grid2>
+                </Box>
               ))}
-            </Grid2>
+            </Box>
           </CardContent>
         </Card>
 
@@ -245,9 +244,9 @@ export const DashboardPage: React.FC = () => {
             >
               Available Courses
             </Typography>
-            <Grid2 container spacing={2}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
               {availableCourses.map((course) => (
-                <Grid2 xs={12} sm={6} key={course.id}>
+                <Box key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -283,15 +282,15 @@ export const DashboardPage: React.FC = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </Grid2>
+                </Box>
               ))}
-            </Grid2>
+            </Box>
           </CardContent>
         </Card>
-      </Grid2>
+      </Box>
 
       {/* Sidebar */}
-      <Grid2 xs={12} md={4}>
+      <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33.333%' } }}>
         {/* Notifications */}
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
@@ -362,13 +361,13 @@ export const DashboardPage: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
-      </Grid2>
-    </Grid2>
+      </Box>
+    </Box>
   );
 
   const renderMentorDashboard = () => (
-    <Grid2 container spacing={3}>
-      <Grid2 xs={12} md={8}>
+    <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+      <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 66.666%' } }}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -398,8 +397,8 @@ export const DashboardPage: React.FC = () => {
             {/* Course management interface would go here */}
           </CardContent>
         </Card>
-      </Grid2>
-      <Grid2 xs={12} md={4}>
+      </Box>
+      <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33.333%' } }}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -420,13 +419,13 @@ export const DashboardPage: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid2>
-    </Grid2>
+      </Box>
+    </Box>
   );
 
   const renderAdminDashboard = () => (
-    <Grid2 container spacing={3}>
-      <Grid2 xs={12}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -447,8 +446,8 @@ export const DashboardPage: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid2>
-    </Grid2>
+      </Box>
+    </Box>
   );
 
   const renderDashboardContent = () => {

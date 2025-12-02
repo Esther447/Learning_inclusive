@@ -20,6 +20,7 @@ import {
   AccordionDetails,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   Tooltip,
 } from '@mui/material';
@@ -466,38 +467,41 @@ export const AccessibleVideoPlayer: React.FC<VideoPlayerProps> = ({
             Video Chapters
           </Typography>
           <List dense>
-            <ListItem 
-              button 
-              onClick={() => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = 0;
-                  speak('Jumping to introduction section');
-                }
-              }}
-            >
-              <ListItemText primary="Introduction" secondary="0:00" />
+            <ListItem disablePadding>
+              <ListItemButton 
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = 0;
+                    speak('Jumping to introduction section');
+                  }
+                }}
+              >
+                <ListItemText primary="Introduction" secondary="0:00" />
+              </ListItemButton>
             </ListItem>
-            <ListItem 
-              button 
-              onClick={() => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = 60;
-                  speak('Jumping to main content section');
-                }
-              }}
-            >
-              <ListItemText primary="Main Content" secondary="1:00" />
+            <ListItem disablePadding>
+              <ListItemButton 
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = 60;
+                    speak('Jumping to main content section');
+                  }
+                }}
+              >
+                <ListItemText primary="Main Content" secondary="1:00" />
+              </ListItemButton>
             </ListItem>
-            <ListItem 
-              button 
-              onClick={() => {
-                if (videoRef.current) {
-                  videoRef.current.currentTime = 180;
-                  speak('Jumping to summary section');
-                }
-              }}
-            >
-              <ListItemText primary="Summary" secondary="3:00" />
+            <ListItem disablePadding>
+              <ListItemButton 
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.currentTime = 180;
+                    speak('Jumping to summary section');
+                  }
+                }}
+              >
+                <ListItemText primary="Summary" secondary="3:00" />
+              </ListItemButton>
             </ListItem>
           </List>
         </Box>

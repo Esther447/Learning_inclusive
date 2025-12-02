@@ -23,7 +23,6 @@ import {
   Alert,
   LinearProgress,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
 import {
   ExpandMore as ExpandMoreIcon,
   PlayArrow as PlayIcon,
@@ -360,8 +359,8 @@ export const CourseContent: React.FC<CourseContentProps> = ({
             Additional Resources
           </Typography>
           
-          <Grid2 container spacing={2}>
-             <Grid2 xs={12} sm={6}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
+             <Box>
               <Button
                 variant="outlined"
                 startIcon={<DownloadIcon />}
@@ -370,8 +369,8 @@ export const CourseContent: React.FC<CourseContentProps> = ({
               >
                 Download All Materials
               </Button>
-            </Grid2>
-             <Grid2 xs={12} sm={6}>
+            </Box>
+             <Box>
               <Button
                 variant="outlined"
                 startIcon={<AssignmentIcon />}
@@ -380,8 +379,8 @@ export const CourseContent: React.FC<CourseContentProps> = ({
               >
                 Practice Exercises
               </Button>
-            </Grid2>
-          </Grid2>
+            </Box>
+          </Box>
 
           <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
             All resources are available in multiple formats for accessibility.

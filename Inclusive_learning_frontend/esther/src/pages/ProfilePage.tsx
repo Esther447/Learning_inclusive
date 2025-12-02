@@ -10,7 +10,6 @@ import {
     Avatar,
     Button,
 } from '@mui/material';
-import Grid2 from '@mui/material/Grid2';
 import { useAccessibilityStore } from '../store/accessibilityStore';
 
 export const ProfilePage: React.FC = () => {
@@ -22,9 +21,9 @@ export const ProfilePage: React.FC = () => {
                 My Profile
             </Typography>
 
-            <Grid2 container spacing={4}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
                 {/* LEFT COLUMN */}
-                <Grid2 xs={12} md={4}>
+                <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33.333%' } }}>
                     <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
                             <Avatar sx={{ width: 120, height: 120, margin: '0 auto' }} />
@@ -59,27 +58,27 @@ export const ProfilePage: React.FC = () => {
                             </Button>
                         </CardActions>
                     </Card>
-                </Grid2>
+                </Box>
 
                 {/* RIGHT COLUMN */}
-                <Grid2 xs={12} md={8}>
+                <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 66.666%' } }}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
                                 Personal Information
                             </Typography>
 
-                            <Grid2 container spacing={2}>
-                                <Grid2 xs={12} sm={6}>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
+                                <Box>
                                     <TextField fullWidth label="Full Name" defaultValue="John Doe" />
-                                </Grid2>
-                                <Grid2 xs={12} sm={6}>
+                                </Box>
+                                <Box>
                                     <TextField fullWidth label="Email" defaultValue="john@example.com" />
-                                </Grid2>
-                                <Grid2 xs={12}>
+                                </Box>
+                                <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
                                     <TextField fullWidth label="Phone" defaultValue="+123456789" />
-                                </Grid2>
-                                <Grid2 xs={12}>
+                                </Box>
+                                <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
                                     <TextField
                                         fullWidth
                                         multiline
@@ -87,16 +86,16 @@ export const ProfilePage: React.FC = () => {
                                         label="Bio"
                                         placeholder="Write something about yourself..."
                                     />
-                                </Grid2>
-                            </Grid2>
+                                </Box>
+                            </Box>
 
                             <Button variant="contained" sx={{ mt: 3 }}>
                                 Save Profile
                             </Button>
                         </CardContent>
                     </Card>
-                </Grid2>
-            </Grid2>
+                </Box>
+            </Box>
         </Container>
     );
 };
