@@ -8,7 +8,7 @@ import {
   TextField,
   Button,
   Avatar,
-  Grid2 as Grid,
+  Grid,
   Switch,
   FormControlLabel,
   Chip,
