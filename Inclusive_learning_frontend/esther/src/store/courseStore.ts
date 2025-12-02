@@ -1215,7 +1215,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
 
   getEnrolledCourses: () => {
     const { courses, enrolledCourses } = get();
-    return courses.filter((course) => enrolledCourses.includes(course.id));
+    return courses.filter((course: Course) => enrolledCourses.includes(course.id));
   },
 }));
 

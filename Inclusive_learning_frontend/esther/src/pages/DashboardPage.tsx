@@ -8,7 +8,6 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   Card,
   CardContent,
   Button,
@@ -25,6 +24,7 @@ import {
   Toolbar,
   IconButton,
 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
   Add as AddIcon,
   Group as GroupIcon,
@@ -163,9 +163,9 @@ export const DashboardPage: React.FC = () => {
   );
 
   const renderLearnerDashboard = () => (
-    <Grid container spacing={3}>
+    <Grid2 container spacing={3}>
       {/* My Courses */}
-      <Grid item xs={12} md={8}>
+      <Grid2 xs={12} md={8}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -178,9 +178,9 @@ export const DashboardPage: React.FC = () => {
             >
               My Courses
             </Typography>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
               {sampleCourses.map((course) => (
-                <Grid item xs={12} sm={6} key={course.id}>
+                <Grid2 xs={12} sm={6} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -226,9 +226,9 @@ export const DashboardPage: React.FC = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
           </CardContent>
         </Card>
 
@@ -245,9 +245,9 @@ export const DashboardPage: React.FC = () => {
             >
               Available Courses
             </Typography>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
               {availableCourses.map((course) => (
-                <Grid item xs={12} sm={6} key={course.id}>
+                <Grid2 xs={12} sm={6} key={course.id}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -283,15 +283,15 @@ export const DashboardPage: React.FC = () => {
                       </Button>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
+            </Grid2>
           </CardContent>
         </Card>
-      </Grid>
+      </Grid2>
 
       {/* Sidebar */}
-      <Grid item xs={12} md={4}>
+      <Grid2 xs={12} md={4}>
         {/* Notifications */}
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
@@ -362,13 +362,13 @@ export const DashboardPage: React.FC = () => {
             </Button>
           </CardContent>
         </Card>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   const renderMentorDashboard = () => (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={8}>
+    <Grid2 container spacing={3}>
+      <Grid2 xs={12} md={8}>
         <Card sx={{ mb: 3, backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -398,8 +398,8 @@ export const DashboardPage: React.FC = () => {
             {/* Course management interface would go here */}
           </CardContent>
         </Card>
-      </Grid>
-      <Grid item xs={12} md={4}>
+      </Grid2>
+      <Grid2 xs={12} md={4}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -420,13 +420,13 @@ export const DashboardPage: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   const renderAdminDashboard = () => (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
+    <Grid2 container spacing={3}>
+      <Grid2 xs={12}>
         <Card sx={{ backgroundColor: settings.highContrastMode ? '#333' : '#fff' }}>
           <CardContent>
             <Typography
@@ -447,8 +447,8 @@ export const DashboardPage: React.FC = () => {
             </Typography>
           </CardContent>
         </Card>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 
   const renderDashboardContent = () => {

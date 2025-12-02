@@ -10,9 +10,7 @@ import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { CoursesPage } from './pages/CoursesPage';
 import { CoursePage } from './pages/CoursePage';
-import { EnhancedProfilePage } from './pages/EnhancedProfilePage';
-import { GroupsPage } from './pages/GroupsPage';
-import { MentorshipPage } from './pages/MentorshipPage';
+import { ProfilePage } from './pages/ProfilePage';
 import { QuizPage } from './pages/QuizPage';
 import { SignupPage } from './pages/SignupPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -101,11 +99,8 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/course/:courseId" element={<CoursePage />} />
-                <Route path="/profile" element={<EnhancedProfilePage />} />
-                <Route path="/groups" element={<GroupsPage />} />
-        <Route path="/mentorship" element={<MentorshipPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/quiz/:courseId" element={<QuizPage />} />
-                <Route path="/mentorship" element={<div>Mentorship Page - Coming Soon</div>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Box>

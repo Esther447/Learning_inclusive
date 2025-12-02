@@ -209,7 +209,7 @@ export const CoursesPage: React.FC = () => {
                   </Box>
 
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, marginTop: 2 }}>
-                    {course.accessibilityFeatures.slice(0, 3).map((feature) => (
+                    {course.accessibilityFeatures.slice(0, 3).map((feature: string) => (
                       <Chip key={feature} label={feature.replace('-', ' ')} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} />
                     ))}
                     {course.accessibilityFeatures.length > 3 && (
