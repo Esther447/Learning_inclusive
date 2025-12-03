@@ -57,6 +57,22 @@ export const Navigation: React.FC = () => {
             <>
               <Button
                 color="inherit"
+                onClick={() => navigate(user?.role === 'administrator' ? '/admin/dashboard' : '/dashboard')}
+                sx={{ textTransform: 'none', fontWeight: 500 }}
+              >
+                Dashboard
+              </Button>
+              {user?.role === 'administrator' && (
+                <Button
+                  color="inherit"
+                  onClick={() => navigate('/admin/dashboard')}
+                  sx={{ textTransform: 'none', fontWeight: 500 }}
+                >
+                  Manage Users
+                </Button>
+              )}
+              <Button
+                color="inherit"
                 onClick={() => navigate('/profile')}
                 sx={{ textTransform: 'none', fontWeight: 500 }}
               >

@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/authStore';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { login, signup, isLoading, error } = useAuthStore();
+  const { login, signup, isLoading, error, user } = useAuthStore();
   const [tab, setTab] = useState(0);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +15,14 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      navigate('/dashboard');
+      // Get updated user after login
+      const currentUser = useAuthStore.getState().user;
+      // Redirect based on role
+      if (currentUser?.role === 'administrator') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
       console.error('Login failed');
     }

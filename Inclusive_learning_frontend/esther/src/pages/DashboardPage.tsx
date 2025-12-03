@@ -36,7 +36,7 @@ import {
   People as PeopleIcon,
   Assessment as AssessmentIcon,
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useAccessibilityStore } from '../store/accessibilityStore';
 
@@ -48,6 +48,11 @@ export const DashboardPage: React.FC = () => {
   const { settings, updateSettings } = useAccessibilityStore();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [enrolledCourses, setEnrolledCourses] = useState([1, 2, 3]);
+
+  // Redirect administrators to admin dashboard
+  if (user?.role === 'administrator') {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -111,14 +116,6 @@ export const DashboardPage: React.FC = () => {
         ...baseItems,
         { text: 'Create Course', icon: <AddIcon />, path: '/create-course' },
         { text: 'Student Progress', icon: <AssessmentIcon />, path: '/student-progress' },
-      ];
-    }
-
-    if (user?.role === 'administrator') {
-      return [
-        ...baseItems,
-        { text: 'User Management', icon: <PeopleIcon />, path: '/admin/users' },
-        { text: 'System Monitor', icon: <AssessmentIcon />, path: '/admin/monitor' },
       ];
     }
 
@@ -454,8 +451,6 @@ export const DashboardPage: React.FC = () => {
     switch (user?.role) {
       case 'mentor':
         return renderMentorDashboard();
-      case 'administrator':
-        return renderAdminDashboard();
       default:
         return renderLearnerDashboard();
     }
@@ -569,7 +564,6 @@ export const DashboardPage: React.FC = () => {
             >
               {user?.role === 'learner' && 'Continue your learning journey'}
               {user?.role === 'mentor' && 'Manage your courses and students'}
-              {user?.role === 'administrator' && 'Monitor and manage the platform'}
             </Typography>
           </Box>
 

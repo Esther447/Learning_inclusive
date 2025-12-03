@@ -14,6 +14,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { QuizPage } from './pages/QuizPage';
 import { SignupPage } from './pages/SignupPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 // import MentorshipPage from './pages/MentorshipPage';
 // import ProfilePage from './pages/ProfilePage';
 
@@ -97,6 +98,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/register" element={<SignupPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/course/:courseId" element={<CoursePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
