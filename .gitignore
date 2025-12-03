@@ -1,2 +1,32 @@
+# IDE
+.idea
+.vscode
 .dea
+
+# Dependencies
 node_modules
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.db
+*.sqlite
+*.sqlite3
+dev_sqlite.db
+venv/
+env/
+ENV/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Environment variables
+.env
+.env.local
+.env.production

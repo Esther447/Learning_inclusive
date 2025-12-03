@@ -56,26 +56,28 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS Configuration - Very permissive for development
-# Allow all localhost origins for development
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:5174",
-    "http://127.0.0.1:5174",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:5175",
-    "http://127.0.0.1:5175",
-    "http://localhost:5176",
-    "http://127.0.0.1:5176",
-]
+# CORS Configuration
+# Get CORS origins from environment variable or use defaults
+cors_origins = getattr(settings, 'CORS_ORIGINS', None)
+
+# Handle CORS_ORIGINS - can be string (comma-separated) or list
+if cors_origins:
+    if isinstance(cors_origins, str):
+        # Split comma-separated string into list
+        cors_origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+    elif not isinstance(cors_origins, list):
+        cors_origins = [str(cors_origins)]
+else:
+    # Default to localhost for development
+    cors_origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
 
 # Add CORS middleware - must be added before routes
-# Very permissive CORS for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins in development (change in production!)
+    allow_origins=cors_origins,  # Use configured origins
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
     allow_headers=["*"],  # Allow all headers

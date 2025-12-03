@@ -34,8 +34,9 @@ class Settings(BaseSettings):
     DISABLE_SQL: bool = True
     SQLITE_DB_FILE: str = "dev_sqlite.db"
 
-    # CORS
-    CORS_ORIGINS: List[str] = [
+    # CORS - Can be set as comma-separated string or list
+    # If set as environment variable, it will be a string like: "https://app.vercel.app,http://localhost:5173"
+    CORS_ORIGINS: str | List[str] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173"
     ]

@@ -10,3 +10,4 @@ python-jose[cryptography]
 email-validator
 sqlalchemy
 psycopg2-binary
+mangum
