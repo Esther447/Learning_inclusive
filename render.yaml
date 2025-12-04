@@ -3,7 +3,7 @@ services:
     name: inclusive-learning-api
     runtime: python
     buildCommand: pip install -r esther/backend_python/requirements.txt
-    startCommand: cd esther && python -m uvicorn backend_python.main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd esther && python -m uvicorn main:app --host 0.0.0.0 --port 8001 --reload
     envVars:
       - key: MONGODB_URL
         sync: false
