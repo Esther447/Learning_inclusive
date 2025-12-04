@@ -74,17 +74,32 @@ else:
         "http://127.0.0.1:5173",
     ]
 
-# Always add Vercel domain to allowed origins
-vercel_domain = "https://learning-inclusive-lmke.vercel.app"
-if vercel_domain not in cors_origins:
-    cors_origins.append(vercel_domain)
+# Always add Vercel domains to allowed origins
+# Vercel uses different URLs for production and preview deployments
+vercel_domains = [
+    "https://learning-inclusive-lmke.vercel.app",  # Production
+    # Allow all Vercel preview deployments (they have pattern: *.vercel.app)
+]
+for domain in vercel_domains:
+    if domain not in cors_origins:
+        cors_origins.append(domain)
+
+# Also allow any *.vercel.app subdomain for preview deployments
+# We'll use a more permissive approach for Vercel
+import re
+def is_vercel_domain(origin: str) -> bool:
+    """Check if origin is a Vercel domain"""
+    return bool(re.match(r'https://.*\.vercel\.app$', origin))
 
 # Log CORS origins for debugging
 print(f"🌐 CORS allowed origins: {cors_origins}")
+print(f"🌐 CORS will also allow any *.vercel.app domain")
 
 # Add CORS middleware - must be added before routes
+# Use allow_origin_regex to allow all Vercel preview deployments (*.vercel.app)
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"https://.*\.vercel\.app$",  # Allow all Vercel preview deployments
     allow_origins=cors_origins,  # Use configured origins
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods
