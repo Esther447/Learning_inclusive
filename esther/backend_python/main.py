@@ -72,6 +72,7 @@ else:
     cors_origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://learning-inclusive-lmke.vercel.app",  # Add Vercel domain
     ]
 
 # Add CORS middleware - must be added before routes

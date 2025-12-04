@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, EmailStr, constr
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from backend_python.mongodb_db import get_users_collection, user_to_dict, dict_to_user
 from backend_python.mongodb_models import UserDocument, UserRole
@@ -51,36 +51,43 @@ async def signup(payload: SignupIn):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Create user document
+    # Generate a UUID for the user
+    user_id = str(uuid4())
+    
+    # Create user document with the UUID as _id
     user_doc = UserDocument(
+        id=user_id,
         email=payload.email,
         name=payload.name,
         role=UserRole.learner,
         password_hash=get_password_hash(payload.password)
     )
     
-    # Insert into MongoDB - let MongoDB generate _id automatically
+    # Insert into MongoDB with our UUID as _id
     user_dict = user_to_dict(user_doc)
-    # Remove _id if it exists so MongoDB can generate it
-    if "_id" in user_dict:
-        del user_dict["_id"]
     # Remove None values
     user_dict = {k: v for k, v in user_dict.items() if v is not None}
     
-    result = await users_collection.insert_one(user_dict)
+    await users_collection.insert_one(user_dict)
     
     # Fetch the created user
-    created_user = await users_collection.find_one({"_id": result.inserted_id})
+    created_user = await users_collection.find_one({"_id": user_id})
+    
+    if not created_user:
+        raise HTTPException(status_code=500, detail="Failed to create user")
     
     # Convert to UserResponse format
-    user_data = dict_to_user(created_user)
-    return UserResponse(
-        id=user_data.id,
-        email=user_data.email,
-        name=user_data.name,
-        role=user_data.role.value,
-        created_at=user_data.created_at
-    )
+    try:
+        user_data = dict_to_user(created_user)
+        return UserResponse(
+            id=UUID(user_data.id),
+            email=user_data.email,
+            name=user_data.name,
+            role=user_data.role.value,
+            created_at=user_data.created_at
+        )
+    except (ValueError, TypeError) as e:
+        raise HTTPException(status_code=500, detail=f"Failed to process user data: {str(e)}")
 
 
 @router.post("/login", response_model=TokenOut)
@@ -105,7 +112,7 @@ async def login(payload: LoginIn):
         access_token=access,
         refresh_token=refresh,
         user=UserResponse(
-            id=user.id,
+            id=UUID(user.id),
             email=user.email,
             name=user.name,
             role=user.role.value,
@@ -136,7 +143,7 @@ async def refresh_token(payload: RefreshIn = Body(...)):
         access_token=access,
         refresh_token=refresh,
         user=UserResponse(
-            id=user.id,
+            id=UUID(user.id),
             email=user.email,
             name=user.name,
             role=user.role.value,
