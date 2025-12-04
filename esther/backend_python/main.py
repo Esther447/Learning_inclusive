@@ -72,8 +72,15 @@ else:
     cors_origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://learning-inclusive-lmke.vercel.app",  # Add Vercel domain
     ]
+
+# Always add Vercel domain to allowed origins
+vercel_domain = "https://learning-inclusive-lmke.vercel.app"
+if vercel_domain not in cors_origins:
+    cors_origins.append(vercel_domain)
+
+# Log CORS origins for debugging
+print(f"🌐 CORS allowed origins: {cors_origins}")
 
 # Add CORS middleware - must be added before routes
 app.add_middleware(
