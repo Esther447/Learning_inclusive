@@ -32,14 +32,22 @@ def create_course(payload: CourseCreate, db: Session = Depends(get_db), current_
     return CourseResponse.model_validate(course)
 
 @router.get("/", response_model=List[CourseResponse])
-def list_courses(category: Optional[str] = Query(None), difficulty: Optional[str] = Query(None), db: Session = Depends(get_db)):
-    q = db.query(Course)
-    if category:
-        q = q.filter(Course.category == category)
-    if difficulty:
-        q = q.filter(Course.difficulty == difficulty)
-    courses = q.all()
-    return [CourseResponse.model_validate(c) for c in courses]
+def list_courses(
+    category: Optional[str] = Query(None), 
+    difficulty: Optional[str] = Query(None), 
+    db: Session = Depends(get_db)
+):
+    try:
+        q = db.query(Course).filter(Course.is_published == True)
+        if category:
+            q = q.filter(Course.category == category)
+        if difficulty:
+            q = q.filter(Course.difficulty == difficulty)
+        courses = q.all()
+        return [CourseResponse.model_validate(c) for c in courses]
+    except Exception as e:
+        print(f"Error listing courses: {e}")
+        return []
 
 @router.get("/{course_id}", response_model=CourseResponse)
 def get_course(course_id: UUID = Path(...), db: Session = Depends(get_db)):

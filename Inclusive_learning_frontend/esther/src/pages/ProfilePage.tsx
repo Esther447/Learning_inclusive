@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Container,
     Box,
@@ -9,11 +9,35 @@ import {
     TextField,
     Avatar,
     Button,
+    Alert,
 } from '@mui/material';
 import { useAccessibilityStore } from '../store/accessibilityStore';
+import { useAuthStore } from '../store/authStore';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfilePage: React.FC = () => {
     const { updateSettings } = useAccessibilityStore();
+    const { user, isAuthenticated } = useAuthStore();
+    const navigate = useNavigate();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        if (user) {
+            setName(user.name || '');
+            setEmail(user.email || '');
+        }
+    }, [user, isAuthenticated, navigate]);
+
+    const handleSaveProfile = () => {
+        setSuccessMessage('Profile updated successfully!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+    };
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -26,11 +50,16 @@ export const ProfilePage: React.FC = () => {
                 <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 33.333%' } }}>
                     <Card>
                         <CardContent sx={{ textAlign: 'center' }}>
-                            <Avatar sx={{ width: 120, height: 120, margin: '0 auto' }} />
+                            <Avatar sx={{ width: 120, height: 120, margin: '0 auto', bgcolor: 'primary.main', fontSize: '3rem' }}>
+                                {user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
+                            </Avatar>
                             <Typography variant="h6" sx={{ mt: 2 }}>
-                                John Doe
+                                {user?.name || 'User'}
                             </Typography>
-                            <Typography color="text.secondary">Student</Typography>
+                            <Typography color="text.secondary">{user?.role || 'Learner'}</Typography>
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                                {user?.email}
+                            </Typography>
 
                             <Box sx={{ mt: 3 }}>
                                 <TextField
@@ -68,15 +97,37 @@ export const ProfilePage: React.FC = () => {
                                 Personal Information
                             </Typography>
 
+                            {successMessage && (
+                                <Alert severity="success" sx={{ mb: 2 }}>
+                                    {successMessage}
+                                </Alert>
+                            )}
+
                             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 2 }}>
                                 <Box>
-                                    <TextField fullWidth label="Full Name" defaultValue="John Doe" />
+                                    <TextField 
+                                        fullWidth 
+                                        label="Full Name" 
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
                                 </Box>
                                 <Box>
-                                    <TextField fullWidth label="Email" defaultValue="john@example.com" />
+                                    <TextField 
+                                        fullWidth 
+                                        label="Email" 
+                                        value={email}
+                                        disabled
+                                        helperText="Email cannot be changed"
+                                    />
                                 </Box>
                                 <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
-                                    <TextField fullWidth label="Phone" defaultValue="+123456789" />
+                                    <TextField 
+                                        fullWidth 
+                                        label="Role" 
+                                        value={user?.role || 'learner'}
+                                        disabled
+                                    />
                                 </Box>
                                 <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
                                     <TextField
@@ -89,7 +140,7 @@ export const ProfilePage: React.FC = () => {
                                 </Box>
                             </Box>
 
-                            <Button variant="contained" sx={{ mt: 3 }}>
+                            <Button variant="contained" sx={{ mt: 3 }} onClick={handleSaveProfile}>
                                 Save Profile
                             </Button>
                         </CardContent>

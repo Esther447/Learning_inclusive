@@ -60,7 +60,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     
     users_collection = get_users_collection()
-    user_doc = await users_collection.find_one({"_id": sub})
+    # Query by the string ID field, not _id
+    user_doc = await users_collection.find_one({"id": sub})
     if not user_doc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     

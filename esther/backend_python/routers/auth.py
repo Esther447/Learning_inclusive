@@ -11,7 +11,7 @@ from backend_python.auth_utils import (
     create_refresh_token,
     decode_token
 )
-from backend_python.schemas import UserResponse
+from backend_python.schemas import UserResponse, TokenOut
 
 router = APIRouter()
 
@@ -33,11 +33,7 @@ class RefreshIn(BaseModel):
     refresh_token: str
 
 
-class TokenOut(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_type: str = "bearer"
-    user: UserResponse
+
 
 
 # ==================== AUTH ROUTES ====================
@@ -51,7 +47,7 @@ async def signup(payload: SignupIn):
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Create user document
+    # Create user document with UUID
     user_doc = UserDocument(
         email=payload.email,
         name=payload.name,
@@ -59,18 +55,15 @@ async def signup(payload: SignupIn):
         password_hash=get_password_hash(payload.password)
     )
     
-    # Insert into MongoDB - let MongoDB generate _id automatically
+    # Insert into MongoDB
     user_dict = user_to_dict(user_doc)
-    # Remove _id if it exists so MongoDB can generate it
-    if "_id" in user_dict:
-        del user_dict["_id"]
     # Remove None values
     user_dict = {k: v for k, v in user_dict.items() if v is not None}
     
     result = await users_collection.insert_one(user_dict)
     
-    # Fetch the created user
-    created_user = await users_collection.find_one({"_id": result.inserted_id})
+    # Fetch the created user by id field
+    created_user = await users_collection.find_one({"id": user_doc.id})
     
     # Convert to UserResponse format
     user_data = dict_to_user(created_user)
@@ -85,33 +78,42 @@ async def signup(payload: SignupIn):
 
 @router.post("/login", response_model=TokenOut)
 async def login(payload: LoginIn):
-    users_collection = get_users_collection()
-    
-    # Find user by email
-    user_doc = await users_collection.find_one({"email": payload.email})
-    
-    if not user_doc:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    user = dict_to_user(user_doc)
-    
-    if not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+    try:
+        users_collection = get_users_collection()
+        
+        # Find user by email
+        user_doc = await users_collection.find_one({"email": payload.email})
+        
+        if not user_doc:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        user = dict_to_user(user_doc)
+        
+        if not verify_password(payload.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access = create_access_token(str(user.id))
-    refresh = create_refresh_token(str(user.id))
+        access = create_access_token(str(user.id))
+        refresh = create_refresh_token(str(user.id))
 
-    return TokenOut(
-        access_token=access,
-        refresh_token=refresh,
-        user=UserResponse(
-            id=user.id,
-            email=user.email,
-            name=user.name,
-            role=user.role.value,
-            created_at=user.created_at
-        )
-    )
+        return {
+            "access_token": access,
+            "refresh_token": refresh,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "name": user.name,
+                "role": user.role.value if hasattr(user.role, 'value') else user.role,
+                "created_at": user.created_at.isoformat() if user.created_at else None
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"Login error: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @router.post("/refresh", response_model=TokenOut)
@@ -123,7 +125,8 @@ async def refresh_token(payload: RefreshIn = Body(...)):
 
     sub = decoded.get("sub")
     users_collection = get_users_collection()
-    user_doc = await users_collection.find_one({"_id": sub})
+    # Query by the string ID stored in MongoDB
+    user_doc = await users_collection.find_one({"id": sub})
 
     if not user_doc:
         raise HTTPException(status_code=401, detail="User not found")

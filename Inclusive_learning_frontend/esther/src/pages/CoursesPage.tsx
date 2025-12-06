@@ -57,10 +57,14 @@ export const CoursesPage: React.FC = () => {
 
     try {
       await enrollInCourse(courseId);
-      alert('Successfully enrolled in course!');
-      navigate(`/course/${courseId}`);
+      speak?.('Successfully enrolled in course! Redirecting to start learning.');
+      // Navigate to the course detail page to start learning
+      setTimeout(() => {
+        navigate(`/courses/${courseId}`);
+      }, 500);
     } catch (err: unknown) {
-      const error = err as Error; // Type-safe error
+      const error = err as Error;
+      speak?.(error.message || 'Failed to enroll in course');
       alert(error.message || 'Failed to enroll in course');
     }
   };
@@ -203,17 +207,17 @@ export const CoursesPage: React.FC = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                       <SchoolIcon sx={{ fontSize: 18, color: '#666' }} />
                       <Typography variant="body2" sx={{ color: '#666' }}>
-                        {course.modules.length} modules
+                        {course.modules?.length || 0} modules
                       </Typography>
                     </Box>
                   </Box>
 
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, marginTop: 2 }}>
-                    {course.accessibilityFeatures.slice(0, 3).map((feature: string) => (
+                    {(course.accessibilityFeatures || []).slice(0, 3).map((feature: string) => (
                       <Chip key={feature} label={feature.replace('-', ' ')} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} />
                     ))}
-                    {course.accessibilityFeatures.length > 3 && (
-                      <Chip label={`+${course.accessibilityFeatures.length - 3} more`} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} />
+                    {(course.accessibilityFeatures?.length || 0) > 3 && (
+                      <Chip label={`+${(course.accessibilityFeatures?.length || 0) - 3} more`} size="small" variant="outlined" sx={{ fontSize: '0.7rem' }} />
                     )}
                   </Box>
                 </CardContent>
@@ -224,7 +228,7 @@ export const CoursesPage: React.FC = () => {
                       fullWidth
                       variant="contained"
                       startIcon={<CheckCircleIcon />}
-                      onClick={() => navigate(`/course/${course.id}`)}
+                      onClick={() => navigate(`/courses/${course.id}`)}
                       sx={{ textTransform: 'none' }}
                     >
                       Continue Learning

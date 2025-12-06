@@ -1,22 +1,27 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme, CssBaseline, Box } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { AccessibilityProvider } from './context/AccessibilityProvider';
 import { useAccessibilityStore } from './store/accessibilityStore';
-import { Navigation } from './components/Navigation';
+import { MainLayout } from './components/MainLayout';
+import { CourseLayout } from './components/CourseLayout';
 import './App.css';
 
 // Pages
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { CoursesPage } from './pages/CoursesPage';
-import { CoursePage } from './pages/CoursePage';
 import { ProfilePage } from './pages/ProfilePage';
-import { QuizPage } from './pages/QuizPage';
 import { SignupPage } from './pages/SignupPage';
-import { DashboardPage } from './pages/DashboardPage';
+import { NewDashboardPage as DashboardPage } from './pages/NewDashboardPage';
+import { CourseDetailPage } from './pages/CourseDetailPage';
 import { AdminDashboard } from './pages/AdminDashboard';
-// import MentorshipPage from './pages/MentorshipPage';
-// import ProfilePage from './pages/ProfilePage';
+import { HelpPage } from './pages/HelpPage';
+import { CalendarPage } from './pages/CalendarPage';
+import { InboxPage } from './pages/InboxPage';
+import { HistoryPage } from './pages/HistoryPage';
+import { MentorshipPage } from './pages/MentorshipPage';
+import { AccessibilityPage } from './pages/AccessibilityPage';
+import { useAuthStore } from './store/authStore';
 
 function App() {
   const { settings } = useAccessibilityStore();
@@ -84,29 +89,49 @@ function App() {
     },
   });
 
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AccessibilityProvider>
         <Router>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Navigation />
-            <Box component="main" sx={{ flex: 1 }}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/register" element={<SignupPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                <Route path="/courses" element={<CoursesPage />} />
-                <Route path="/course/:courseId" element={<CoursePage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/quiz/:courseId" element={<QuizPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Box>
-          </Box>
+          <Routes>
+            {/* Public routes without sidebar */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/register" element={<SignupPage />} />
+            
+            {/* Protected routes with main sidebar */}
+            <Route path="/dashboard" element={<MainLayout><DashboardPage /></MainLayout>} />
+            <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
+            <Route path="/courses" element={<MainLayout><CoursesPage /></MainLayout>} />
+            <Route path="/calendar" element={<MainLayout><CalendarPage /></MainLayout>} />
+            <Route path="/inbox" element={<MainLayout><InboxPage /></MainLayout>} />
+            <Route path="/history" element={<MainLayout><HistoryPage /></MainLayout>} />
+            <Route path="/help" element={<MainLayout><HelpPage /></MainLayout>} />
+            <Route path="/mentorship" element={<MainLayout><MentorshipPage /></MainLayout>} />
+            <Route path="/accessibility" element={<MainLayout><AccessibilityPage /></MainLayout>} />
+            <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
+            
+            {/* Course routes with course sidebar */}
+            <Route path="/courses/:courseId" element={<CourseLayout><CourseDetailPage /></CourseLayout>} />
+            <Route path="/courses/:courseId/search" element={<CourseLayout><div>Smart Search</div></CourseLayout>} />
+            <Route path="/courses/:courseId/announcements" element={<CourseLayout><div>Announcements</div></CourseLayout>} />
+            <Route path="/courses/:courseId/assignments" element={<CourseLayout><div>Assignments</div></CourseLayout>} />
+            <Route path="/courses/:courseId/discussions" element={<CourseLayout><div>Discussions</div></CourseLayout>} />
+            <Route path="/courses/:courseId/pages" element={<CourseLayout><div>Pages</div></CourseLayout>} />
+            <Route path="/courses/:courseId/syllabus" element={<CourseLayout><div>Syllabus</div></CourseLayout>} />
+            <Route path="/courses/:courseId/quizzes" element={<CourseLayout><div>Quizzes</div></CourseLayout>} />
+            <Route path="/courses/:courseId/modules" element={<CourseLayout><div>Modules</div></CourseLayout>} />
+            <Route path="/courses/:courseId/collaborations" element={<CourseLayout><div>Collaborations</div></CourseLayout>} />
+            <Route path="/courses/:courseId/drive" element={<CourseLayout><div>Google Drive</div></CourseLayout>} />
+            <Route path="/courses/:courseId/grades" element={<CourseLayout><div>Grades</div></CourseLayout>} />
+            <Route path="/courses/:courseId/badges" element={<CourseLayout><div>Badges</div></CourseLayout>} />
+            
+            <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
+          </Routes>
         </Router>
       </AccessibilityProvider>
     </ThemeProvider>

@@ -52,20 +52,17 @@ def get_mentorship_groups_collection():
 # Helper functions to convert between Pydantic models and MongoDB documents
 def user_to_dict(user: UserDocument) -> Dict[str, Any]:
     """Convert UserDocument to MongoDB document dict"""
-    doc = user.model_dump(by_alias=True, exclude_none=True)
-    # Ensure _id is set correctly for MongoDB
-    # If id exists, use it as _id for MongoDB
-    if "id" in doc:
-        doc["_id"] = doc.pop("id")
-    # If _id is already there, keep it
+    doc = user.model_dump(by_alias=False, exclude_none=True)
+    # Keep both id and _id for MongoDB compatibility
+    if "id" in doc and "_id" not in doc:
+        doc["_id"] = doc["id"]
     return doc
 
 def dict_to_user(doc: Dict[str, Any]) -> UserDocument:
     """Convert MongoDB document to UserDocument"""
     # MongoDB uses _id, but our model uses id with alias
-    if "_id" in doc:
+    if "_id" in doc and "id" not in doc:
         doc["id"] = str(doc["_id"])
-        del doc["_id"]
     return UserDocument(**doc)
 
 # Similar helpers for other models

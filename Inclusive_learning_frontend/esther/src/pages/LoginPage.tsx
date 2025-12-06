@@ -15,9 +15,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      // Get updated user after login
       const currentUser = useAuthStore.getState().user;
-      // Redirect based on role
       if (currentUser?.role === 'administrator') {
         navigate('/admin/dashboard');
       } else {

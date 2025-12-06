@@ -1126,10 +1126,23 @@ export const useCourseStore = create<CourseState>((set, get) => ({
   fetchCourses: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // Try to fetch from real API
+      const { api } = await import('../services/api');
+      const response = await api.get('/courses');
+      const courses = response.data;
       
-      // Load enrolled courses from localStorage
+      const savedEnrollments = localStorage.getItem('enrolledCourses');
+      const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
+      
+      set({
+        courses: courses,
+        enrolledCourses: enrolled,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error) {
+      // Fallback to mock data if API fails
+      console.warn('API failed, using mock data:', error);
       const savedEnrollments = localStorage.getItem('enrolledCourses');
       const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
       
@@ -1138,11 +1151,6 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         enrolledCourses: enrolled,
         isLoading: false,
         error: null,
-      });
-    } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : 'Failed to fetch courses',
-        isLoading: false,
       });
     }
   },

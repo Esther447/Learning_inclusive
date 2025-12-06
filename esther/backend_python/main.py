@@ -19,9 +19,11 @@ if project_root not in sys.path:
 
 from backend_python.database import engine, Base, mongo_client
 from backend_python.routers import (
-    auth, users, courses, enrollments, progress, 
-    accessibility, mentorship, quizzes, admin
+    auth, users, enrollments, progress, 
+    accessibility, mentorship, quizzes, admin, modules,
+    assignments, announcements, discussions, resources, pages
 )
+from backend_python.routers import courses_mongo
 from backend_python.settings_configuration import settings
 from backend_python.exceptions import ResourceNotFoundException, BadRequestException, UnauthorizedException
 from sqlalchemy.exc import OperationalError
@@ -88,13 +90,19 @@ app.add_middleware(
 # Include Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
-app.include_router(courses.router, prefix="/api/courses", tags=["Courses"])
+app.include_router(courses_mongo.router, prefix="/api/courses", tags=["Courses"])
 app.include_router(accessibility.router, prefix="/api/accessibility", tags=["Accessibility"])
 app.include_router(progress.router, prefix="/api/progress", tags=["Progress"])
 app.include_router(mentorship.router, prefix="/api/mentorship", tags=["Mentorship"])
 app.include_router(quizzes.router, prefix="/api/quizzes", tags=["Quizzes"])
 app.include_router(enrollments.router, prefix="/api/enrollments", tags=["Enrollments"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(modules.router, prefix="/api", tags=["Modules"])
+app.include_router(assignments.router, prefix="/api", tags=["Assignments"])
+app.include_router(announcements.router, prefix="/api", tags=["Announcements"])
+app.include_router(discussions.router, prefix="/api", tags=["Discussions"])
+app.include_router(resources.router, prefix="/api", tags=["Resources"])
+app.include_router(pages.router, prefix="/api", tags=["Pages"])
 
 # ==================== Startup Event ====================
 @app.on_event("startup")
