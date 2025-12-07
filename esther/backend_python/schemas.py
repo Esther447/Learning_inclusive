@@ -53,9 +53,9 @@ class CourseResponse(CamelModel):
 
 # === Enrollment ===
 class EnrollmentOut(CamelModel):
-    id: UUID
-    user_id: UUID
-    course_id: UUID
+    id: str  # MongoDB uses string IDs
+    user_id: str
+    course_id: str
     enrolled_at: Optional[datetime]
 
 # === Progress ===

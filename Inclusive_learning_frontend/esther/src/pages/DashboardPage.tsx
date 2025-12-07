@@ -54,6 +54,11 @@ export const DashboardPage: React.FC = () => {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
+  // Redirect mentors to mentor dashboard
+  if (user?.role === 'mentor') {
+    return <Navigate to="/mentor/dashboard" replace />;
+  }
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -62,6 +67,8 @@ export const DashboardPage: React.FC = () => {
     if (!enrolledCourses.includes(courseId)) {
       setEnrolledCourses([...enrolledCourses, courseId]);
       alert('Successfully enrolled in course!');
+      // Navigate to the course page after enrollment
+      navigate(`/course/${courseId}`);
     } else {
       navigate(`/course/${courseId}`);
     }
@@ -273,7 +280,14 @@ export const DashboardPage: React.FC = () => {
                         variant="outlined" 
                         size="small" 
                         fullWidth
-                        onClick={() => handleEnrollCourse(course.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (enrolledCourses.includes(course.id)) {
+                            navigate(`/course/${course.id}`);
+                          } else {
+                            handleEnrollCourse(course.id);
+                          }
+                        }}
                       >
                         {enrolledCourses.includes(course.id) ? 'Continue Course' : 'Enroll Now'}
                       </Button>

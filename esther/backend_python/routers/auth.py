@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Body
 from pydantic import BaseModel, EmailStr, constr
 from uuid import uuid4, UUID
+from datetime import datetime
 
-from backend_python.mongodb_db import get_users_collection, user_to_dict, dict_to_user
-from backend_python.mongodb_models import UserDocument, UserRole
+from backend_python.mongodb_db import get_users_collection
+from backend_python.mongodb_models import UserRole
 from backend_python.auth_utils import (
     get_password_hash,
     verify_password,
@@ -20,7 +21,7 @@ router = APIRouter()
 
 class SignupIn(BaseModel):
     email: EmailStr
-    password: constr(min_length=6) 
+    password: constr(min_length=6)
     name: str | None = None
 
 
@@ -44,79 +45,94 @@ class TokenOut(BaseModel):
 
 @router.post("/signup", response_model=UserResponse)
 async def signup(payload: SignupIn):
-    users_collection = get_users_collection()
-    
-    # Check if email exists
-    existing = await users_collection.find_one({"email": payload.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    # Generate a UUID for the user
-    user_id = str(uuid4())
-    
-    # Create user document with the UUID as _id
-    user_doc = UserDocument(
-        id=user_id,
-        email=payload.email,
-        name=payload.name,
-        role=UserRole.learner,
-        password_hash=get_password_hash(payload.password)
-    )
-    
-    # Insert into MongoDB with our UUID as _id
-    user_dict = user_to_dict(user_doc)
-    # Remove None values
-    user_dict = {k: v for k, v in user_dict.items() if v is not None}
-    
-    await users_collection.insert_one(user_dict)
-    
-    # Fetch the created user
-    created_user = await users_collection.find_one({"_id": user_id})
-    
-    if not created_user:
-        raise HTTPException(status_code=500, detail="Failed to create user")
-    
-    # Convert to UserResponse format
     try:
-        user_data = dict_to_user(created_user)
-        return UserResponse(
-            id=UUID(user_data.id),
-            email=user_data.email,
-            name=user_data.name,
-            role=user_data.role.value,
-            created_at=user_data.created_at
+        users_collection = get_users_collection()
+
+        # Check if email exists
+        existing = await users_collection.find_one(
+            {"email": payload.email},
+            {"_id": 1}
         )
-    except (ValueError, TypeError) as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process user data: {str(e)}")
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+        # Create user ID
+        user_id = str(uuid4())
+
+        # Hash the password
+        password_hash = get_password_hash(payload.password)
+
+        # Prepare the document
+        user_dict = {
+            "_id": user_id,
+            "email": payload.email,
+            "name": payload.name,
+            "role": UserRole.learner.value,
+            "password_hash": password_hash,
+            "created_at": datetime.utcnow()
+        }
+
+        # Insert user
+        await users_collection.insert_one(user_dict)
+
+        # Return response
+        return UserResponse(
+            id=UUID(user_id),
+            email=payload.email,
+            name=payload.name,
+            role=UserRole.learner.value,
+            created_at=user_dict["created_at"]
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        print(f"❌ Signup error: {e}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @router.post("/login", response_model=TokenOut)
 async def login(payload: LoginIn):
     users_collection = get_users_collection()
-    
-    # Find user by email
-    user_doc = await users_collection.find_one({"email": payload.email})
-    
+
+    normalized_email = payload.email.lower().strip()
+
+    # Fetch user
+    user_doc = await users_collection.find_one(
+        {"email": normalized_email},
+        {"_id": 1, "email": 1, "name": 1, "role": 1, "password_hash": 1, "created_at": 1}
+    )
+
+    # Fallback case-insensitive search
+    if not user_doc:
+        all_users = await users_collection.find({}).to_list(length=1000)
+        user_doc = next(
+            (u for u in all_users if u.get("email", "").lower().strip() == normalized_email),
+            None
+        )
+
     if not user_doc:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    user = dict_to_user(user_doc)
-    
-    if not verify_password(payload.password, user.password_hash):
+
+    # Verify password
+    if not verify_password(payload.password, user_doc.get("password_hash", "")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    access = create_access_token(str(user.id))
-    refresh = create_refresh_token(str(user.id))
+    user_id = str(user_doc["_id"])
+    access = create_access_token(user_id)
+    refresh = create_refresh_token(user_id)
 
     return TokenOut(
         access_token=access,
         refresh_token=refresh,
         user=UserResponse(
-            id=UUID(user.id),
-            email=user.email,
-            name=user.name,
-            role=user.role.value,
-            created_at=user.created_at
+            id=UUID(user_id),
+            email=user_doc.get("email", ""),
+            name=user_doc.get("name"),
+            role=user_doc.get("role", UserRole.learner.value),
+            created_at=user_doc.get("created_at", datetime.utcnow())
         )
     )
 
@@ -130,23 +146,27 @@ async def refresh_token(payload: RefreshIn = Body(...)):
 
     sub = decoded.get("sub")
     users_collection = get_users_collection()
-    user_doc = await users_collection.find_one({"_id": sub})
+
+    user_doc = await users_collection.find_one(
+        {"_id": sub},
+        {"_id": 1, "email": 1, "name": 1, "role": 1, "created_at": 1}
+    )
 
     if not user_doc:
         raise HTTPException(status_code=401, detail="User not found")
 
-    user = dict_to_user(user_doc)
-    access = create_access_token(str(user.id))
-    refresh = create_refresh_token(str(user.id))
+    user_id = str(user_doc["_id"])
+    access = create_access_token(user_id)
+    refresh = create_refresh_token(user_id)
 
     return TokenOut(
         access_token=access,
         refresh_token=refresh,
         user=UserResponse(
-            id=UUID(user.id),
-            email=user.email,
-            name=user.name,
-            role=user.role.value,
-            created_at=user.created_at
+            id=UUID(user_id),
+            email=user_doc.get("email", ""),
+            name=user_doc.get("name"),
+            role=user_doc.get("role", UserRole.learner.value),
+            created_at=user_doc.get("created_at", datetime.utcnow())
         )
     )
