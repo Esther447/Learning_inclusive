@@ -33,11 +33,46 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await api.post('/auth/login', credentials);
       const { access_token, refresh_token, user } = response.data;
       
+      if (!user) {
+        throw new Error('No user data in login response');
+      }
+      
       // Use setTokens to store both access and refresh tokens consistently
       setTokens(access_token, refresh_token);
       
+      // Convert user response to Learner type with full object
+      const authenticatedUser = {
+        ...user,
+        accessibilitySettings: {
+          screenReaderEnabled: false,
+          textToSpeechEnabled: false,
+          highContrastMode: false,
+          fontSize: 'medium' as const,
+          colorTheme: 'default' as const,
+          brailleDisplaySupport: false,
+          captionsEnabled: true,
+          transcriptsEnabled: true,
+          signLanguageEnabled: false,
+          volumeBoost: 0,
+          voiceOutputEnabled: false,
+          symbolBasedCommunication: false,
+          alternativeInputMethods: [],
+          keyboardOnlyNavigation: false,
+          voiceCommandNavigation: false,
+          switchControlEnabled: false,
+          simplifiedNavigation: false,
+          chunkedContent: false,
+          visualCues: true,
+          remindersEnabled: false,
+          readingSpeed: 'normal' as const,
+        },
+        enrolledCourses: [],
+        progress: [],
+        certifications: [],
+      };
+      
       set({
-        user,
+        user: authenticatedUser,
         isAuthenticated: true,
         isLoading: false,
         error: null,
@@ -54,6 +89,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         } else if (typeof error.response.data.detail === 'string') {
           errorMessage = error.response.data.detail;
         }
+      } else if (error.message) {
+        errorMessage = error.message;
       }
       set({
         error: errorMessage,
