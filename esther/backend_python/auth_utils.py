@@ -7,7 +7,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import logging
 
-from .mongodb_db import get_users_collection, dict_to_user
+from .mongodb_db import get_users_collection
 from .settings_configuration import settings
 
 # ==================== Password / JWT Config ====================
@@ -51,7 +51,6 @@ def decode_token(token: str, refresh: bool = False) -> Optional[dict]:
 
 # ==================== Current User Dependency ====================
 async def get_current_user(token: str = Depends(oauth2_scheme)):
-    from .mongodb_models import UserDocument
     payload = decode_token(token)
     if not payload or payload.get("type") != "access":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
@@ -60,8 +59,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     
     users_collection = get_users_collection()
+    # Query by _id (MongoDB uses _id by default)
     user_doc = await users_collection.find_one({"_id": sub})
     if not user_doc:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     
-    return dict_to_user(user_doc)
+    # Return the user document as-is (dict-like from MongoDB)
+    return user_doc

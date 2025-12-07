@@ -9,7 +9,7 @@ from backend_python.database import get_db
 from backend_python.models import User, UserRole
 from backend_python.schemas import UserResponse, UserCreate
 from backend_python.auth_utils import get_current_user, get_password_hash
-from backend_python.mongodb_db import get_users_collection, dict_to_user
+from backend_python.mongodb_db import get_users_collection
 
 router = APIRouter()
 

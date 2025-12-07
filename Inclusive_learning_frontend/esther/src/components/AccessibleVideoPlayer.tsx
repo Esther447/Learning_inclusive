@@ -22,7 +22,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Tooltip,
 } from '@mui/material';
 import {
   PlayArrow as PlayIcon,
@@ -32,7 +31,6 @@ import {
   Fullscreen as FullscreenIcon,
   ClosedCaption as CaptionIcon,
   Subtitles as SubtitleIcon,
-  Speed as SpeedIcon,
   Translate as TranslateIcon,
   ExpandMore as ExpandMoreIcon,
   Download as DownloadIcon,
@@ -139,7 +137,7 @@ export const AccessibleVideoPlayer: React.FC<VideoPlayerProps> = ({
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('ended', handleEnded);
     };
-  }, [duration, showCaptions, onProgress, onComplete]);
+  }, [duration, showCaptions, onProgress, onComplete, mockCaptions]);
 
   const togglePlay = () => {
     const video = videoRef.current;

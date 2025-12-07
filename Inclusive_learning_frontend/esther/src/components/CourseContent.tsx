@@ -9,17 +9,11 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Paper,
-  TextField,
   Radio,
   RadioGroup,
   FormControlLabel,
   FormControl,
-  FormLabel,
   Alert,
   LinearProgress,
 } from '@mui/material';
@@ -65,11 +59,11 @@ export const CourseContent: React.FC<CourseContentProps> = ({
     }));
   };
 
-  const submitQuiz = (contentId: string, quizData: any) => {
-    const questions = JSON.parse(quizData);
+  const submitQuiz = (contentId: string, quizData: string) => {
+    const questions = JSON.parse(quizData) as { questions: Array<{ correct: number }> };
     let correct = 0;
     
-    questions.questions.forEach((question: any, index: number) => {
+    questions.questions.forEach((question, index: number) => {
       const selectedAnswer = selectedQuizAnswers[`${contentId}-${index}`];
       if (selectedAnswer === question.correct) {
         correct++;
@@ -219,8 +213,8 @@ export const CourseContent: React.FC<CourseContentProps> = ({
           </Card>
         );
 
-      case 'quiz':
-        const quizData = JSON.parse(item.content);
+      case 'quiz': {
+        const quizData = JSON.parse(item.content) as { questions: Array<{ question: string; options: string[]; correct: number }> };
         const quizResult = quizResults[item.id];
         
         return (
@@ -247,7 +241,7 @@ export const CourseContent: React.FC<CourseContentProps> = ({
                 </Alert>
               )}
 
-              {quizData.questions.map((question: any, qIndex: number) => (
+              {quizData.questions.map((question, qIndex: number) => (
                 <Box key={qIndex} sx={{ mb: 3 }}>
                   <Typography variant="subtitle1" sx={{ mb: 1 }}>
                     {qIndex + 1}. {question.question}
@@ -281,6 +275,7 @@ export const CourseContent: React.FC<CourseContentProps> = ({
             </CardContent>
           </Card>
         );
+      }
 
       case 'audio':
         return (

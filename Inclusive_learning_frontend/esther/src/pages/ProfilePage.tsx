@@ -88,15 +88,15 @@ export const ProfilePage: React.FC = () => {
             });
 
             // Update local user state
-            if (response.data) {
-                updateUser({
-                    ...user!,
-                    name: name.trim() || user?.name,
-                    email: email.trim() || user?.email,
-                });
-                setSuccess(true);
-                setTimeout(() => setSuccess(false), 3000);
-            }
+            if (!user) return;
+
+            updateUser({
+                ...user,
+                name: name.trim() !== '' ? name.trim() : user.name || '',
+                email: email.trim() !== '' ? email.trim() : user.email || '',
+            });
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000);
         } catch (err: any) {
             setError(err.response?.data?.detail || 'Failed to update profile');
         } finally {

@@ -123,3 +123,95 @@ class TokenOut(CamelModel):
     refresh_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+# === Modules & Lessons ===
+class LessonResponse(CamelModel):
+    id: UUID
+    module_id: UUID
+    title: str
+    description: Optional[str] = None
+    content: Optional[str] = None
+    order_index: int = 0
+    created_at: Optional[datetime] = None
+
+class ModuleResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    description: Optional[str] = None
+    order_index: int = 0
+    lessons: Optional[List[LessonResponse]] = []
+    created_at: Optional[datetime] = None
+
+# === Assignments ===
+class AssignmentCreate(CamelModel):
+    course_id: UUID
+    title: str
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
+
+class AssignmentResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    description: Optional[str] = None
+    due_date: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+
+# === Announcements ===
+class AnnouncementCreate(CamelModel):
+    course_id: UUID
+    title: str
+    content: Optional[str] = None
+    author_id: UUID
+
+class AnnouncementResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    content: Optional[str] = None
+    author_id: UUID
+    created_at: Optional[datetime] = None
+
+# === Discussions ===
+class DiscussionCreate(CamelModel):
+    course_id: UUID
+    title: str
+    description: Optional[str] = None
+
+class DiscussionResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    description: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+# === Resources ===
+class ResourceCreate(CamelModel):
+    course_id: UUID
+    title: str
+    url: str
+    resource_type: str
+
+class ResourceResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    url: str
+    resource_type: str
+    created_at: Optional[datetime] = None
+
+# === Pages ===
+class PageCreate(CamelModel):
+    course_id: UUID
+    title: str
+    content: Optional[str] = None
+    order_index: int = 0
+
+class PageResponse(CamelModel):
+    id: UUID
+    course_id: UUID
+    title: str
+    content: Optional[str] = None
+    order_index: int = 0
+    created_at: Optional[datetime] = None

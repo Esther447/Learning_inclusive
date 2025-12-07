@@ -83,16 +83,25 @@ class Course(Base):
     category = Column(String(50), nullable=False, default=CourseCategory.general.value)
     difficulty = Column(String(50), nullable=False, default=CourseDifficulty.beginner.value)
     instructor_id = Column(UUIDType, ForeignKey("users.id"), nullable=False)
+    # NEW LMS FIELDS
+    learning_outcomes = Column(JSON, nullable=True)  # List of learning outcomes
+    prerequisites = Column(JSON, nullable=True)  # List of prerequisites
+    duration_hours = Column(Integer, nullable=True)  # Course duration in hours
+    cover_image = Column(String(500), nullable=True)  # Cover image URL
+    tags = Column(JSON, nullable=True)  # List of tags
+    # EXISTING FIELDS
     accessibility_features = Column(JSON, nullable=True)
     captions = Column(JSON, nullable=True)
     transcript = Column(Text, nullable=True)
     sign_language_video_url = Column(String, nullable=True)
     is_published = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     progress_entries = relationship("Progress", back_populates="course", cascade="all, delete-orphan")
     enrollments = relationship("Enrollment", back_populates="course", cascade="all, delete-orphan")
     quizzes = relationship("Quiz", back_populates="course", cascade="all, delete-orphan")
+    modules = relationship("Module", back_populates="course", cascade="all, delete-orphan")
 
 # ==================== Enrollment Model ====================
 class Enrollment(Base):
@@ -109,7 +118,7 @@ class Enrollment(Base):
 class AccessibilitySettings(Base):
     __tablename__ = "accessibility_settings"
     id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
-    user_id = Column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
+    user_id = Column(UUIDType, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
     settings = Column(JSON, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -185,3 +194,102 @@ class Submission(Base):
 
     user = relationship("User")
     quiz = relationship("Quiz")
+
+# ==================== Module Model ====================
+class Module(Base):
+    __tablename__ = "modules"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    order_index = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    course = relationship("Course", back_populates="modules")
+    lessons = relationship("Lesson", back_populates="module", cascade="all, delete-orphan")
+
+# ==================== Lesson Model ====================
+class Lesson(Base):
+    __tablename__ = "lessons"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    module_id = Column(UUIDType, ForeignKey("modules.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(500), nullable=False)
+    lesson_type = Column(String(50), nullable=False)  # video, text, link, file
+    content = Column(Text, nullable=True)
+    video_url = Column(String(500), nullable=True)
+    resource_links = Column(JSON, nullable=True)  # List of resource links
+    downloadable_files = Column(JSON, nullable=True)  # List of file URLs
+    order_index = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    module = relationship("Module", back_populates="lessons")
+    progress_entries = relationship("LessonProgress", back_populates="lesson", cascade="all, delete-orphan")
+
+# ==================== Resource Model ====================
+class Resource(Base):
+    __tablename__ = "resources"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    resource_type = Column(String(50), nullable=True)  # pdf, video, link, doc
+    file_url = Column(String(500), nullable=True)
+    # Can be linked to course, module, or lesson
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=True)
+    module_id = Column(UUIDType, ForeignKey("modules.id", ondelete="CASCADE"), nullable=True)
+    lesson_id = Column(UUIDType, ForeignKey("lessons.id", ondelete="CASCADE"), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# ==================== Lesson Progress Model ====================
+class LessonProgress(Base):
+    __tablename__ = "lesson_progress"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUIDType, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    lesson_id = Column(UUIDType, ForeignKey("lessons.id", ondelete="CASCADE"), nullable=False)
+    completed = Column(Boolean, default=False)
+    completed_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    lesson = relationship("Lesson", back_populates="progress_entries")
+
+# ==================== Assignment Model ====================
+class Assignment(Base):
+    __tablename__ = "assignments"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    due_date = Column(DateTime, nullable=True)
+    points = Column(Integer, default=100)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# ==================== Announcement Model ====================
+class Announcement(Base):
+    __tablename__ = "announcements"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
+    author_id = Column(UUIDType, ForeignKey("users.id"), nullable=False)
+    title = Column(String(500), nullable=False)
+    content = Column(Text, nullable=False)
+    is_pinned = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# ==================== Discussion Model ====================
+class Discussion(Base):
+    __tablename__ = "discussions"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(UUIDType, ForeignKey("users.id"), nullable=False)
+    title = Column(String(500), nullable=False)
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+# ==================== Page Model ====================
+class Page(Base):
+    __tablename__ = "pages"
+    id = Column(UUIDType, primary_key=True, default=uuid.uuid4)
+    course_id = Column(UUIDType, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
+    title = Column(String(500), nullable=False)
+    content = Column(Text, nullable=True)
+    slug = Column(String(500), nullable=True)
+    order_index = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)

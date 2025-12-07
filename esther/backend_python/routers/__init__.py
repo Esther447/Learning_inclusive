@@ -4,3 +4,13 @@ from . import courses
 from . import progress
 from . import accessibility
 from . import mentorship
+from . import quizzes
+from . import enrollments
+from . import admin
+from . import modules
+from . import assignments
+from . import announcements
+from . import discussions
+from . import resources
+from . import pages
+from . import courses_mongo

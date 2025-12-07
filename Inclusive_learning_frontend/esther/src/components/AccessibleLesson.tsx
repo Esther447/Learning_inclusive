@@ -16,8 +16,6 @@ import {
   Tooltip,
 } from '@mui/material';
 import {
-  PlayArrow as PlayIcon,
-  Pause as PauseIcon,
   VolumeUp as SpeakIcon,
   Lightbulb as HintIcon,
   CheckCircle as CompleteIcon,
@@ -54,7 +52,7 @@ export const AccessibleLesson: React.FC<AccessibleLessonProps> = ({
   onComplete,
 }) => {
   const { settings } = useAccessibilityStore();
-  const { speak, stop } = useTextToSpeech();
+  const { speak } = useTextToSpeech();
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
   const [showHint, setShowHint] = useState(false);
@@ -250,6 +248,22 @@ export const AccessibleLesson: React.FC<AccessibleLessonProps> = ({
 
                   {/* Hints */}
                   {showHint && step.hints && (
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                      <Typography variant="subtitle2">Hint:</Typography>
+                      {step.hints.map((hint, idx) => (
+                        <Typography key={idx} variant="body2">{hint}</Typography>
+                      ))}
+                    </Alert>
+                  )}
+                </Card>
+              </StepContent>
+            </Step>
+          ))}
+        </Stepper>
+      </CardContent>
+    </Card>
+  );
+};int && step.hints && (
                     <Alert severity="info" sx={{ mt: 2 }}>
                       <Typography variant="subtitle2">Hint:</Typography>
                       <Typography variant="body2">{step.hints[0]}</Typography>

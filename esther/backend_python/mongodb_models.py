@@ -8,8 +8,8 @@ from enum import Enum
 
 class UserRole(str, Enum):
     learner = "learner"
-    mentor = "mentor"
-    administrator = "administrator"
+    instructor = "instructor"
+    admin = "admin"
 
 class CourseCategory(str, Enum):
     general = "general"
