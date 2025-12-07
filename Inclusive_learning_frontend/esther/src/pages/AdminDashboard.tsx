@@ -39,7 +39,7 @@ import { useAuthStore } from '../store/authStore';
 import { useAccessibilityStore } from '../store/accessibilityStore';
 import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { api } from '../services/api';
-import { UserRole } from '../types';
+import type { UserRole } from '../types';
 
 interface User {
   id: string;

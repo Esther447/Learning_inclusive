@@ -14,20 +14,17 @@ export interface User {
 }
 
 // User roles
-export const UserRoleValues = {
+export const USER_ROLES = {
   LEARNER: 'learner',
   MENTOR: 'mentor',
   ADMINISTRATOR: 'administrator',
 } as const;
 
-export type UserRole = typeof UserRoleValues[keyof typeof UserRoleValues];
-
-// Re-export for convenience
-export const UserRole = UserRoleValues;
+export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 // Learner extends User
 export type Learner = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.LEARNER;
+  role: typeof USER_ROLES.LEARNER;
   disabilityType?: DisabilityType[];
   accessibilitySettings: AccessibilitySettings;
   enrolledCourses: string[]; // Course IDs
@@ -38,7 +35,7 @@ export type Learner = Omit<User, 'role'> & {
 
 // Mentor extends User
 export type Mentor = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.MENTOR;
+  role: typeof USER_ROLES.MENTOR;
   specialization: string[];
   assignedLearners: string[]; // Learner IDs
   courses: string[]; // Course IDs they teach
@@ -47,12 +44,12 @@ export type Mentor = Omit<User, 'role'> & {
 
 // Administrator extends User
 export type Administrator = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.ADMINISTRATOR;
+  role: typeof USER_ROLES.ADMINISTRATOR;
   permissions: Permission[];
 };
 
 // Disability types
-export const DisabilityType = {
+export const DISABILITY_TYPES = {
   VISUAL: 'visual', // Blind/low vision
   HEARING: 'hearing', // Deaf/hard of hearing
   SPEECH: 'speech', // Non-verbal
@@ -60,7 +57,7 @@ export const DisabilityType = {
   COGNITIVE: 'cognitive', // Cognitive disabilities
 } as const;
 
-export type DisabilityType = typeof DisabilityType[keyof typeof DisabilityType];
+export type DisabilityType = (typeof DISABILITY_TYPES)[keyof typeof DISABILITY_TYPES];
 
 // Accessibility Settings (Composition with Learner)
 export interface AccessibilitySettings {
@@ -68,32 +65,42 @@ export interface AccessibilitySettings {
   screenReaderEnabled: boolean;
   textToSpeechEnabled: boolean;
   highContrastMode: boolean;
-  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
+  fontSize?: 'small' | 'medium' | 'large' | 'extra-large';
   colorTheme: 'default' | 'high-contrast' | 'dark' | 'light';
   brailleDisplaySupport: boolean;
 
   // Hearing accessibility
   captionsEnabled: boolean;
   transcriptsEnabled: boolean;
-  signLanguageEnabled: boolean;
+  signLanguageEnabled?: boolean;
+  signLanguage?: boolean; // Alias for UI compatibility
   volumeBoost: number; // 0-100
 
   // Speech accessibility
   voiceOutputEnabled: boolean;
   symbolBasedCommunication: boolean;
   alternativeInputMethods: string[];
+  speechRate?: number; // 0.5-2.0
 
   // Mobility accessibility
   keyboardOnlyNavigation: boolean;
+  keyboardNavigationEnabled?: boolean;
   voiceCommandNavigation: boolean;
   switchControlEnabled: boolean;
 
   // Cognitive accessibility
   simplifiedNavigation: boolean;
+  simplifiedContent?: boolean;
   chunkedContent: boolean;
   visualCues: boolean;
+  focusIndicators?: boolean;
   remindersEnabled: boolean;
   readingSpeed: 'slow' | 'normal' | 'fast';
+
+  // Additional accessibility features
+  reducedMotion?: boolean;
+  dyslexiaFont?: boolean;
+  audioDescriptions?: boolean;
 }
 
 // Course
@@ -109,6 +116,9 @@ export interface Course {
   accessibilityFeatures: AccessibilityFeature[];
   createdAt: Date;
   updatedAt: Date;
+  learningOutcomes?: string[];
+  assignments?: Assignment[];
+  quizzes?: Quiz[];
 }
 
 export const CourseCategory = {
@@ -133,6 +143,7 @@ export interface Lesson {
   id: string;
   title: string;
   steps: LessonStep[];
+  duration?: number; // in minutes
 }
 
 export interface LessonStep {
@@ -246,5 +257,29 @@ export interface RegisterData {
 export interface AuthResponse {
   user: User | Learner | Mentor | Administrator;
   token: string;
+}
+
+// Assignment and Quiz types
+export interface Assignment {
+  id: string;
+  title: string;
+  description?: string;
+  dueDate?: Date;
+  courseId: string;
+}
+
+export interface Quiz {
+  id: string;
+  title: string;
+  description?: string;
+  courseId: string;
+  questions: QuizQuestion[];
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: string;
 }
 

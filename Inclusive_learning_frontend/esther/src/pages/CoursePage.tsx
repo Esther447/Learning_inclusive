@@ -545,9 +545,9 @@ export const CoursePage: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Grid container spacing={3}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 3 }}>
         {/* Main Content - Modules */}
-        <Grid item xs={12} md={8}>
+        <Box>
           <Card role="region" aria-label="Course modules">
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -669,10 +669,10 @@ export const CoursePage: React.FC = () => {
               )}
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
 
         {/* Sidebar - Instructor & Course Info */}
-        <Grid item xs={12} md={4} role="complementary" aria-label="Course sidebar information">
+        <Box role="complementary" aria-label="Course sidebar information">
           {/* Instructor Card */}
           <Card sx={{ mb: 3 }} role="region" aria-label="Instructor information">
             <CardContent>
@@ -796,8 +796,8 @@ export const CoursePage: React.FC = () => {
               </CardContent>
             </Card>
           )}
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Container>
   );
 };

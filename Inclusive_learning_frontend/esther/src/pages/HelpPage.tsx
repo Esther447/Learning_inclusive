@@ -48,8 +48,8 @@ export const HelpPage: React.FC = () => {
           We're here to help you succeed in your learning journey
         </Typography>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+          <Box>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
                 <Email sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
@@ -69,9 +69,9 @@ export const HelpPage: React.FC = () => {
                 </Button>
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={4}>
+          <Box>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
                 <Phone sx={{ fontSize: 60, color: 'success.main', mb: 2 }} />
@@ -95,9 +95,9 @@ export const HelpPage: React.FC = () => {
                 </Button>
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={4}>
+          <Box>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
               <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
                 <Chat sx={{ fontSize: 60, color: 'info.main', mb: 2 }} />
@@ -118,8 +118,8 @@ export const HelpPage: React.FC = () => {
                 </Button>
               </CardContent>
             </Card>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Card sx={{ mt: 4 }}>
           <CardContent>

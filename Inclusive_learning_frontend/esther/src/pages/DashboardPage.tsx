@@ -577,7 +577,7 @@ export const DashboardPage: React.FC = () => {
               }}
             >
               {user?.role === 'learner' && 'Continue your learning journey'}
-              {user?.role === 'mentor' && 'Manage your courses and students'}
+              {user?.role !== 'learner' && 'Manage your learning experience'}
             </Typography>
           </Box>
 

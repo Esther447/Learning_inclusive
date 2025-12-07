@@ -112,7 +112,7 @@ export const AccessibilityPage: React.FC = () => {
                   value={settings.speechRate || 1}
                   onChange={(e) => {
                     updateSettings({ speechRate: e.target.value as number });
-                    speak('Speech rate updated', { rate: e.target.value as number });
+                    speak('Speech rate updated');
                   }}
                   label="Speech Rate"
                 >

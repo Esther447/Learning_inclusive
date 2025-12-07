@@ -38,15 +38,15 @@ export const AccessibilityToolbar: React.FC = () => {
   };
 
   const handleFontSizeChange = (_: Event, value: number | number[]) => {
-    const sizes = ['small', 'medium', 'large', 'x-large'];
+    const sizes = ['small', 'medium', 'large', 'extra-large'] as const;
     const fontSize = sizes[value as number];
     updateSettings({ fontSize });
     speak?.(`Font size changed to ${fontSize}`);
   };
 
   const getFontSizeValue = () => {
-    const sizes = ['small', 'medium', 'large', 'x-large'];
-    return sizes.indexOf(settings.fontSize);
+    const sizes = ['small', 'medium', 'large', 'extra-large'];
+    return sizes.indexOf((settings.fontSize || 'medium') as string);
   };
 
   return (

@@ -15,6 +15,7 @@ interface CourseState {
   error: string | null;
   fetchCourses: () => Promise<void>;
   enrollInCourse: (courseId: string) => Promise<void>;
+  unenrollFromCourse: (courseId: string) => Promise<void>;
   updateProgress: (courseId: string, moduleId: string, percentage: number) => void;
   getCourseById: (courseId: string) => Course | undefined;
   getEnrolledCourses: () => Course[];
