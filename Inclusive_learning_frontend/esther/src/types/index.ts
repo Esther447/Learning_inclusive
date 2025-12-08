@@ -3,7 +3,9 @@
  * Based on SRS Class Diagram
  */
 
+// --------------------
 // Base User class
+// --------------------
 export interface User {
   id: string;
   email: string;
@@ -13,105 +15,100 @@ export interface User {
   updatedAt: Date;
 }
 
+// --------------------
 // User roles
-export const UserRoleValues = {
+// --------------------
+export const USER_ROLES = {
   LEARNER: 'learner',
   MENTOR: 'mentor',
   ADMINISTRATOR: 'administrator',
 } as const;
 
-export type UserRole = typeof UserRoleValues[keyof typeof UserRoleValues];
+export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
 
-// Re-export for convenience
-export const UserRole = UserRoleValues;
-
-// Learner extends User
+// --------------------
+// Learner, Mentor, Administrator
+// --------------------
 export type Learner = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.LEARNER;
+  role: typeof USER_ROLES.LEARNER;
   disabilityType?: DisabilityType[];
   accessibilitySettings: AccessibilitySettings;
-  enrolledCourses: string[]; // Course IDs
+  enrolledCourses: string[];
   progress: LearnerProgress[];
   certifications: Certification[];
   mentorshipGroupId?: string;
 };
 
-// Mentor extends User
 export type Mentor = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.MENTOR;
+  role: typeof USER_ROLES.MENTOR;
   specialization: string[];
-  assignedLearners: string[]; // Learner IDs
-  courses: string[]; // Course IDs they teach
+  assignedLearners: string[];
+  courses: string[];
   bio?: string;
 };
 
-// Administrator extends User
 export type Administrator = Omit<User, 'role'> & {
-  role: typeof UserRoleValues.ADMINISTRATOR;
+  role: typeof USER_ROLES.ADMINISTRATOR;
   permissions: Permission[];
 };
 
+// --------------------
 // Disability types
-export const DisabilityType = {
-  VISUAL: 'visual', // Blind/low vision
-  HEARING: 'hearing', // Deaf/hard of hearing
-  SPEECH: 'speech', // Non-verbal
-  MOBILITY: 'mobility', // Limited mobility
-  COGNITIVE: 'cognitive', // Cognitive disabilities
+// --------------------
+export const DISABILITY_TYPES = {
+  VISUAL: 'visual',
+  HEARING: 'hearing',
+  SPEECH: 'speech',
+  MOBILITY: 'mobility',
+  COGNITIVE: 'cognitive',
 } as const;
 
-export type DisabilityType = typeof DisabilityType[keyof typeof DisabilityType];
+export type DisabilityType = typeof DISABILITY_TYPES[keyof typeof DISABILITY_TYPES];
 
-// Accessibility Settings (Composition with Learner)
+// --------------------
+// Accessibility Settings
+// --------------------
 export interface AccessibilitySettings {
-  // Visual accessibility
   screenReaderEnabled: boolean;
   textToSpeechEnabled: boolean;
   highContrastMode: boolean;
-  // Allow broader fontSize values used across the app
-  fontSize: string; // e.g. 'small' | 'medium' | 'large' | 'extra-large'
+  fontSize: string; // 'small' | 'medium' | 'large' | 'extra-large'
   colorTheme: 'default' | 'high-contrast' | 'dark' | 'light';
   brailleDisplaySupport: boolean;
 
-  // Hearing accessibility
   captionsEnabled: boolean;
   transcriptsEnabled: boolean;
   signLanguageEnabled: boolean;
-  volumeBoost: number; // 0-100
+  volumeBoost: number;
 
-  // Backwards-compatible / UI-friendly aliases and additional options
-  audioDescriptions?: boolean; // alias used in pages
-  speechRate?: number; // playback rate for TTS (e.g. 1 = normal)
+  audioDescriptions?: boolean;
+  speechRate?: number;
 
-  // Speech accessibility
   voiceOutputEnabled: boolean;
   symbolBasedCommunication: boolean;
   alternativeInputMethods: string[];
 
-  // Mobility accessibility
   keyboardOnlyNavigation: boolean;
   voiceCommandNavigation: boolean;
   switchControlEnabled: boolean;
-
-  // UI-friendly aliases
   keyboardNavigationEnabled?: boolean;
   focusIndicators?: boolean;
 
-  // Cognitive accessibility
   simplifiedNavigation: boolean;
   chunkedContent: boolean;
   visualCues: boolean;
   remindersEnabled: boolean;
   readingSpeed: 'slow' | 'normal' | 'fast';
 
-  // Additional preferences used in pages
   reducedMotion?: boolean;
   dyslexiaFont?: boolean;
-  signLanguage?: boolean; // shorthand used in UI
-  simplifiedContent?: boolean; // shorthand used in UI
+  signLanguage?: boolean;
+  simplifiedContent?: boolean;
 }
 
-// Resource and Link types
+// --------------------
+// Resource and Links
+// --------------------
 export interface Resource {
   name: string;
   type: 'pdf' | 'video' | 'slides' | 'code' | 'image' | 'doc' | 'other';
@@ -125,15 +122,17 @@ export interface ExternalLink {
   description?: string;
 }
 
-// Course
+// --------------------
+// Course & Module
+// --------------------
 export interface Course {
   id: string;
   title: string;
   description: string;
   category: CourseCategory;
-  instructorId: string; // Mentor ID
+  instructorId: string;
   modules: CourseModule[];
-  duration: number; // in hours
+  duration: number;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   accessibilityFeatures: AccessibilityFeature[];
   learningOutcomes?: string[];
@@ -141,7 +140,6 @@ export interface Course {
   externalLinks?: ExternalLink[];
   createdAt: Date;
   updatedAt: Date;
-  // Optional assignments and quizzes for calendar and scheduling
   assignments?: Array<{ id: string; title: string; description?: string; dueDate?: Date }>;
   quizzes?: Array<{ id: string; title: string; description?: string; dueDate?: Date }>;
 }
@@ -160,7 +158,7 @@ export interface CourseModule {
   title: string;
   content: ModuleContent[];
   order: number;
-  estimatedTime: number; // in minutes
+  estimatedTime: number;
   lessons?: Lesson[];
 }
 
@@ -195,12 +193,15 @@ export interface ModuleContent {
   id: string;
   type: 'text' | 'video' | 'audio' | 'interactive' | 'quiz';
   content: string;
-  altText?: string; // For images
-  captions?: string; // For videos/audio
-  transcript?: string; // For audio/video
-  signLanguageVideoUrl?: string; // For video content
+  altText?: string;
+  captions?: string;
+  transcript?: string;
+  signLanguageVideoUrl?: string;
 }
 
+// --------------------
+// Accessibility Features
+// --------------------
 export const AccessibilityFeature = {
   SCREEN_READER: 'screen-reader',
   CAPTIONS: 'captions',
@@ -214,7 +215,9 @@ export const AccessibilityFeature = {
 
 export type AccessibilityFeature = typeof AccessibilityFeature[keyof typeof AccessibilityFeature];
 
-// Learner Progress
+// --------------------
+// Progress & Certification
+// --------------------
 export interface LearnerProgress {
   courseId: string;
   moduleId: string;
@@ -231,7 +234,6 @@ export interface QuizScore {
   completedAt: Date;
 }
 
-// Certification
 export interface Certification {
   id: string;
   courseId: string;
@@ -241,7 +243,9 @@ export interface Certification {
   verificationCode: string;
 }
 
-// Mentorship Group
+// --------------------
+// Mentorship
+// --------------------
 export interface MentorshipGroup {
   id: string;
   name: string;
@@ -251,7 +255,9 @@ export interface MentorshipGroup {
   createdAt: Date;
 }
 
-// Permission (for Administrators)
+// --------------------
+// Permissions
+// --------------------
 export const Permission = {
   MANAGE_USERS: 'manage-users',
   MANAGE_COURSES: 'manage-courses',
@@ -262,7 +268,9 @@ export const Permission = {
 
 export type Permission = typeof Permission[keyof typeof Permission];
 
-// API Response types
+// --------------------
+// API & Auth
+// --------------------
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -270,7 +278,6 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-// Authentication types
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -288,4 +295,3 @@ export interface AuthResponse {
   user: User | Learner | Mentor | Administrator;
   token: string;
 }
-
