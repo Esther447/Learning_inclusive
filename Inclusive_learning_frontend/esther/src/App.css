@@ -19,6 +19,10 @@ html {
   scroll-behavior: smooth;
 }
 
+html.reduced-motion {
+  scroll-behavior: auto;
+}
+
 /* Better link styles */
 a {
   text-decoration: none;
@@ -192,5 +196,95 @@ a {
   --card-bg: #ffffff;
   --text-primary: #1a1a1a;
   --text-secondary: #666;
+}
+
+/* Accessibility Features */
+
+/* High Contrast Mode */
+body.high-contrast {
+  filter: contrast(1.5);
+}
+
+body.high-contrast * {
+  border-color: currentColor !important;
+}
+
+/* Dyslexia Font */
+body.dyslexia-font,
+body.dyslexia-font * {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', Arial, sans-serif !important;
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+  line-height: 1.8;
+}
+
+/* Reduced Motion */
+body.reduced-motion,
+body.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Enhanced Focus Indicators */
+body.enhanced-focus *:focus,
+body.enhanced-focus *:focus-visible {
+  outline: 3px solid #1976d2 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.2) !important;
+}
+
+/* Keyboard Navigation */
+body.keyboard-nav *:focus {
+  outline: 3px dashed #1976d2 !important;
+  outline-offset: 2px !important;
+}
+
+/* Simplified Content */
+body.simplified-content img,
+body.simplified-content video {
+  max-width: 100%;
+  height: auto;
+}
+
+body.simplified-content * {
+  max-width: 100% !important;
+}
+
+/* Visual Cues */
+body.visual-cues button::before,
+body.visual-cues a::before {
+  content: '→ ';
+  margin-right: 4px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to Content Link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #1976d2;
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+.skip-to-content:focus {
+  top: 0;
 }
 

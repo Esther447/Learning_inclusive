@@ -1,9 +1,11 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { AccessibilityProvider } from './context/AccessibilityProvider';
 import { useAccessibilityStore } from './store/accessibilityStore';
 import { MainLayout } from './components/MainLayout';
 import { CourseLayout } from './components/CourseLayout';
+import { AccessibilityToolbar } from './components/AccessibilityToolbar';
 import './App.css';
 
 // Pages
@@ -29,6 +31,37 @@ import { useAuthStore } from './store/authStore';
 
 function App() {
   const { settings } = useAccessibilityStore();
+
+  // Apply accessibility classes to body
+  React.useEffect(() => {
+    const body = document.body;
+    const html = document.documentElement;
+    
+    // High contrast
+    body.classList.toggle('high-contrast', settings.highContrastMode);
+    
+    // Dyslexia font
+    body.classList.toggle('dyslexia-font', settings.dyslexiaFont || false);
+    
+    // Reduced motion
+    body.classList.toggle('reduced-motion', settings.reducedMotion || false);
+    html.classList.toggle('reduced-motion', settings.reducedMotion || false);
+    
+    // Enhanced focus
+    body.classList.toggle('enhanced-focus', settings.focusIndicators || false);
+    
+    // Keyboard navigation
+    body.classList.toggle('keyboard-nav', settings.keyboardOnlyNavigation);
+    
+    // Simplified content
+    body.classList.toggle('simplified-content', settings.simplifiedContent || false);
+    
+    // Visual cues
+    body.classList.toggle('visual-cues', settings.visualCues);
+    
+    // Theme
+    body.setAttribute('data-theme', settings.colorTheme);
+  }, [settings]);
 
   // Create theme based on accessibility settings
   const theme = createTheme({
@@ -99,6 +132,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AccessibilityProvider>
+        <a href="#main-content" className="skip-to-content">
+          Skip to main content
+        </a>
+        <AccessibilityToolbar />
         <Router>
           <Routes>
             {/* Public routes without sidebar */}
