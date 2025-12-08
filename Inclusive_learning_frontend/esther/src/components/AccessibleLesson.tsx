@@ -263,24 +263,4 @@ export const AccessibleLesson: React.FC<AccessibleLessonProps> = ({
       </CardContent>
     </Card>
   );
-};int && step.hints && (
-                    <Alert severity="info" sx={{ mt: 2 }}>
-                      <Typography variant="subtitle2">Hint:</Typography>
-                      <Typography variant="body2">{step.hints[0]}</Typography>
-                    </Alert>
-                  )}
-                </Card>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-
-        {progress === 100 && (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            🎉 Congratulations! You've completed this lesson!
-          </Alert>
-        )}
-      </CardContent>
-    </Card>
-  );
 };

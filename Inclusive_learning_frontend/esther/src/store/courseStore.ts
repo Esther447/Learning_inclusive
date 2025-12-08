@@ -28,6 +28,25 @@ const mockCourses: Course[] = [
     description: 'Master web development fundamentals with HTML, CSS, and JavaScript. Build real projects while learning accessibility best practices.',
     category: CourseCategory.TECHNOLOGY,
     instructorId: 'mentor1',
+    learningOutcomes: [
+      'Build responsive websites from scratch using HTML, CSS, and JavaScript',
+      'Implement web accessibility best practices (WCAG 2.1)',
+      'Create interactive user interfaces with modern JavaScript',
+      'Design mobile-first responsive layouts',
+      'Debug and test web applications effectively'
+    ],
+    resources: [
+      { name: 'HTML & CSS Complete Guide', type: 'pdf', url: 'https://developer.mozilla.org/en-US/docs/Learn/HTML', description: 'Comprehensive HTML/CSS guide' },
+      { name: 'JavaScript Video Course', type: 'video', url: 'https://www.youtube.com/watch?v=W6NZfCO5SIk', description: 'Complete JavaScript course' },
+      { name: 'Web Dev Slides', type: 'slides', url: 'https://slides.com/webdev', description: 'Course presentation slides' },
+      { name: 'Code Examples', type: 'code', url: 'https://github.com/webdev-examples', description: 'Practice code repository' }
+    ],
+    externalLinks: [
+      { name: 'MDN Web Docs', url: 'https://developer.mozilla.org/', description: 'Web development documentation' },
+      { name: 'W3Schools', url: 'https://www.w3schools.com/', description: 'Interactive tutorials' },
+      { name: 'freeCodeCamp', url: 'https://www.freecodecamp.org/', description: 'Free coding bootcamp' },
+      { name: 'CSS-Tricks', url: 'https://css-tricks.com/', description: 'CSS tips and techniques' }
+    ],
     modules: [
       {
         id: 'm1',
@@ -101,6 +120,19 @@ const mockCourses: Course[] = [
           {
             id: 'html-lesson-1',
             title: 'HTML Structure Basics',
+            description: 'Learn the fundamental structure of HTML documents',
+            duration: 15,
+            videoUrl: 'https://www.youtube.com/watch?v=UB1O30fR-EE',
+            slides: [
+              { name: 'HTML Basics Slides', type: 'slides', url: 'https://slides.com/html-basics' }
+            ],
+            materials: [
+              { name: 'HTML Cheat Sheet', type: 'pdf', url: 'https://htmlcheatsheet.com/pdf' },
+              { name: 'Practice Exercises', type: 'doc', url: 'https://exercises.com/html' }
+            ],
+            externalLinks: [
+              { name: 'HTML Tutorial', url: 'https://www.w3schools.com/html/', description: 'Interactive HTML tutorial' }
+            ],
             steps: [
               {
                 id: 'html-intro',
@@ -200,6 +232,19 @@ const mockCourses: Course[] = [
           {
             id: 'css-lesson-1',
             title: 'CSS Fundamentals',
+            description: 'Master CSS styling and layout techniques',
+            duration: 20,
+            videoUrl: 'https://www.youtube.com/watch?v=1Rs2ND1ryYc',
+            slides: [
+              { name: 'CSS Basics Slides', type: 'slides', url: 'https://slides.com/css-basics' }
+            ],
+            materials: [
+              { name: 'CSS Cheat Sheet', type: 'pdf', url: 'https://cssreference.io/' },
+              { name: 'Flexbox Guide', type: 'pdf', url: 'https://css-tricks.com/snippets/css/a-guide-to-flexbox/' }
+            ],
+            externalLinks: [
+              { name: 'CSS Tutorial', url: 'https://www.w3schools.com/css/', description: 'Complete CSS guide' }
+            ],
             steps: [
               {
                 id: 'css-intro',
@@ -259,7 +304,40 @@ const mockCourses: Course[] = [
           }
         ],
         order: 3,
-        estimatedTime: 75
+        estimatedTime: 75,
+        lessons: [
+          {
+            id: 'js-lesson-1',
+            title: 'JavaScript Variables & Data Types',
+            description: 'Learn JavaScript fundamentals',
+            duration: 20,
+            videoUrl: 'https://www.youtube.com/watch?v=W6NZfCO5SIk',
+            slides: [{ name: 'JavaScript Basics', type: 'slides', url: 'https://slides.com/js-basics' }],
+            materials: [{ name: 'JS Cheat Sheet', type: 'pdf', url: 'https://js-cheatsheet.com' }],
+            externalLinks: [{ name: 'JavaScript.info', url: 'https://javascript.info/' }],
+            steps: [{ id: 'js-intro', title: 'JavaScript Intro', content: 'Learn JavaScript basics', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'js-lesson-2',
+            title: 'Functions & DOM',
+            description: 'JavaScript functions and DOM manipulation',
+            duration: 25,
+            videoUrl: 'https://www.youtube.com/watch?v=dom-manipulation',
+            slides: [{ name: 'Functions & DOM', type: 'slides', url: 'https://slides.com/js-dom' }],
+            materials: [{ name: 'DOM Guide', type: 'pdf', url: 'https://dom-guide.com' }],
+            steps: [{ id: 'js-dom', title: 'DOM', content: 'Manipulate the DOM', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'js-lesson-3',
+            title: 'Events & Interactivity',
+            description: 'Handle user events',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=events',
+            slides: [{ name: 'Events', type: 'slides', url: 'https://slides.com/events' }],
+            materials: [{ name: 'Events Guide', type: 'pdf', url: 'https://events-guide.com' }],
+            steps: [{ id: 'js-events', title: 'Events', content: 'Handle events', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm4',
@@ -280,28 +358,69 @@ const mockCourses: Course[] = [
           }
         ],
         order: 4,
-        estimatedTime: 90
+        estimatedTime: 90,
+        lessons: [
+          {
+            id: 'rwd-lesson-1',
+            title: 'Mobile-First Design',
+            description: 'Design for mobile devices first',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=mobile-first',
+            slides: [{ name: 'Mobile-First', type: 'slides', url: 'https://slides.com/mobile-first' }],
+            materials: [{ name: 'Mobile Design Guide', type: 'pdf', url: 'https://mobile-guide.com' }],
+            steps: [{ id: 'rwd-mobile', title: 'Mobile-First', content: 'Mobile-first approach', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'rwd-lesson-2',
+            title: 'Media Queries',
+            description: 'Responsive CSS with media queries',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=media-queries',
+            slides: [{ name: 'Media Queries', type: 'slides', url: 'https://slides.com/media-queries' }],
+            materials: [{ name: 'Media Query Guide', type: 'pdf', url: 'https://mq-guide.com' }],
+            steps: [{ id: 'rwd-mq', title: 'Media Queries', content: 'Using media queries', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'rwd-lesson-3',
+            title: 'Responsive Images',
+            description: 'Optimize images for all devices',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=responsive-images',
+            slides: [{ name: 'Responsive Images', type: 'slides', url: 'https://slides.com/resp-images' }],
+            materials: [{ name: 'Image Optimization', type: 'pdf', url: 'https://img-opt.com' }],
+            steps: [{ id: 'rwd-img', title: 'Images', content: 'Responsive images', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm5',
-        title: 'Web Accessibility',
+        title: 'Final Project',
         content: [
           {
             id: 'c5',
             type: 'text',
-            content: `<h3>Creating Inclusive Web Experiences</h3>
-            <p>Build websites that everyone can use, regardless of their abilities.</p>
-            <h4>Accessibility Principles:</h4>
-            <ul>
-              <li>Semantic HTML Structure</li>
-              <li>Keyboard Navigation</li>
-              <li>Screen Reader Support</li>
-              <li>Color Contrast Guidelines</li>
-            </ul>`
+            content: `<h3>Build Your Website</h3>
+            <p>Combine HTML, CSS, and JavaScript to create a complete website.</p>`
           }
         ],
         order: 5,
-        estimatedTime: 60
+        estimatedTime: 150,
+        lessons: [
+          {
+            id: 'project-lesson-1',
+            title: 'Build a Small Website',
+            description: 'Combine HTML, CSS, and JavaScript',
+            duration: 120,
+            videoUrl: 'https://www.youtube.com/watch?v=final-project',
+            slides: [{ name: 'Project Slides', type: 'slides', url: 'https://slides.com/final-project' }],
+            materials: [
+              { name: 'Project Template', type: 'code', url: 'https://github.com/project-template' },
+              { name: 'Sample Projects', type: 'other', url: 'https://samples.com/projects' }
+            ],
+            externalLinks: [{ name: 'Project Walkthrough', url: 'https://walkthrough.com/project' }],
+            steps: [{ id: 'proj-intro', title: 'Final Project', content: 'Build a complete website using all learned skills.', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       }
     ],
     duration: 15,
@@ -316,6 +435,23 @@ const mockCourses: Course[] = [
     description: 'Master essential digital skills for the modern world. Learn computer basics, internet safety, and productivity tools.',
     category: CourseCategory.LITERACY,
     instructorId: 'mentor2',
+    learningOutcomes: [
+      'Navigate computers and operating systems confidently',
+      'Use the internet safely and effectively',
+      'Communicate professionally via email',
+      'Protect personal information online',
+      'Create documents and spreadsheets'
+    ],
+    resources: [
+      { name: 'Computer Basics Guide', type: 'pdf', url: 'https://edu.gcfglobal.org/en/computerbasics/', description: 'Complete computer guide' },
+      { name: 'Internet Safety Videos', type: 'video', url: 'https://www.youtube.com/watch?v=safety', description: 'Online safety course' },
+      { name: 'Email Guide', type: 'doc', url: 'https://email-guide.com', description: 'Professional email writing' }
+    ],
+    externalLinks: [
+      { name: 'GCF Global', url: 'https://edu.gcfglobal.org/', description: 'Free digital literacy tutorials' },
+      { name: 'Google Digital Garage', url: 'https://learndigital.withgoogle.com/', description: 'Digital skills training' },
+      { name: 'Microsoft Digital Literacy', url: 'https://www.microsoft.com/en-us/digital-literacy', description: 'Microsoft courses' }
+    ],
     modules: [
       {
         id: 'm4',
@@ -364,6 +500,19 @@ const mockCourses: Course[] = [
           {
             id: 'computer-lesson-1',
             title: 'Understanding Your Computer',
+            description: 'Learn computer components and basic operations',
+            duration: 15,
+            videoUrl: 'https://www.youtube.com/watch?v=computer-basics',
+            slides: [
+              { name: 'Computer Basics Slides', type: 'slides', url: 'https://slides.com/computer-basics' }
+            ],
+            materials: [
+              { name: 'Computer Parts Guide', type: 'pdf', url: 'https://computer-guide.com/pdf' },
+              { name: 'Keyboard Shortcuts', type: 'pdf', url: 'https://shortcuts.com/pdf' }
+            ],
+            externalLinks: [
+              { name: 'Computer Basics Tutorial', url: 'https://edu.gcfglobal.org/en/computerbasics/', description: 'Step-by-step guide' }
+            ],
             steps: [
               {
                 id: 'computer-intro',
@@ -400,7 +549,7 @@ const mockCourses: Course[] = [
       },
       {
         id: 'm5',
-        title: 'Internet & Email Basics',
+        title: 'Internet Basics',
         content: [
           {
             id: 'c5',
@@ -430,11 +579,43 @@ const mockCourses: Course[] = [
           }
         ],
         order: 2,
-        estimatedTime: 50
+        estimatedTime: 144,
+        lessons: [
+          {
+            id: 'internet-lesson-1',
+            title: 'Browsing',
+            description: 'Learn web browser basics',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=browsing',
+            slides: [{ name: 'Browsing Slides', type: 'slides', url: 'https://slides.com/browsing' }],
+            materials: [{ name: 'Browser Guide', type: 'pdf', url: 'https://browser-guide.com/pdf' }],
+            steps: [{ id: 'browse-intro', title: 'Web Browsing', content: 'Navigate the internet safely.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'internet-lesson-2',
+            title: 'Search Techniques',
+            description: 'Effective online searching',
+            duration: 25,
+            videoUrl: 'https://www.youtube.com/watch?v=search',
+            slides: [{ name: 'Search Slides', type: 'slides', url: 'https://slides.com/search' }],
+            materials: [{ name: 'Search Cheat Sheet', type: 'pdf', url: 'https://search-tips.com/pdf' }],
+            steps: [{ id: 'search-intro', title: 'Search Skills', content: 'Find information quickly online.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'internet-lesson-3',
+            title: 'Online Safety',
+            description: 'Stay safe on the internet',
+            duration: 35,
+            videoUrl: 'https://www.youtube.com/watch?v=safety',
+            slides: [{ name: 'Safety Slides', type: 'slides', url: 'https://slides.com/safety' }],
+            materials: [{ name: 'Safety Checklist', type: 'pdf', url: 'https://safety-checklist.com/pdf' }],
+            steps: [{ id: 'safety-intro', title: 'Online Safety', content: 'Protect yourself online.', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm6',
-        title: 'Productivity Software',
+        title: 'Productivity Tools',
         content: [
           {
             id: 'c6',
@@ -451,11 +632,43 @@ const mockCourses: Course[] = [
           }
         ],
         order: 3,
-        estimatedTime: 60
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'prod-lesson-1',
+            title: 'Word Processors',
+            description: 'Create and edit documents',
+            duration: 50,
+            videoUrl: 'https://www.youtube.com/watch?v=word-processor',
+            slides: [{ name: 'Word Processing Slides', type: 'slides', url: 'https://slides.com/word' }],
+            materials: [{ name: 'Sample Documents', type: 'doc', url: 'https://samples.com/docs' }],
+            steps: [{ id: 'word-intro', title: 'Word Processing', content: 'Create professional documents.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'prod-lesson-2',
+            title: 'Spreadsheets',
+            description: 'Work with data and calculations',
+            duration: 55,
+            videoUrl: 'https://www.youtube.com/watch?v=spreadsheets',
+            slides: [{ name: 'Spreadsheet Slides', type: 'slides', url: 'https://slides.com/spreadsheet' }],
+            materials: [{ name: 'Excel Templates', type: 'other', url: 'https://templates.com/excel' }],
+            steps: [{ id: 'sheet-intro', title: 'Spreadsheets', content: 'Organize and analyze data.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'prod-lesson-3',
+            title: 'Presentations',
+            description: 'Create engaging presentations',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=presentations',
+            slides: [{ name: 'Presentation Slides', type: 'slides', url: 'https://slides.com/presentations' }],
+            materials: [{ name: 'PowerPoint Templates', type: 'slides', url: 'https://templates.com/ppt' }],
+            steps: [{ id: 'pres-intro', title: 'Presentations', content: 'Create impactful slides.', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm7',
-        title: 'Online Banking & E-commerce',
+        title: 'Communication Tools',
         content: [
           {
             id: 'c7',
@@ -472,11 +685,43 @@ const mockCourses: Course[] = [
           }
         ],
         order: 4,
-        estimatedTime: 45
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'comm-lesson-1',
+            title: 'Email',
+            description: 'Professional email communication',
+            duration: 35,
+            videoUrl: 'https://www.youtube.com/watch?v=email',
+            slides: [{ name: 'Email Slides', type: 'slides', url: 'https://slides.com/email' }],
+            materials: [{ name: 'Email Exercises', type: 'doc', url: 'https://exercises.com/email' }],
+            steps: [{ id: 'email-intro', title: 'Email Basics', content: 'Send professional emails.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-lesson-2',
+            title: 'Chat Apps',
+            description: 'Using messaging applications',
+            duration: 25,
+            videoUrl: 'https://www.youtube.com/watch?v=chat',
+            slides: [{ name: 'Chat Slides', type: 'slides', url: 'https://slides.com/chat' }],
+            materials: [{ name: 'Chat Guide', type: 'pdf', url: 'https://chat-guide.com/pdf' }],
+            steps: [{ id: 'chat-intro', title: 'Messaging', content: 'Communicate via chat apps.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-lesson-3',
+            title: 'Video Conferencing',
+            description: 'Virtual meetings and calls',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=video-conf',
+            slides: [{ name: 'Video Call Slides', type: 'slides', url: 'https://slides.com/video' }],
+            materials: [{ name: 'Video Call Guide', type: 'pdf', url: 'https://video-guide.com/pdf' }],
+            steps: [{ id: 'video-intro', title: 'Video Calls', content: 'Join virtual meetings.', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm8',
-        title: 'Social Media & Communication',
+        title: 'Digital Safety & Security',
         content: [
           {
             id: 'c8',
@@ -493,7 +738,39 @@ const mockCourses: Course[] = [
           }
         ],
         order: 5,
-        estimatedTime: 40
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'security-lesson-1',
+            title: 'Passwords',
+            description: 'Creating strong passwords',
+            duration: 25,
+            videoUrl: 'https://www.youtube.com/watch?v=passwords',
+            slides: [{ name: 'Password Slides', type: 'slides', url: 'https://slides.com/passwords' }],
+            materials: [{ name: 'Security Checklist', type: 'pdf', url: 'https://security.com/pdf' }],
+            steps: [{ id: 'pwd-intro', title: 'Strong Passwords', content: 'Create secure passwords.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'security-lesson-2',
+            title: 'Phishing',
+            description: 'Recognizing online scams',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=phishing',
+            slides: [{ name: 'Phishing Slides', type: 'slides', url: 'https://slides.com/phishing' }],
+            materials: [{ name: 'Scam Examples', type: 'pdf', url: 'https://scams.com/pdf' }],
+            steps: [{ id: 'phish-intro', title: 'Avoid Scams', content: 'Identify phishing attempts.', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'security-lesson-3',
+            title: 'Secure Browsing',
+            description: 'Safe internet practices',
+            duration: 25,
+            videoUrl: 'https://www.youtube.com/watch?v=secure-browsing',
+            slides: [{ name: 'Secure Browsing Slides', type: 'slides', url: 'https://slides.com/secure' }],
+            materials: [{ name: 'Safety Guide', type: 'pdf', url: 'https://safety-guide.com/pdf' }],
+            steps: [{ id: 'secure-intro', title: 'Browse Safely', content: 'Stay safe while browsing.', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       }
     ],
     duration: 12,
@@ -508,157 +785,206 @@ const mockCourses: Course[] = [
     description: 'Master the art of tailoring from basic stitches to advanced garment construction. Build a sustainable income through skilled craftsmanship.',
     category: CourseCategory.VOCATIONAL,
     instructorId: 'mentor3',
+    learningOutcomes: [
+      'Master basic and advanced sewing techniques',
+      'Create professional garment patterns',
+      'Operate sewing machines safely',
+      'Perform alterations and repairs',
+      'Start a tailoring business'
+    ],
+    resources: [
+      { name: 'Tailoring Manual', type: 'pdf', url: 'https://tailoring-manual.com/pdf', description: 'Complete tailoring guide' },
+      { name: 'Pattern Making Videos', type: 'video', url: 'https://www.youtube.com/tailoring', description: 'Pattern tutorials' },
+      { name: 'Sewing Machine Guide', type: 'pdf', url: 'https://sewing-guide.com/pdf', description: 'Machine operation manual' }
+    ],
+    externalLinks: [
+      { name: 'Threads Magazine', url: 'https://www.threadsmagazine.com/', description: 'Professional sewing tips' },
+      { name: 'Pattern Review', url: 'https://sewing.patternreview.com/', description: 'Pattern community' },
+      { name: 'Sewing.org', url: 'https://www.sewing.org/', description: 'Sewing education' }
+    ],
     modules: [
       {
         id: 'm7',
-        title: 'Tailoring Fundamentals',
-        content: [
-          {
-            id: 'c7',
-            type: 'text',
-            content: `<h3>Welcome to Professional Tailoring</h3>
-            <p>Transform fabric into beautiful, well-fitted garments while building valuable vocational skills.</p>
-            <h4>Course Overview:</h4>
-            <ul>
-              <li>Essential Tools and Equipment</li>
-              <li>Fabric Types and Properties</li>
-              <li>Basic Hand Stitches</li>
-              <li>Machine Operation</li>
-              <li>Safety in the Workshop</li>
-            </ul>
-            <h4>Career Opportunities:</h4>
-            <ul>
-              <li>Custom Tailoring Business</li>
-              <li>Alterations Services</li>
-              <li>Fashion Design Assistant</li>
-              <li>Costume Making</li>
-            </ul>`,
-          },
-          {
-            id: 'c7-video',
-            type: 'video',
-            content: 'https://example.com/tailoring-intro.mp4',
-            captions: 'Visual demonstrations with detailed captions',
-            transcript: 'Complete transcript with tool descriptions',
-            signLanguageVideoUrl: 'https://example.com/tailoring-intro-sign.mp4'
-          },
-          {
-            id: 'c7-interactive',
-            type: 'interactive',
-            content: `<div class="tool-identification">
-              <h4>Identify Tailoring Tools:</h4>
-              <p>Click on each tool to learn its name and purpose</p>
-              <div class="tools-grid">
-                <button onclick="showTool('scissors')">✂️ Tool 1</button>
-                <button onclick="showTool('measuring-tape')">📏 Tool 2</button>
-                <button onclick="showTool('pins')">📌 Tool 3</button>
-                <button onclick="showTool('thimble')">🪡 Tool 4</button>
-              </div>
-            </div>`
-          }
-        ],
+        title: 'Basic Stitching Techniques',
+        content: [{ id: 'c7', type: 'text', content: '<h3>Hand & Machine Stitches</h3><p>Master fundamental stitching techniques.</p>' }],
         order: 1,
-        estimatedTime: 60,
+        estimatedTime: 300,
+        lessons: [
+          {
+            id: 'tailor-l1',
+            title: 'Hand Stitching',
+            description: 'Learn basic hand stitches',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=hand-stitch',
+            slides: [{ name: 'Hand Stitch Slides', type: 'slides', url: 'https://slides.com/hand-stitch' }],
+            materials: [{ name: 'Practice Sheets', type: 'pdf', url: 'https://practice.com/hand-stitch' }],
+            steps: [{ id: 's1', title: 'Hand Stitching', content: 'Basic hand stitches', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l2',
+            title: 'Machine Stitching',
+            description: 'Master sewing machine techniques',
+            duration: 120,
+            videoUrl: 'https://www.youtube.com/watch?v=machine-stitch',
+            slides: [{ name: 'Machine Stitch Slides', type: 'slides', url: 'https://slides.com/machine' }],
+            materials: [{ name: 'Machine Guide', type: 'pdf', url: 'https://machine-guide.com/pdf' }],
+            steps: [{ id: 's2', title: 'Machine Stitching', content: 'Sewing machine basics', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       },
       {
         id: 'm8',
-        title: 'Pattern Making & Cutting',
-        content: [
+        title: 'Fabric Knowledge',
+        content: [{ id: 'c8', type: 'text', content: '<h3>Fabric Types & Care</h3><p>Understand different fabrics.</p>' }],
+        order: 2,
+        estimatedTime: 300,
+        lessons: [
           {
-            id: 'c8',
-            type: 'text',
-            content: `<h3>Creating Perfect Patterns</h3>
-            <p>Learn to create and modify patterns for professional-quality garments.</p>
-            <h4>Skills You'll Develop:</h4>
-            <ul>
-              <li>Taking Accurate Measurements</li>
-              <li>Basic Pattern Drafting</li>
-              <li>Pattern Modification</li>
-              <li>Fabric Layout and Cutting</li>
-              <li>Marking Techniques</li>
-            </ul>
-            <h4>Practice Project:</h4>
-            <p>Create a basic shirt pattern and cut your first garment pieces.</p>`
+            id: 'tailor-l3',
+            title: 'Fabric Types',
+            description: 'Learn about different fabrics',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=fabric-types',
+            slides: [{ name: 'Fabric Slides', type: 'slides', url: 'https://slides.com/fabric' }],
+            materials: [{ name: 'Fabric Guide', type: 'pdf', url: 'https://fabric-guide.com/pdf' }],
+            steps: [{ id: 's3', title: 'Fabric Types', content: 'Different fabric materials', type: 'learn' as const, duration: 10 }]
           },
           {
-            id: 'c8-video',
-            type: 'video',
-            content: 'https://example.com/pattern-making.mp4',
-            captions: 'Step-by-step pattern creation process'
+            id: 'tailor-l4',
+            title: 'Fabric Care',
+            description: 'Fabric maintenance and selection',
+            duration: 75,
+            videoUrl: 'https://www.youtube.com/watch?v=fabric-care',
+            slides: [{ name: 'Care Slides', type: 'slides', url: 'https://slides.com/care' }],
+            materials: [{ name: 'Care Instructions', type: 'pdf', url: 'https://care.com/pdf' }],
+            steps: [{ id: 's4', title: 'Fabric Care', content: 'Maintaining fabrics', type: 'learn' as const, duration: 10 }]
           }
-        ],
-        order: 2,
-        estimatedTime: 90
+        ]
       },
       {
         id: 'm9',
         title: 'Garment Construction',
-        content: [
-          {
-            id: 'c9',
-            type: 'text',
-            content: `<h3>Building Your First Garment</h3>
-            <p>Put it all together to create a complete, professional-quality garment.</p>
-            <h4>Construction Techniques:</h4>
-            <ul>
-              <li>Seaming and Finishing</li>
-              <li>Fitting and Adjustments</li>
-              <li>Buttonholes and Closures</li>
-              <li>Pressing and Final Details</li>
-            </ul>
-            <h4>Final Project:</h4>
-            <p>Complete a tailored shirt from start to finish, demonstrating all learned skills.</p>`
-          }
-        ],
+        content: [{ id: 'c9', type: 'text', content: '<h3>Patterns, Cutting & Sewing</h3><p>Build complete garments.</p>' }],
         order: 3,
-        estimatedTime: 120
+        estimatedTime: 360,
+        lessons: [
+          {
+            id: 'tailor-l5',
+            title: 'Pattern Making',
+            description: 'Create garment patterns',
+            duration: 120,
+            videoUrl: 'https://www.youtube.com/watch?v=patterns',
+            slides: [{ name: 'Pattern Slides', type: 'slides', url: 'https://slides.com/patterns' }],
+            materials: [{ name: 'Pattern Templates', type: 'pdf', url: 'https://templates.com/patterns' }],
+            steps: [{ id: 's5', title: 'Patterns', content: 'Creating patterns', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l6',
+            title: 'Cutting Techniques',
+            description: 'Precise fabric cutting',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=cutting',
+            slides: [{ name: 'Cutting Slides', type: 'slides', url: 'https://slides.com/cutting' }],
+            materials: [{ name: 'Cutting Guide', type: 'pdf', url: 'https://cutting.com/pdf' }],
+            steps: [{ id: 's6', title: 'Cutting', content: 'Fabric cutting', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l7',
+            title: 'Sewing Techniques',
+            description: 'Advanced sewing methods',
+            duration: 150,
+            videoUrl: 'https://www.youtube.com/watch?v=sewing-tech',
+            slides: [{ name: 'Sewing Slides', type: 'slides', url: 'https://slides.com/sewing' }],
+            materials: [{ name: 'Sewing Guide', type: 'pdf', url: 'https://sewing.com/pdf' }],
+            steps: [{ id: 's7', title: 'Sewing', content: 'Advanced techniques', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       },
       {
         id: 'm10',
-        title: 'Advanced Tailoring Techniques',
-        content: [
-          {
-            id: 'c10',
-            type: 'text',
-            content: `<h3>Professional Finishing Techniques</h3>
-            <p>Master advanced skills for high-quality, professional garments.</p>
-            <h4>Advanced Skills:</h4>
-            <ul>
-              <li>French Seams and Bound Seams</li>
-              <li>Professional Pressing</li>
-              <li>Lining Installation</li>
-              <li>Custom Alterations</li>
-            </ul>`
-          }
-        ],
+        title: 'Advanced Tailoring',
+        content: [{ id: 'c10', type: 'text', content: '<h3>Fitting, Alterations & Finishing</h3><p>Professional tailoring skills.</p>' }],
         order: 4,
-        estimatedTime: 150
+        estimatedTime: 300,
+        lessons: [
+          {
+            id: 'tailor-l8',
+            title: 'Fitting',
+            description: 'Perfect garment fitting',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=fitting',
+            slides: [{ name: 'Fitting Slides', type: 'slides', url: 'https://slides.com/fitting' }],
+            materials: [{ name: 'Fitting Checklist', type: 'pdf', url: 'https://fitting.com/pdf' }],
+            steps: [{ id: 's8', title: 'Fitting', content: 'Garment fitting', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l9',
+            title: 'Alterations',
+            description: 'Garment alterations and repairs',
+            duration: 105,
+            videoUrl: 'https://www.youtube.com/watch?v=alterations',
+            slides: [{ name: 'Alterations Slides', type: 'slides', url: 'https://slides.com/alterations' }],
+            materials: [{ name: 'Alteration Guide', type: 'pdf', url: 'https://alterations.com/pdf' }],
+            steps: [{ id: 's9', title: 'Alterations', content: 'Altering garments', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l10',
+            title: 'Finishing Touches',
+            description: 'Professional finishing',
+            duration: 105,
+            videoUrl: 'https://www.youtube.com/watch?v=finishing',
+            slides: [{ name: 'Finishing Slides', type: 'slides', url: 'https://slides.com/finishing' }],
+            materials: [{ name: 'Finishing Guide', type: 'pdf', url: 'https://finishing.com/pdf' }],
+            steps: [{ id: 's10', title: 'Finishing', content: 'Final touches', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       },
       {
         id: 'm11',
         title: 'Business Skills for Tailors',
-        content: [
-          {
-            id: 'c11',
-            type: 'text',
-            content: `<h3>Starting Your Tailoring Business</h3>
-            <p>Learn business skills to turn your tailoring expertise into income.</p>
-            <h4>Business Topics:</h4>
-            <ul>
-              <li>Pricing Your Services</li>
-              <li>Customer Relations</li>
-              <li>Marketing Your Skills</li>
-              <li>Managing Orders</li>
-            </ul>`
-          }
-        ],
+        content: [{ id: 'c11', type: 'text', content: '<h3>Pricing, Selling & Client Management</h3><p>Run a tailoring business.</p>' }],
         order: 5,
-        estimatedTime: 90
+        estimatedTime: 240,
+        lessons: [
+          {
+            id: 'tailor-l11',
+            title: 'Pricing Services',
+            description: 'Price your tailoring work',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=pricing',
+            slides: [{ name: 'Pricing Slides', type: 'slides', url: 'https://slides.com/pricing' }],
+            materials: [{ name: 'Pricing Worksheet', type: 'doc', url: 'https://pricing.com/worksheet' }],
+            externalLinks: [{ name: 'Business Resources', url: 'https://business.com/tailoring' }],
+            steps: [{ id: 's11', title: 'Pricing', content: 'Setting prices', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l12',
+            title: 'Client Management',
+            description: 'Managing customers effectively',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=clients',
+            slides: [{ name: 'Client Slides', type: 'slides', url: 'https://slides.com/clients' }],
+            materials: [{ name: 'Client Forms', type: 'doc', url: 'https://forms.com/clients' }],
+            externalLinks: [{ name: 'Customer Service Tips', url: 'https://service.com/tips' }],
+            steps: [{ id: 's12', title: 'Clients', content: 'Managing clients', type: 'learn' as const, duration: 10 }]
+          },
+          {
+            id: 'tailor-l13',
+            title: 'Marketing Your Business',
+            description: 'Promote your tailoring services',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=marketing',
+            slides: [{ name: 'Marketing Slides', type: 'slides', url: 'https://slides.com/marketing' }],
+            materials: [{ name: 'Marketing Guide', type: 'pdf', url: 'https://marketing.com/guide' }],
+            externalLinks: [{ name: 'Marketing Resources', url: 'https://marketing.com/resources' }],
+            steps: [{ id: 's13', title: 'Marketing', content: 'Promoting services', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       }
     ],
     duration: 25,
     difficulty: 'intermediate',
-    accessibilityFeatures: ['captions', 'transcripts', 'sign-language', 'text-to-speech'],
+    accessibilityFeatures: ['captions', 'transcripts', 'sign-language'],
     createdAt: new Date('2024-02-10'),
     updatedAt: new Date('2024-02-15'),
   },
@@ -668,165 +994,193 @@ const mockCourses: Course[] = [
     description: 'Master communication skills for personal growth and professional success. Learn to express yourself confidently in any situation.',
     category: CourseCategory.SOFT_SKILLS,
     instructorId: 'mentor4',
+    learningOutcomes: [
+      'Speak clearly and confidently',
+      'Read and interpret body language',
+      'Write professional emails',
+      'Handle difficult conversations',
+      'Present ideas persuasively'
+    ],
+    resources: [
+      { name: 'Communication Workbook', type: 'pdf', url: 'https://comm-workbook.com/pdf', description: 'Practice exercises' },
+      { name: 'Public Speaking Course', type: 'video', url: 'https://www.youtube.com/public-speaking', description: 'Speaking masterclass' },
+      { name: 'Body Language Guide', type: 'pdf', url: 'https://body-language.com/pdf', description: 'Non-verbal communication' }
+    ],
+    externalLinks: [
+      { name: 'Toastmasters', url: 'https://www.toastmasters.org/', description: 'Public speaking club' },
+      { name: 'TED Talks', url: 'https://www.ted.com/topics/communication', description: 'Communication talks' },
+      { name: 'Coursera Communication', url: 'https://www.coursera.org/courses?query=communication', description: 'Online courses' }
+    ],
     modules: [
       {
         id: 'm10',
-        title: 'Verbal Communication Mastery',
-        content: [
-          {
-            id: 'c10',
-            type: 'text',
-            content: `<h3>The Power of Effective Speaking</h3>
-            <p>Develop confidence and clarity in your verbal communication.</p>
-            <h4>Key Areas:</h4>
-            <ul>
-              <li>Clear Articulation and Pronunciation</li>
-              <li>Active Listening Skills</li>
-              <li>Conversation Techniques</li>
-              <li>Public Speaking Basics</li>
-              <li>Overcoming Communication Barriers</li>
-            </ul>
-            <h4>Practice Exercises:</h4>
-            <ul>
-              <li>Voice projection exercises</li>
-              <li>Tongue twisters for clarity</li>
-              <li>Role-playing conversations</li>
-              <li>Mini presentations</li>
-            </ul>`,
-          },
-          {
-            id: 'c10-video',
-            type: 'video',
-            content: 'https://example.com/verbal-communication.mp4',
-            captions: 'Communication examples with visual cues',
-            transcript: 'Full transcript with speaking tips',
-            signLanguageVideoUrl: 'https://example.com/verbal-comm-sign.mp4'
-          },
-          {
-            id: 'c10-interactive',
-            type: 'interactive',
-            content: `<div class="speech-practice">
-              <h4>Practice Your Speaking:</h4>
-              <p>Record yourself reading this passage and play it back to evaluate your clarity:</p>
-              <div class="practice-text">
-                <p>"Good communication is the bridge between confusion and clarity. When we speak with purpose and listen with intent, we create connections that transform relationships and open doors to new opportunities."</p>
-              </div>
-              <button onclick="startRecording()">🎤 Start Recording</button>
-              <button onclick="playback()">▶️ Play Back</button>
-            </div>`
-          }
-        ],
+        title: 'Foundations of Communication',
+        content: [{ id: 'c10', type: 'text', content: '<h3>Verbal, Non-verbal & Active Listening</h3><p>Communication fundamentals.</p>' }],
         order: 1,
-        estimatedTime: 50,
+        estimatedTime: 96,
+        lessons: [
+          {
+            id: 'comm-l1',
+            title: 'Verbal Communication',
+            description: 'Speaking clearly and effectively',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=verbal-comm',
+            slides: [{ name: 'Verbal Comm Slides', type: 'slides', url: 'https://slides.com/verbal' }],
+            materials: [{ name: 'Speaking Exercises', type: 'pdf', url: 'https://exercises.com/speaking' }],
+            steps: [{ id: 'cs1', title: 'Verbal', content: 'Speaking skills', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l2',
+            title: 'Non-verbal Communication',
+            description: 'Body language and gestures',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=nonverbal',
+            slides: [{ name: 'Body Language Slides', type: 'slides', url: 'https://slides.com/body' }],
+            materials: [{ name: 'Body Language Guide', type: 'pdf', url: 'https://body.com/guide' }],
+            steps: [{ id: 'cs2', title: 'Non-verbal', content: 'Body language', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l3',
+            title: 'Active Listening',
+            description: 'Listening with intent',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=listening',
+            slides: [{ name: 'Listening Slides', type: 'slides', url: 'https://slides.com/listening' }],
+            materials: [{ name: 'Listening Exercises', type: 'pdf', url: 'https://listening.com/exercises' }],
+            steps: [{ id: 'cs3', title: 'Listening', content: 'Active listening', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm11',
-        title: 'Non-Verbal Communication',
-        content: [
+        title: 'Interpersonal Communication',
+        content: [{ id: 'c11', type: 'text', content: '<h3>Empathy, Feedback & Conflict Resolution</h3><p>Building relationships.</p>' }],
+        order: 2,
+        estimatedTime: 96,
+        lessons: [
           {
-            id: 'c11',
-            type: 'text',
-            content: `<h3>Body Language and Beyond</h3>
-            <p>Master the silent language that speaks volumes about your message.</p>
-            <h4>What You'll Learn:</h4>
-            <ul>
-              <li>Reading Body Language</li>
-              <li>Facial Expressions and Eye Contact</li>
-              <li>Posture and Gestures</li>
-              <li>Personal Space and Proximity</li>
-              <li>Cultural Considerations</li>
-            </ul>
-            <h4>Interactive Activities:</h4>
-            <ul>
-              <li>Mirror exercises for self-awareness</li>
-              <li>Emotion recognition games</li>
-              <li>Posture improvement techniques</li>
-            </ul>`
+            id: 'comm-l4',
+            title: 'Empathy',
+            description: 'Understanding others',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=empathy',
+            slides: [{ name: 'Empathy Slides', type: 'slides', url: 'https://slides.com/empathy' }],
+            materials: [{ name: 'Empathy Guide', type: 'pdf', url: 'https://empathy.com/guide' }],
+            steps: [{ id: 'cs4', title: 'Empathy', content: 'Empathetic communication', type: 'learn' as const, duration: 5 }]
           },
           {
-            id: 'c11-video',
-            type: 'video',
-            content: 'https://example.com/body-language.mp4',
-            captions: 'Visual demonstrations of body language'
+            id: 'comm-l5',
+            title: 'Giving Feedback',
+            description: 'Constructive feedback techniques',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=feedback',
+            slides: [{ name: 'Feedback Slides', type: 'slides', url: 'https://slides.com/feedback' }],
+            materials: [{ name: 'Feedback Roleplay', type: 'doc', url: 'https://roleplay.com/feedback' }],
+            steps: [{ id: 'cs5', title: 'Feedback', content: 'Giving feedback', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l6',
+            title: 'Conflict Resolution',
+            description: 'Resolving disagreements',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=conflict',
+            slides: [{ name: 'Conflict Slides', type: 'slides', url: 'https://slides.com/conflict' }],
+            materials: [{ name: 'Conflict Guide', type: 'pdf', url: 'https://conflict.com/guide' }],
+            steps: [{ id: 'cs6', title: 'Conflict', content: 'Resolving conflicts', type: 'learn' as const, duration: 5 }]
           }
-        ],
-        order: 2,
-        estimatedTime: 45
+        ]
       },
       {
         id: 'm12',
-        title: 'Digital Communication',
-        content: [
-          {
-            id: 'c12',
-            type: 'text',
-            content: `<h3>Communicating in the Digital Age</h3>
-            <p>Navigate modern communication channels with confidence and professionalism.</p>
-            <h4>Digital Platforms:</h4>
-            <ul>
-              <li>Email Etiquette</li>
-              <li>Video Conferencing Skills</li>
-              <li>Social Media Communication</li>
-              <li>Text Messaging Best Practices</li>
-              <li>Online Collaboration Tools</li>
-            </ul>
-            <h4>Practical Exercises:</h4>
-            <ul>
-              <li>Write professional emails</li>
-              <li>Practice video call etiquette</li>
-              <li>Create appropriate social media posts</li>
-            </ul>`
-          }
-        ],
+        title: 'Professional Communication',
+        content: [{ id: 'c12', type: 'text', content: '<h3>Emails, Meetings & Presentations</h3><p>Workplace communication.</p>' }],
         order: 3,
-        estimatedTime: 40
+        estimatedTime: 96,
+        lessons: [
+          {
+            id: 'comm-l7',
+            title: 'Email Writing',
+            description: 'Professional email communication',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=email',
+            slides: [{ name: 'Email Slides', type: 'slides', url: 'https://slides.com/email' }],
+            materials: [{ name: 'Email Templates', type: 'doc', url: 'https://templates.com/email' }],
+            steps: [{ id: 'cs7', title: 'Email', content: 'Writing emails', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l8',
+            title: 'Meeting Skills',
+            description: 'Effective meeting participation',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=meetings',
+            slides: [{ name: 'Meeting Slides', type: 'slides', url: 'https://slides.com/meetings' }],
+            materials: [{ name: 'Meeting Guide', type: 'pdf', url: 'https://meetings.com/guide' }],
+            steps: [{ id: 'cs8', title: 'Meetings', content: 'Meeting etiquette', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l9',
+            title: 'Presentations',
+            description: 'Delivering presentations',
+            duration: 32,
+            videoUrl: 'https://www.youtube.com/watch?v=presentations',
+            slides: [{ name: 'Presentation Slides', type: 'slides', url: 'https://slides.com/presentations' }],
+            materials: [{ name: 'Presentation Guide', type: 'pdf', url: 'https://presentations.com/guide' }],
+            steps: [{ id: 'cs9', title: 'Presentations', content: 'Presenting effectively', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm13',
-        title: 'Conflict Resolution',
-        content: [
-          {
-            id: 'c13',
-            type: 'text',
-            content: `<h3>Managing Difficult Conversations</h3>
-            <p>Learn to handle conflicts professionally and find win-win solutions.</p>
-            <h4>Conflict Resolution Skills:</h4>
-            <ul>
-              <li>Active Listening Techniques</li>
-              <li>De-escalation Strategies</li>
-              <li>Finding Common Ground</li>
-              <li>Mediation Skills</li>
-            </ul>`
-          }
-        ],
+        title: 'Public Speaking',
+        content: [{ id: 'c13', type: 'text', content: '<h3>Techniques & Confidence Building</h3><p>Speaking to audiences.</p>' }],
         order: 4,
-        estimatedTime: 50
+        estimatedTime: 96,
+        lessons: [
+          {
+            id: 'comm-l10',
+            title: 'Speaking Techniques',
+            description: 'Public speaking fundamentals',
+            duration: 48,
+            videoUrl: 'https://www.youtube.com/watch?v=speaking-tech',
+            slides: [{ name: 'Speaking Slides', type: 'slides', url: 'https://slides.com/speaking' }],
+            materials: [{ name: 'Speaking Exercises', type: 'pdf', url: 'https://speaking.com/exercises' }],
+            steps: [{ id: 'cs10', title: 'Speaking', content: 'Public speaking', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'comm-l11',
+            title: 'Building Confidence',
+            description: 'Overcoming speaking anxiety',
+            duration: 48,
+            videoUrl: 'https://www.youtube.com/watch?v=confidence',
+            slides: [{ name: 'Confidence Slides', type: 'slides', url: 'https://slides.com/confidence' }],
+            materials: [{ name: 'Confidence Guide', type: 'pdf', url: 'https://confidence.com/guide' }],
+            steps: [{ id: 'cs11', title: 'Confidence', content: 'Building confidence', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm14',
-        title: 'Leadership Communication',
-        content: [
-          {
-            id: 'c14',
-            type: 'text',
-            content: `<h3>Inspiring and Leading Others</h3>
-            <p>Develop communication skills that inspire confidence and motivate teams.</p>
-            <h4>Leadership Skills:</h4>
-            <ul>
-              <li>Motivational Speaking</li>
-              <li>Giving Constructive Feedback</li>
-              <li>Team Communication</li>
-              <li>Presentation Skills</li>
-            </ul>`
-          }
-        ],
+        title: 'Final Project',
+        content: [{ id: 'c14', type: 'text', content: '<h3>Practice Scenario & Evaluation</h3><p>Apply all skills.</p>' }],
         order: 5,
-        estimatedTime: 60
+        estimatedTime: 96,
+        lessons: [
+          {
+            id: 'comm-l12',
+            title: 'Communication Project',
+            description: 'Demonstrate all communication skills',
+            duration: 96,
+            videoUrl: 'https://www.youtube.com/watch?v=comm-project',
+            slides: [{ name: 'Project Slides', type: 'slides', url: 'https://slides.com/comm-project' }],
+            materials: [{ name: 'Project Worksheet', type: 'doc', url: 'https://worksheet.com/comm' }],
+            steps: [{ id: 'cs12', title: 'Project', content: 'Final communication project', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       }
     ],
     duration: 8,
     difficulty: 'beginner',
-    accessibilityFeatures: ['captions', 'transcripts', 'sign-language', 'text-to-speech'],
+    accessibilityFeatures: ['captions', 'transcripts', 'sign-language'],
     createdAt: new Date('2024-03-01'),
     updatedAt: new Date('2024-03-05'),
   },
@@ -836,25 +1190,205 @@ const mockCourses: Course[] = [
     description: 'Build mobile applications using modern frameworks and tools. Includes accessibility best practices.',
     category: CourseCategory.TECHNOLOGY,
     instructorId: 'mentor1',
+    learningOutcomes: [
+      'Build mobile apps with Flutter/React Native',
+      'Design responsive mobile UIs',
+      'Handle data and state management',
+      'Implement mobile accessibility',
+      'Deploy apps to app stores'
+    ],
+    resources: [
+      { name: 'Flutter Documentation', type: 'pdf', url: 'https://flutter.dev/docs', description: 'Official Flutter docs' },
+      { name: 'React Native Guide', type: 'pdf', url: 'https://reactnative.dev/docs', description: 'React Native documentation' },
+      { name: 'Mobile Dev Videos', type: 'video', url: 'https://www.youtube.com/mobile-dev', description: 'Video tutorials' }
+    ],
+    externalLinks: [
+      { name: 'Flutter.dev', url: 'https://flutter.dev/', description: 'Flutter framework' },
+      { name: 'React Native', url: 'https://reactnative.dev/', description: 'React Native framework' },
+      { name: 'Mobile Dev Weekly', url: 'https://mobiledevweekly.com/', description: 'Mobile development news' }
+    ],
     modules: [
       {
         id: 'm6',
-        title: 'Introduction to Mobile Development',
-        content: [
-          {
-            id: 'c6',
-            type: 'text',
-            content: 'Explore the world of mobile app development and learn to create accessible mobile applications.',
-            altText: undefined,
-          },
-        ],
+        title: 'Mobile App Basics & Frameworks',
+        content: [{ id: 'c6', type: 'text', content: '<h3>Flutter/React Native Introduction</h3><p>Build mobile apps.</p>' }],
         order: 1,
-        estimatedTime: 60,
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'mobile-l1',
+            title: 'Mobile Development Intro',
+            description: 'Introduction to mobile app development',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=mobile-intro',
+            slides: [{ name: 'Mobile Intro Slides', type: 'slides', url: 'https://slides.com/mobile-intro' }],
+            materials: [{ name: 'Setup Guide', type: 'pdf', url: 'https://setup.com/mobile' }],
+            externalLinks: [{ name: 'Flutter Tutorial', url: 'https://flutter.dev/learn' }],
+            steps: [{ id: 'ms1', title: 'Mobile Intro', content: 'Mobile development basics', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l2',
+            title: 'Building UI',
+            description: 'Creating mobile user interfaces',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=mobile-ui',
+            slides: [{ name: 'UI Slides', type: 'slides', url: 'https://slides.com/mobile-ui' }],
+            materials: [{ name: 'UI Components', type: 'code', url: 'https://github.com/ui-components' }],
+            externalLinks: [{ name: 'UI Design Patterns', url: 'https://patterns.com/mobile' }],
+            steps: [{ id: 'ms2', title: 'UI', content: 'Building interfaces', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l3',
+            title: 'Handling Data',
+            description: 'Data management in mobile apps',
+            duration: 75,
+            videoUrl: 'https://www.youtube.com/watch?v=mobile-data',
+            slides: [{ name: 'Data Slides', type: 'slides', url: 'https://slides.com/data' }],
+            materials: [{ name: 'Data Examples', type: 'code', url: 'https://github.com/data-examples' }],
+            externalLinks: [{ name: 'State Management', url: 'https://state.com/mobile' }],
+            steps: [{ id: 'ms3', title: 'Data', content: 'Managing data', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
+      {
+        id: 'm18',
+        title: 'Navigation & Routing',
+        content: [{ id: 'c18', type: 'text', content: '<h3>App Navigation</h3><p>Navigate between screens.</p>' }],
+        order: 2,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'mobile-l4',
+            title: 'Navigation Basics',
+            description: 'Screen navigation',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=navigation',
+            slides: [{ name: 'Navigation Slides', type: 'slides', url: 'https://slides.com/navigation' }],
+            materials: [{ name: 'Navigation Code', type: 'code', url: 'https://github.com/navigation' }],
+            steps: [{ id: 'ms4', title: 'Navigation', content: 'App navigation', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l5',
+            title: 'Advanced Routing',
+            description: 'Complex navigation patterns',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=routing',
+            slides: [{ name: 'Routing Slides', type: 'slides', url: 'https://slides.com/routing' }],
+            materials: [{ name: 'Routing Examples', type: 'code', url: 'https://github.com/routing' }],
+            steps: [{ id: 'ms5', title: 'Routing', content: 'Advanced routing', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm19',
+        title: 'API Integration',
+        content: [{ id: 'c19', type: 'text', content: '<h3>Connecting to APIs</h3><p>Fetch and send data.</p>' }],
+        order: 3,
+        estimatedTime: 150,
+        lessons: [
+          {
+            id: 'mobile-l6',
+            title: 'REST APIs',
+            description: 'Working with REST APIs',
+            duration: 75,
+            videoUrl: 'https://www.youtube.com/watch?v=rest-api',
+            slides: [{ name: 'API Slides', type: 'slides', url: 'https://slides.com/api' }],
+            materials: [{ name: 'API Code', type: 'code', url: 'https://github.com/api-examples' }],
+            steps: [{ id: 'ms6', title: 'APIs', content: 'REST API integration', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l7',
+            title: 'Data Persistence',
+            description: 'Local data storage',
+            duration: 75,
+            videoUrl: 'https://www.youtube.com/watch?v=persistence',
+            slides: [{ name: 'Storage Slides', type: 'slides', url: 'https://slides.com/storage' }],
+            materials: [{ name: 'Storage Examples', type: 'code', url: 'https://github.com/storage' }],
+            steps: [{ id: 'ms7', title: 'Storage', content: 'Data persistence', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm20',
+        title: 'Testing & Debugging',
+        content: [{ id: 'c20', type: 'text', content: '<h3>App Testing</h3><p>Test and debug apps.</p>' }],
+        order: 4,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'mobile-l8',
+            title: 'Unit Testing',
+            description: 'Testing app components',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=testing',
+            slides: [{ name: 'Testing Slides', type: 'slides', url: 'https://slides.com/testing' }],
+            materials: [{ name: 'Test Examples', type: 'code', url: 'https://github.com/tests' }],
+            steps: [{ id: 'ms8', title: 'Testing', content: 'Unit testing', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l9',
+            title: 'Debugging',
+            description: 'Finding and fixing bugs',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=debugging',
+            slides: [{ name: 'Debug Slides', type: 'slides', url: 'https://slides.com/debug' }],
+            materials: [{ name: 'Debug Guide', type: 'pdf', url: 'https://debug.com/guide' }],
+            steps: [{ id: 'ms9', title: 'Debug', content: 'Debugging techniques', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm21',
+        title: 'Deployment',
+        content: [{ id: 'c21', type: 'text', content: '<h3>Publishing Apps</h3><p>Deploy to app stores.</p>' }],
+        order: 5,
+        estimatedTime: 90,
+        lessons: [
+          {
+            id: 'mobile-l10',
+            title: 'App Store Deployment',
+            description: 'Publishing to iOS App Store',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=ios-deploy',
+            slides: [{ name: 'iOS Deploy Slides', type: 'slides', url: 'https://slides.com/ios' }],
+            materials: [{ name: 'iOS Guide', type: 'pdf', url: 'https://ios-deploy.com/guide' }],
+            steps: [{ id: 'ms10', title: 'iOS', content: 'iOS deployment', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'mobile-l11',
+            title: 'Play Store Deployment',
+            description: 'Publishing to Google Play',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=android-deploy',
+            slides: [{ name: 'Android Deploy Slides', type: 'slides', url: 'https://slides.com/android' }],
+            materials: [{ name: 'Android Guide', type: 'pdf', url: 'https://android-deploy.com/guide' }],
+            steps: [{ id: 'ms11', title: 'Android', content: 'Android deployment', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm22',
+        title: 'Final Project',
+        content: [{ id: 'c22', type: 'text', content: '<h3>Build Complete App</h3><p>Create a full mobile app.</p>' }],
+        order: 6,
+        estimatedTime: 240,
+        lessons: [
+          {
+            id: 'mobile-l12',
+            title: 'Mobile App Project',
+            description: 'Build a complete mobile application',
+            duration: 240,
+            videoUrl: 'https://www.youtube.com/watch?v=mobile-project',
+            slides: [{ name: 'Project Slides', type: 'slides', url: 'https://slides.com/mobile-project' }],
+            materials: [{ name: 'Project Template', type: 'code', url: 'https://github.com/mobile-project' }],
+            steps: [{ id: 'ms12', title: 'Project', content: 'Final mobile app project', type: 'learn' as const, duration: 10 }]
+          }
+        ]
+      }
     ],
     duration: 15,
     difficulty: 'advanced',
-    accessibilityFeatures: ['screen-reader', 'captions', 'text-to-speech', 'keyboard-navigation'],
+    accessibilityFeatures: ['screen-reader', 'captions', 'text-to-speech'],
     createdAt: new Date('2024-03-10'),
     updatedAt: new Date('2024-03-15'),
   },
@@ -864,162 +1398,226 @@ const mockCourses: Course[] = [
     description: 'Transform your ideas into successful businesses. Learn planning, marketing, and financial management for sustainable entrepreneurship.',
     category: CourseCategory.SOFT_SKILLS,
     instructorId: 'mentor5',
+    learningOutcomes: [
+      'Create comprehensive business plans',
+      'Develop effective marketing strategies',
+      'Manage business finances',
+      'Build customer relationships',
+      'Scale your business sustainably'
+    ],
+    resources: [
+      { name: 'Business Plan Template', type: 'doc', url: 'https://business-plan.com/template', description: 'Complete business plan template' },
+      { name: 'Marketing Guide', type: 'pdf', url: 'https://marketing-guide.com/pdf', description: 'Small business marketing' },
+      { name: 'Financial Management Videos', type: 'video', url: 'https://www.youtube.com/business-finance', description: 'Finance basics' }
+    ],
+    externalLinks: [
+      { name: 'Small Business Admin', url: 'https://www.sba.gov/', description: 'Business resources' },
+      { name: 'Entrepreneur.com', url: 'https://www.entrepreneur.com/', description: 'Business advice' },
+      { name: 'SCORE', url: 'https://www.score.org/', description: 'Free business mentoring' }
+    ],
     modules: [
       {
         id: 'm13',
-        title: 'Business Planning & Strategy',
-        content: [
-          {
-            id: 'c13',
-            type: 'text',
-            content: `<h3>Building Your Business Foundation</h3>
-            <p>Turn your entrepreneurial dreams into actionable business plans.</p>
-            <h4>Essential Components:</h4>
-            <ul>
-              <li>Market Research and Analysis</li>
-              <li>Business Model Development</li>
-              <li>Financial Planning and Budgeting</li>
-              <li>Risk Assessment</li>
-              <li>Legal Considerations</li>
-            </ul>
-            <h4>Practical Tools:</h4>
-            <ul>
-              <li>Business Plan Template</li>
-              <li>Market Research Worksheet</li>
-              <li>Financial Projection Calculator</li>
-              <li>SWOT Analysis Framework</li>
-            </ul>
-            <h4>Case Studies:</h4>
-            <p>Learn from successful entrepreneurs who started with limited resources and built thriving businesses.</p>`,
-          },
-          {
-            id: 'c13-video',
-            type: 'video',
-            content: 'https://example.com/business-planning.mp4',
-            captions: 'Step-by-step business planning process'
-          },
-          {
-            id: 'c13-interactive',
-            type: 'interactive',
-            content: `<div class="business-planner">
-              <h4>Create Your Business Plan:</h4>
-              <form class="business-form">
-                <label>Business Idea:</label>
-                <textarea placeholder="Describe your business idea..."></textarea>
-                <label>Target Market:</label>
-                <input type="text" placeholder="Who are your customers?">
-                <label>Revenue Model:</label>
-                <select>
-                  <option>Product Sales</option>
-                  <option>Service Fees</option>
-                  <option>Subscription</option>
-                  <option>Commission</option>
-                </select>
-                <button type="button">Generate Business Plan Outline</button>
-              </form>
-            </div>`
-          }
-        ],
+        title: 'Idea Generation & Validation',
+        content: [{ id: 'c13', type: 'text', content: '<h3>Brainstorming & Market Research</h3><p>Validate business ideas.</p>' }],
         order: 1,
-        estimatedTime: 75,
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'biz-l1',
+            title: 'Idea Generation',
+            description: 'Brainstorming business ideas',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=ideas',
+            slides: [{ name: 'Ideas Slides', type: 'slides', url: 'https://slides.com/ideas' }],
+            materials: [{ name: 'Brainstorm Template', type: 'doc', url: 'https://templates.com/brainstorm' }],
+            steps: [{ id: 'bs1', title: 'Ideas', content: 'Generating ideas', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l2',
+            title: 'Market Research',
+            description: 'Researching your market',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=market-research',
+            slides: [{ name: 'Research Slides', type: 'slides', url: 'https://slides.com/research' }],
+            materials: [{ name: 'Research Template', type: 'doc', url: 'https://templates.com/research' }],
+            steps: [{ id: 'bs2', title: 'Research', content: 'Market research', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l3',
+            title: 'Validation',
+            description: 'Validating your business idea',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=validation',
+            slides: [{ name: 'Validation Slides', type: 'slides', url: 'https://slides.com/validation' }],
+            materials: [{ name: 'Validation Checklist', type: 'pdf', url: 'https://validation.com/checklist' }],
+            steps: [{ id: 'bs3', title: 'Validation', content: 'Idea validation', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm14',
-        title: 'Marketing & Customer Relations',
-        content: [
-          {
-            id: 'c14',
-            type: 'text',
-            content: `<h3>Reaching Your Customers</h3>
-            <p>Master marketing strategies that work for small businesses and startups.</p>
-            <h4>Marketing Fundamentals:</h4>
-            <ul>
-              <li>Brand Development</li>
-              <li>Digital Marketing Basics</li>
-              <li>Social Media Strategy</li>
-              <li>Customer Service Excellence</li>
-              <li>Building Customer Loyalty</li>
-            </ul>
-            <h4>Practical Projects:</h4>
-            <ul>
-              <li>Create a brand identity</li>
-              <li>Design marketing materials</li>
-              <li>Develop a social media plan</li>
-              <li>Practice customer interactions</li>
-            </ul>`
-          }
-        ],
+        title: 'Business Planning',
+        content: [{ id: 'c14', type: 'text', content: '<h3>Plans, Goals & Strategies</h3><p>Create business plans.</p>' }],
         order: 2,
-        estimatedTime: 60
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'biz-l4',
+            title: 'Business Plans',
+            description: 'Writing a business plan',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=business-plan',
+            slides: [{ name: 'Plan Slides', type: 'slides', url: 'https://slides.com/plan' }],
+            materials: [{ name: 'Business Plan Guide', type: 'pdf', url: 'https://plan.com/guide' }],
+            steps: [{ id: 'bs4', title: 'Plans', content: 'Business planning', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l5',
+            title: 'Setting Goals',
+            description: 'Business goal setting',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=goals',
+            slides: [{ name: 'Goals Slides', type: 'slides', url: 'https://slides.com/goals' }],
+            materials: [{ name: 'Goal Template', type: 'doc', url: 'https://templates.com/goals' }],
+            steps: [{ id: 'bs5', title: 'Goals', content: 'Setting goals', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l6',
+            title: 'Strategy Development',
+            description: 'Creating business strategies',
+            duration: 45,
+            videoUrl: 'https://www.youtube.com/watch?v=strategy',
+            slides: [{ name: 'Strategy Slides', type: 'slides', url: 'https://slides.com/strategy' }],
+            materials: [{ name: 'Strategy Guide', type: 'pdf', url: 'https://strategy.com/guide' }],
+            steps: [{ id: 'bs6', title: 'Strategy', content: 'Business strategy', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm15',
-        title: 'Financial Management',
-        content: [
-          {
-            id: 'c15',
-            type: 'text',
-            content: `<h3>Managing Your Business Finances</h3>
-            <p>Learn essential financial skills to keep your business profitable and growing.</p>
-            <h4>Financial Skills:</h4>
-            <ul>
-              <li>Bookkeeping Basics</li>
-              <li>Cash Flow Management</li>
-              <li>Pricing Strategies</li>
-              <li>Tax Considerations</li>
-              <li>Investment and Growth Planning</li>
-            </ul>`
-          }
-        ],
+        title: 'Marketing & Sales',
+        content: [{ id: 'c15', type: 'text', content: '<h3>Branding, Promotion & Customer Acquisition</h3><p>Market your business.</p>' }],
         order: 3,
-        estimatedTime: 55
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'biz-l7',
+            title: 'Branding',
+            description: 'Building your brand',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=branding',
+            slides: [{ name: 'Brand Slides', type: 'slides', url: 'https://slides.com/branding' }],
+            materials: [{ name: 'Brand Guide', type: 'pdf', url: 'https://branding.com/guide' }],
+            externalLinks: [{ name: 'Branding Resources', url: 'https://branding.com/resources' }],
+            steps: [{ id: 'bs7', title: 'Branding', content: 'Brand development', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l8',
+            title: 'Promotion',
+            description: 'Promoting your business',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=promotion',
+            slides: [{ name: 'Promotion Slides', type: 'slides', url: 'https://slides.com/promotion' }],
+            materials: [{ name: 'Promotion Guide', type: 'pdf', url: 'https://promotion.com/guide' }],
+            externalLinks: [{ name: 'Marketing Tools', url: 'https://marketing.com/tools' }],
+            steps: [{ id: 'bs8', title: 'Promotion', content: 'Business promotion', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l9',
+            title: 'Customer Acquisition',
+            description: 'Getting customers',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=customers',
+            slides: [{ name: 'Customer Slides', type: 'slides', url: 'https://slides.com/customers' }],
+            materials: [{ name: 'Acquisition Guide', type: 'pdf', url: 'https://acquisition.com/guide' }],
+            externalLinks: [{ name: 'Sales Tips', url: 'https://sales.com/tips' }],
+            steps: [{ id: 'bs9', title: 'Customers', content: 'Acquiring customers', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm16',
-        title: 'Digital Marketing Basics',
-        content: [
-          {
-            id: 'c16',
-            type: 'text',
-            content: `<h3>Online Marketing for Small Business</h3>
-            <p>Learn cost-effective ways to market your business online.</p>
-            <h4>Digital Marketing Topics:</h4>
-            <ul>
-              <li>Social Media Marketing</li>
-              <li>Email Marketing</li>
-              <li>Content Creation</li>
-              <li>Online Advertising</li>
-            </ul>`
-          }
-        ],
+        title: 'Financial Management',
+        content: [{ id: 'c16', type: 'text', content: '<h3>Budgeting & Accounting Basics</h3><p>Manage finances.</p>' }],
         order: 4,
-        estimatedTime: 70
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'biz-l10',
+            title: 'Budgeting',
+            description: 'Creating budgets',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=budgeting',
+            slides: [{ name: 'Budget Slides', type: 'slides', url: 'https://slides.com/budget' }],
+            materials: [{ name: 'Budget Worksheet', type: 'doc', url: 'https://worksheets.com/budget' }],
+            steps: [{ id: 'bs10', title: 'Budgeting', content: 'Business budgeting', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l11',
+            title: 'Accounting Basics',
+            description: 'Basic accounting principles',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=accounting',
+            slides: [{ name: 'Accounting Slides', type: 'slides', url: 'https://slides.com/accounting' }],
+            materials: [{ name: 'Accounting Guide', type: 'pdf', url: 'https://accounting.com/guide' }],
+            steps: [{ id: 'bs11', title: 'Accounting', content: 'Accounting basics', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l12',
+            title: 'Financial Planning',
+            description: 'Planning finances',
+            duration: 30,
+            videoUrl: 'https://www.youtube.com/watch?v=financial-planning',
+            slides: [{ name: 'Finance Slides', type: 'slides', url: 'https://slides.com/finance' }],
+            materials: [{ name: 'Finance Worksheet', type: 'doc', url: 'https://worksheets.com/finance' }],
+            steps: [{ id: 'bs12', title: 'Finance', content: 'Financial planning', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       },
       {
         id: 'm17',
-        title: 'Scaling Your Business',
-        content: [
-          {
-            id: 'c17',
-            type: 'text',
-            content: `<h3>Growing Beyond Startup</h3>
-            <p>Strategies for expanding your business sustainably.</p>
-            <h4>Growth Strategies:</h4>
-            <ul>
-              <li>Hiring Your First Employee</li>
-              <li>Expanding Your Market</li>
-              <li>Managing Growth</li>
-              <li>Building Systems</li>
-            </ul>`
-          }
-        ],
+        title: 'Launch & Growth',
+        content: [{ id: 'c17', type: 'text', content: '<h3>Pitching, Scaling & Operations</h3><p>Launch and grow.</p>' }],
         order: 5,
-        estimatedTime: 80
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'biz-l13',
+            title: 'Pitching',
+            description: 'Pitching your business',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=pitching',
+            slides: [{ name: 'Pitch Slides', type: 'slides', url: 'https://slides.com/pitch' }],
+            materials: [{ name: 'Pitch Template', type: 'doc', url: 'https://templates.com/pitch' }],
+            steps: [{ id: 'bs13', title: 'Pitching', content: 'Business pitching', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l14',
+            title: 'Scaling',
+            description: 'Growing your business',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=scaling',
+            slides: [{ name: 'Scaling Slides', type: 'slides', url: 'https://slides.com/scaling' }],
+            materials: [{ name: 'Growth Guide', type: 'pdf', url: 'https://growth.com/guide' }],
+            steps: [{ id: 'bs14', title: 'Scaling', content: 'Business scaling', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'biz-l15',
+            title: 'Operations',
+            description: 'Managing operations',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=operations',
+            slides: [{ name: 'Operations Slides', type: 'slides', url: 'https://slides.com/operations' }],
+            materials: [{ name: 'Operations Guide', type: 'pdf', url: 'https://operations.com/guide' }],
+            steps: [{ id: 'bs15', title: 'Operations', content: 'Business operations', type: 'learn' as const, duration: 5 }]
+          }
+        ]
       }
     ],
     duration: 15,
     difficulty: 'intermediate',
-    accessibilityFeatures: ['screen-reader', 'captions', 'simplified-ui', 'text-to-speech'],
+    accessibilityFeatures: ['screen-reader', 'captions', 'simplified-ui'],
     createdAt: new Date('2024-03-20'),
     updatedAt: new Date('2024-03-25'),
   },
@@ -1029,40 +1627,193 @@ const mockCourses: Course[] = [
     description: 'Master data analysis using Excel and other tools. Perfect for administrative roles and business intelligence.',
     category: CourseCategory.TECHNOLOGY,
     instructorId: 'mentor6',
+    learningOutcomes: [
+      'Master Excel formulas and functions',
+      'Create pivot tables and charts',
+      'Analyze and visualize data',
+      'Build interactive dashboards',
+      'Apply data analysis techniques'
+    ],
+    resources: [
+      { name: 'Excel Guide', type: 'pdf', url: 'https://excel-guide.com/pdf', description: 'Complete Excel reference' },
+      { name: 'Data Analysis Videos', type: 'video', url: 'https://www.youtube.com/excel-analysis', description: 'Video tutorials' },
+      { name: 'Sample Datasets', type: 'other', url: 'https://datasets.com/samples', description: 'Practice data files' }
+    ],
+    externalLinks: [
+      { name: 'Excel Easy', url: 'https://www.excel-easy.com/', description: 'Excel tutorials' },
+      { name: 'Chandoo.org', url: 'https://chandoo.org/', description: 'Excel tips and tricks' },
+      { name: 'Excel Jet', url: 'https://exceljet.net/', description: 'Excel formulas' }
+    ],
     modules: [
       {
         id: 'm16',
-        title: 'Excel Fundamentals',
-        content: [
+        title: 'Data Analysis with Excel',
+        content: [{ id: 'c16', type: 'text', content: '<h3>Formulas, Pivot Tables, Charts & Data Visualization</h3><p>Analyze data with Excel.</p>' }],
+        order: 1,
+        estimatedTime: 216,
+        lessons: [
           {
-            id: 'c16',
-            type: 'text',
-            content: `<h3>Excel Mastery for Data Analysis</h3>
-            <p>Transform raw data into meaningful insights using Microsoft Excel.</p>
-            <h4>Core Skills:</h4>
-            <ul>
-              <li>Spreadsheet Navigation and Setup</li>
-              <li>Data Entry and Formatting</li>
-              <li>Basic Formulas and Functions</li>
-              <li>Charts and Graphs</li>
-              <li>Data Sorting and Filtering</li>
-            </ul>
-            <h4>Practical Exercises:</h4>
-            <ul>
-              <li>Create a personal budget tracker</li>
-              <li>Analyze sales data</li>
-              <li>Build interactive dashboards</li>
-            </ul>`,
+            id: 'excel-l1',
+            title: 'Excel Basics',
+            description: 'Introduction to Excel',
+            duration: 36,
+            videoUrl: 'https://www.youtube.com/watch?v=excel-basics',
+            slides: [{ name: 'Excel Basics Slides', type: 'slides', url: 'https://slides.com/excel-basics' }],
+            materials: [{ name: 'Excel Cheat Sheet', type: 'pdf', url: 'https://cheatsheet.com/excel' }],
+            externalLinks: [{ name: 'Excel Tutorial', url: 'https://www.excel-easy.com/' }],
+            steps: [{ id: 'es1', title: 'Excel Intro', content: 'Excel fundamentals', type: 'learn' as const, duration: 5 }]
           },
           {
-            id: 'c16-video',
-            type: 'video',
-            content: 'https://example.com/excel-basics.mp4',
-            captions: 'Screen recordings with detailed explanations'
+            id: 'excel-l2',
+            title: 'Formulas & Functions',
+            description: 'Excel formulas and functions',
+            duration: 54,
+            videoUrl: 'https://www.youtube.com/watch?v=formulas',
+            slides: [{ name: 'Formulas Slides', type: 'slides', url: 'https://slides.com/formulas' }],
+            materials: [{ name: 'Formula Guide', type: 'pdf', url: 'https://formulas.com/guide' }],
+            externalLinks: [{ name: 'Formula Reference', url: 'https://exceljet.net/formulas' }],
+            steps: [{ id: 'es2', title: 'Formulas', content: 'Excel formulas', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l3',
+            title: 'Pivot Tables',
+            description: 'Creating pivot tables',
+            duration: 54,
+            videoUrl: 'https://www.youtube.com/watch?v=pivot-tables',
+            slides: [{ name: 'Pivot Slides', type: 'slides', url: 'https://slides.com/pivot' }],
+            materials: [{ name: 'Pivot Guide', type: 'pdf', url: 'https://pivot.com/guide' }, { name: 'Sample Data', type: 'other', url: 'https://data.com/samples' }],
+            externalLinks: [{ name: 'Pivot Tutorial', url: 'https://chandoo.org/pivot' }],
+            steps: [{ id: 'es3', title: 'Pivot', content: 'Pivot tables', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l4',
+            title: 'Charts & Graphs',
+            description: 'Data visualization',
+            duration: 36,
+            videoUrl: 'https://www.youtube.com/watch?v=charts',
+            slides: [{ name: 'Charts Slides', type: 'slides', url: 'https://slides.com/charts' }],
+            materials: [{ name: 'Chart Guide', type: 'pdf', url: 'https://charts.com/guide' }],
+            externalLinks: [{ name: 'Chart Types', url: 'https://excel-easy.com/charts' }],
+            steps: [{ id: 'es4', title: 'Charts', content: 'Creating charts', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l5',
+            title: 'Data Visualization',
+            description: 'Advanced visualization techniques',
+            duration: 36,
+            videoUrl: 'https://www.youtube.com/watch?v=visualization',
+            slides: [{ name: 'Visualization Slides', type: 'slides', url: 'https://slides.com/visualization' }],
+            materials: [{ name: 'Dashboard Template', type: 'other', url: 'https://templates.com/dashboard' }],
+            externalLinks: [{ name: 'Dashboard Examples', url: 'https://chandoo.org/dashboards' }],
+            steps: [{ id: 'es5', title: 'Visualization', content: 'Data visualization', type: 'learn' as const, duration: 5 }]
           }
-        ],
-        order: 1,
-        estimatedTime: 90
+        ]
+      },
+      {
+        id: 'm23',
+        title: 'Advanced Excel',
+        content: [{ id: 'c23', type: 'text', content: '<h3>Advanced Functions & Macros</h3><p>Advanced Excel skills.</p>' }],
+        order: 2,
+        estimatedTime: 144,
+        lessons: [
+          {
+            id: 'excel-l6',
+            title: 'Advanced Functions',
+            description: 'Complex Excel functions',
+            duration: 72,
+            videoUrl: 'https://www.youtube.com/watch?v=advanced-functions',
+            slides: [{ name: 'Advanced Slides', type: 'slides', url: 'https://slides.com/advanced' }],
+            materials: [{ name: 'Advanced Guide', type: 'pdf', url: 'https://advanced.com/guide' }],
+            steps: [{ id: 'es6', title: 'Advanced', content: 'Advanced functions', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l7',
+            title: 'Macros & Automation',
+            description: 'Automating tasks with macros',
+            duration: 72,
+            videoUrl: 'https://www.youtube.com/watch?v=macros',
+            slides: [{ name: 'Macros Slides', type: 'slides', url: 'https://slides.com/macros' }],
+            materials: [{ name: 'Macro Examples', type: 'code', url: 'https://macros.com/examples' }],
+            steps: [{ id: 'es7', title: 'Macros', content: 'Excel macros', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm24',
+        title: 'Data Analysis Techniques',
+        content: [{ id: 'c24', type: 'text', content: '<h3>Statistical Analysis</h3><p>Analyze data statistically.</p>' }],
+        order: 3,
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'excel-l8',
+            title: 'Descriptive Statistics',
+            description: 'Basic statistical analysis',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=statistics',
+            slides: [{ name: 'Stats Slides', type: 'slides', url: 'https://slides.com/stats' }],
+            materials: [{ name: 'Stats Guide', type: 'pdf', url: 'https://stats.com/guide' }],
+            steps: [{ id: 'es8', title: 'Statistics', content: 'Statistical analysis', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l9',
+            title: 'Data Cleaning',
+            description: 'Preparing data for analysis',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=data-cleaning',
+            slides: [{ name: 'Cleaning Slides', type: 'slides', url: 'https://slides.com/cleaning' }],
+            materials: [{ name: 'Cleaning Guide', type: 'pdf', url: 'https://cleaning.com/guide' }],
+            steps: [{ id: 'es9', title: 'Cleaning', content: 'Data cleaning', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm25',
+        title: 'Business Intelligence',
+        content: [{ id: 'c25', type: 'text', content: '<h3>Dashboards & Reports</h3><p>Create business reports.</p>' }],
+        order: 4,
+        estimatedTime: 180,
+        lessons: [
+          {
+            id: 'excel-l10',
+            title: 'Dashboard Design',
+            description: 'Creating interactive dashboards',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=dashboards',
+            slides: [{ name: 'Dashboard Slides', type: 'slides', url: 'https://slides.com/dashboards' }],
+            materials: [{ name: 'Dashboard Templates', type: 'other', url: 'https://templates.com/dashboards' }],
+            steps: [{ id: 'es10', title: 'Dashboards', content: 'Dashboard creation', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'excel-l11',
+            title: 'Report Generation',
+            description: 'Creating business reports',
+            duration: 90,
+            videoUrl: 'https://www.youtube.com/watch?v=reports',
+            slides: [{ name: 'Reports Slides', type: 'slides', url: 'https://slides.com/reports' }],
+            materials: [{ name: 'Report Templates', type: 'doc', url: 'https://templates.com/reports' }],
+            steps: [{ id: 'es11', title: 'Reports', content: 'Business reports', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm26',
+        title: 'Final Project',
+        content: [{ id: 'c26', type: 'text', content: '<h3>Complete Data Analysis Project</h3><p>Analyze real data.</p>' }],
+        order: 5,
+        estimatedTime: 360,
+        lessons: [
+          {
+            id: 'excel-l12',
+            title: 'Data Analysis Project',
+            description: 'Complete data analysis project',
+            duration: 360,
+            videoUrl: 'https://www.youtube.com/watch?v=excel-project',
+            slides: [{ name: 'Project Slides', type: 'slides', url: 'https://slides.com/excel-project' }],
+            materials: [{ name: 'Project Dataset', type: 'other', url: 'https://datasets.com/project' }],
+            steps: [{ id: 'es12', title: 'Project', content: 'Final analysis project', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       }
     ],
     duration: 18,
@@ -1077,35 +1828,197 @@ const mockCourses: Course[] = [
     description: 'Develop outstanding customer service skills for hospitality, retail, and service industries.',
     category: CourseCategory.VOCATIONAL,
     instructorId: 'mentor7',
+    learningOutcomes: [
+      'Communicate professionally with customers',
+      'Handle complaints effectively',
+      'Demonstrate empathy and problem-solving',
+      'Maintain professional service standards',
+      'Build customer loyalty'
+    ],
+    resources: [
+      { name: 'Customer Service Guide', type: 'pdf', url: 'https://service-guide.com/pdf', description: 'Complete service guide' },
+      { name: 'Service Videos', type: 'video', url: 'https://www.youtube.com/customer-service', description: 'Service training videos' },
+      { name: 'Roleplay Scenarios', type: 'doc', url: 'https://scenarios.com/roleplay', description: 'Practice scenarios' }
+    ],
+    externalLinks: [
+      { name: 'Service Quality Institute', url: 'https://www.customer-service.com/', description: 'Service resources' },
+      { name: 'Help Scout Blog', url: 'https://www.helpscout.com/blog/', description: 'Service tips' },
+      { name: 'Customer Service Zone', url: 'https://www.customerservicezone.com/', description: 'Service training' }
+    ],
     modules: [
       {
         id: 'm17',
         title: 'Customer Service Fundamentals',
-        content: [
-          {
-            id: 'c17',
-            type: 'text',
-            content: `<h3>Excellence in Customer Service</h3>
-            <p>Learn to create exceptional customer experiences that build loyalty and drive business success.</p>
-            <h4>Essential Skills:</h4>
-            <ul>
-              <li>Understanding Customer Needs</li>
-              <li>Professional Communication</li>
-              <li>Problem-Solving Techniques</li>
-              <li>Handling Difficult Situations</li>
-              <li>Building Customer Relationships</li>
-            </ul>
-            <h4>Role-Playing Scenarios:</h4>
-            <ul>
-              <li>Greeting customers professionally</li>
-              <li>Handling complaints effectively</li>
-              <li>Upselling and cross-selling</li>
-              <li>Managing wait times</li>
-            </ul>`,
-          }
-        ],
+        content: [{ id: 'c17', type: 'text', content: '<h3>Communication, Empathy & Problem-Solving</h3><p>Service fundamentals.</p>' }],
         order: 1,
-        estimatedTime: 60
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l1',
+            title: 'Communication Skills',
+            description: 'Professional customer communication',
+            duration: 40,
+            videoUrl: 'https://www.youtube.com/watch?v=service-comm',
+            slides: [{ name: 'Communication Slides', type: 'slides', url: 'https://slides.com/service-comm' }],
+            materials: [{ name: 'Communication Guide', type: 'pdf', url: 'https://comm.com/service' }],
+            steps: [{ id: 'ss1', title: 'Communication', content: 'Customer communication', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l2',
+            title: 'Empathy',
+            description: 'Understanding customer needs',
+            duration: 40,
+            videoUrl: 'https://www.youtube.com/watch?v=empathy-service',
+            slides: [{ name: 'Empathy Slides', type: 'slides', url: 'https://slides.com/empathy-service' }],
+            materials: [{ name: 'Empathy Exercises', type: 'pdf', url: 'https://exercises.com/empathy' }],
+            steps: [{ id: 'ss2', title: 'Empathy', content: 'Customer empathy', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l3',
+            title: 'Problem-Solving',
+            description: 'Resolving customer issues',
+            duration: 40,
+            videoUrl: 'https://www.youtube.com/watch?v=problem-solving',
+            slides: [{ name: 'Problem-Solving Slides', type: 'slides', url: 'https://slides.com/problem-solving' }],
+            materials: [{ name: 'Problem-Solving Guide', type: 'pdf', url: 'https://problem-solving.com/guide' }],
+            steps: [{ id: 'ss3', title: 'Problem-Solving', content: 'Solving problems', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm27',
+        title: 'Handling Complaints & Feedback',
+        content: [{ id: 'c27', type: 'text', content: '<h3>Scenario Exercises & Roleplays</h3><p>Handle complaints.</p>' }],
+        order: 2,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l4',
+            title: 'Complaint Handling',
+            description: 'Managing customer complaints',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=complaints',
+            slides: [{ name: 'Complaints Slides', type: 'slides', url: 'https://slides.com/complaints' }],
+            materials: [{ name: 'Complaint Scenarios', type: 'doc', url: 'https://scenarios.com/complaints' }],
+            steps: [{ id: 'ss4', title: 'Complaints', content: 'Handling complaints', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l5',
+            title: 'Feedback Management',
+            description: 'Receiving and acting on feedback',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=feedback-service',
+            slides: [{ name: 'Feedback Slides', type: 'slides', url: 'https://slides.com/feedback-service' }],
+            materials: [{ name: 'Feedback Worksheet', type: 'doc', url: 'https://worksheets.com/feedback' }],
+            steps: [{ id: 'ss5', title: 'Feedback', content: 'Managing feedback', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm28',
+        title: 'Professionalism & Etiquette',
+        content: [{ id: 'c28', type: 'text', content: '<h3>Behavior & Service Standards</h3><p>Professional standards.</p>' }],
+        order: 3,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l6',
+            title: 'Professional Behavior',
+            description: 'Maintaining professionalism',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=professionalism',
+            slides: [{ name: 'Professionalism Slides', type: 'slides', url: 'https://slides.com/professionalism' }],
+            materials: [{ name: 'Behavior Guide', type: 'pdf', url: 'https://behavior.com/guide' }],
+            steps: [{ id: 'ss6', title: 'Professionalism', content: 'Professional behavior', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l7',
+            title: 'Service Standards',
+            description: 'Meeting service standards',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=standards',
+            slides: [{ name: 'Standards Slides', type: 'slides', url: 'https://slides.com/standards' }],
+            materials: [{ name: 'Standards Checklist', type: 'pdf', url: 'https://standards.com/checklist' }],
+            steps: [{ id: 'ss7', title: 'Standards', content: 'Service standards', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm29',
+        title: 'Difficult Situations',
+        content: [{ id: 'c29', type: 'text', content: '<h3>De-escalation & Conflict Resolution</h3><p>Handle difficult situations.</p>' }],
+        order: 4,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l8',
+            title: 'De-escalation',
+            description: 'Calming upset customers',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=de-escalation',
+            slides: [{ name: 'De-escalation Slides', type: 'slides', url: 'https://slides.com/de-escalation' }],
+            materials: [{ name: 'De-escalation Guide', type: 'pdf', url: 'https://de-escalation.com/guide' }],
+            steps: [{ id: 'ss8', title: 'De-escalation', content: 'De-escalation techniques', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l9',
+            title: 'Conflict Resolution',
+            description: 'Resolving customer conflicts',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=conflict-service',
+            slides: [{ name: 'Conflict Slides', type: 'slides', url: 'https://slides.com/conflict-service' }],
+            materials: [{ name: 'Conflict Guide', type: 'pdf', url: 'https://conflict-service.com/guide' }],
+            steps: [{ id: 'ss9', title: 'Conflict', content: 'Conflict resolution', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm30',
+        title: 'Building Loyalty',
+        content: [{ id: 'c30', type: 'text', content: '<h3>Customer Retention & Relationships</h3><p>Build customer loyalty.</p>' }],
+        order: 5,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l10',
+            title: 'Customer Retention',
+            description: 'Keeping customers satisfied',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=retention',
+            slides: [{ name: 'Retention Slides', type: 'slides', url: 'https://slides.com/retention' }],
+            materials: [{ name: 'Retention Strategies', type: 'pdf', url: 'https://retention.com/strategies' }],
+            steps: [{ id: 'ss10', title: 'Retention', content: 'Customer retention', type: 'learn' as const, duration: 5 }]
+          },
+          {
+            id: 'service-l11',
+            title: 'Relationship Building',
+            description: 'Building lasting relationships',
+            duration: 60,
+            videoUrl: 'https://www.youtube.com/watch?v=relationships',
+            slides: [{ name: 'Relationships Slides', type: 'slides', url: 'https://slides.com/relationships' }],
+            materials: [{ name: 'Relationship Guide', type: 'pdf', url: 'https://relationships.com/guide' }],
+            steps: [{ id: 'ss11', title: 'Relationships', content: 'Building relationships', type: 'learn' as const, duration: 5 }]
+          }
+        ]
+      },
+      {
+        id: 'm31',
+        title: 'Final Assessment',
+        content: [{ id: 'c31', type: 'text', content: '<h3>Service Excellence Project</h3><p>Demonstrate service skills.</p>' }],
+        order: 6,
+        estimatedTime: 120,
+        lessons: [
+          {
+            id: 'service-l12',
+            title: 'Service Project',
+            description: 'Final customer service assessment',
+            duration: 120,
+            videoUrl: 'https://www.youtube.com/watch?v=service-project',
+            slides: [{ name: 'Project Slides', type: 'slides', url: 'https://slides.com/service-project' }],
+            materials: [{ name: 'Assessment Rubric', type: 'pdf', url: 'https://assessment.com/rubric' }],
+            steps: [{ id: 'ss12', title: 'Project', content: 'Final service project', type: 'learn' as const, duration: 10 }]
+          }
+        ]
       }
     ],
     duration: 10,

@@ -68,7 +68,8 @@ export interface AccessibilitySettings {
   screenReaderEnabled: boolean;
   textToSpeechEnabled: boolean;
   highContrastMode: boolean;
-  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
+  // Allow broader fontSize values used across the app
+  fontSize: string; // e.g. 'small' | 'medium' | 'large' | 'extra-large'
   colorTheme: 'default' | 'high-contrast' | 'dark' | 'light';
   brailleDisplaySupport: boolean;
 
@@ -77,6 +78,10 @@ export interface AccessibilitySettings {
   transcriptsEnabled: boolean;
   signLanguageEnabled: boolean;
   volumeBoost: number; // 0-100
+
+  // Backwards-compatible / UI-friendly aliases and additional options
+  audioDescriptions?: boolean; // alias used in pages
+  speechRate?: number; // playback rate for TTS (e.g. 1 = normal)
 
   // Speech accessibility
   voiceOutputEnabled: boolean;
@@ -88,12 +93,36 @@ export interface AccessibilitySettings {
   voiceCommandNavigation: boolean;
   switchControlEnabled: boolean;
 
+  // UI-friendly aliases
+  keyboardNavigationEnabled?: boolean;
+  focusIndicators?: boolean;
+
   // Cognitive accessibility
   simplifiedNavigation: boolean;
   chunkedContent: boolean;
   visualCues: boolean;
   remindersEnabled: boolean;
   readingSpeed: 'slow' | 'normal' | 'fast';
+
+  // Additional preferences used in pages
+  reducedMotion?: boolean;
+  dyslexiaFont?: boolean;
+  signLanguage?: boolean; // shorthand used in UI
+  simplifiedContent?: boolean; // shorthand used in UI
+}
+
+// Resource and Link types
+export interface Resource {
+  name: string;
+  type: 'pdf' | 'video' | 'slides' | 'code' | 'image' | 'doc' | 'other';
+  url: string;
+  description?: string;
+}
+
+export interface ExternalLink {
+  name: string;
+  url: string;
+  description?: string;
 }
 
 // Course
@@ -107,8 +136,14 @@ export interface Course {
   duration: number; // in hours
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   accessibilityFeatures: AccessibilityFeature[];
+  learningOutcomes?: string[];
+  resources?: Resource[];
+  externalLinks?: ExternalLink[];
   createdAt: Date;
   updatedAt: Date;
+  // Optional assignments and quizzes for calendar and scheduling
+  assignments?: Array<{ id: string; title: string; description?: string; dueDate?: Date }>;
+  quizzes?: Array<{ id: string; title: string; description?: string; dueDate?: Date }>;
 }
 
 export const CourseCategory = {
@@ -132,6 +167,12 @@ export interface CourseModule {
 export interface Lesson {
   id: string;
   title: string;
+  description?: string;
+  duration?: number;
+  videoUrl?: string;
+  slides?: Resource[];
+  materials?: Resource[];
+  externalLinks?: ExternalLink[];
   steps: LessonStep[];
 }
 

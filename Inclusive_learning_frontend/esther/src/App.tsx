@@ -21,6 +21,9 @@ import { InboxPage } from './pages/InboxPage';
 import { HistoryPage } from './pages/HistoryPage';
 import { MentorshipPage } from './pages/MentorshipPage';
 import { AccessibilityPage } from './pages/AccessibilityPage';
+import { QuizzesPage } from './pages/QuizzesPage';
+import { AssignmentsPage } from './pages/AssignmentsPage';
+import { AnnouncementsPage } from './pages/AnnouncementsPage';
 import { useAuthStore } from './store/authStore';
 
 function App() {
@@ -118,12 +121,12 @@ function App() {
             {/* Course routes with course sidebar */}
             <Route path="/courses/:courseId" element={<CourseLayout><CourseDetailPage /></CourseLayout>} />
             <Route path="/courses/:courseId/search" element={<CourseLayout><div>Smart Search</div></CourseLayout>} />
-            <Route path="/courses/:courseId/announcements" element={<CourseLayout><div>Announcements</div></CourseLayout>} />
-            <Route path="/courses/:courseId/assignments" element={<CourseLayout><div>Assignments</div></CourseLayout>} />
+            <Route path="/courses/:courseId/announcements" element={<CourseLayout><AnnouncementsPage /></CourseLayout>} />
+            <Route path="/courses/:courseId/assignments" element={<CourseLayout><AssignmentsPage /></CourseLayout>} />
             <Route path="/courses/:courseId/discussions" element={<CourseLayout><div>Discussions</div></CourseLayout>} />
             <Route path="/courses/:courseId/pages" element={<CourseLayout><div>Pages</div></CourseLayout>} />
             <Route path="/courses/:courseId/syllabus" element={<CourseLayout><div>Syllabus</div></CourseLayout>} />
-            <Route path="/courses/:courseId/quizzes" element={<CourseLayout><div>Quizzes</div></CourseLayout>} />
+            <Route path="/courses/:courseId/quizzes" element={<CourseLayout><QuizzesPage /></CourseLayout>} />
             <Route path="/courses/:courseId/modules" element={<CourseLayout><div>Modules</div></CourseLayout>} />
             <Route path="/courses/:courseId/collaborations" element={<CourseLayout><div>Collaborations</div></CourseLayout>} />
             <Route path="/courses/:courseId/drive" element={<CourseLayout><div>Google Drive</div></CourseLayout>} />

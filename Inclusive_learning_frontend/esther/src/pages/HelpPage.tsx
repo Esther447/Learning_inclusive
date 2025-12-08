@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Card, CardContent, Button, TextField, Grid, Dialog, DialogTitle, DialogContent, DialogActions, Alert, Snackbar } from '@mui/material';
+import { Grid as MuiGrid, Container, Typography, Box, Card, CardContent, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Alert, Snackbar } from '@mui/material';
+const Grid: any = MuiGrid as any;
 import { Email, Phone, Chat, Help, Send } from '@mui/icons-material';
 
 export const HelpPage: React.FC = () => {

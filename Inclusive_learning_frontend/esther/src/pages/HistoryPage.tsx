@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, Card, CardContent, Chip, LinearProgress, Grid, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { Grid as MuiGrid, Container, Typography, Box, Card, CardContent, Chip, LinearProgress, List, ListItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+const Grid: any = MuiGrid as any;
 import { School, CheckCircle, EmojiEvents, Assignment, Quiz, VideoLibrary } from '@mui/icons-material';
 import { useCourseStore } from '../store/courseStore';
 

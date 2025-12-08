@@ -32,6 +32,7 @@ import {
   Article,
   VideoLibrary,
   Quiz as QuizIcon,
+  Accessibility as AccessibilityIcon,
 } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCourseStore } from '../store/courseStore';
@@ -188,40 +189,114 @@ export const CourseDetailPage: React.FC = () => {
               </Paper>
             )}
 
-            {selectedLesson.video_url && (
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight="600" gutterBottom>Video Tutorial:</Typography>
-                <Link href={selectedLesson.video_url} target="_blank" rel="noopener" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <VideoLibrary /> Watch on YouTube
-                </Link>
-              </Box>
+            {selectedLesson.videoUrl && (
+              <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: '#f5f5f5' }}>
+                <Typography variant="subtitle2" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <VideoLibrary color="primary" /> Video Tutorial
+                </Typography>
+                <Button 
+                  variant="contained" 
+                  startIcon={<VideoLibrary />}
+                  href={selectedLesson.videoUrl} 
+                  target="_blank" 
+                  rel="noopener"
+                  fullWidth
+                  sx={{ mt: 1 }}
+                  aria-label="Watch video tutorial on YouTube"
+                >
+                  Watch Video Tutorial
+                </Button>
+                <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                  Duration: {selectedLesson.duration || 15} minutes • Includes captions and transcripts
+                </Typography>
+              </Paper>
             )}
 
             {selectedLesson.slides && selectedLesson.slides.length > 0 && (
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight="600" gutterBottom>Slides & Materials:</Typography>
+              <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: '#fff3e0' }}>
+                <Typography variant="subtitle2" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Article color="warning" /> Presentation Slides
+                </Typography>
                 <List dense>
                   {selectedLesson.slides.map((slide: any, idx: number) => (
-                    <ListItem key={idx}>
-                      <Download sx={{ mr: 1, fontSize: 20 }} />
-                      <Link href={slide.url} target="_blank" rel="noopener">{slide.title}</Link>
+                    <ListItem key={idx} sx={{ px: 0 }}>
+                      <Button
+                        variant="outlined"
+                        startIcon={<Download />}
+                        href={slide.url}
+                        target="_blank"
+                        rel="noopener"
+                        fullWidth
+                        sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                        aria-label={`Download ${slide.name}`}
+                      >
+                        {slide.name}
+                      </Button>
                     </ListItem>
                   ))}
                 </List>
-              </Box>
+              </Paper>
             )}
 
-            {selectedLesson.external_resources && selectedLesson.external_resources.length > 0 && (
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight="600" gutterBottom>External Resources:</Typography>
+            {selectedLesson.materials && selectedLesson.materials.length > 0 && (
+              <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: '#e8f5e9' }}>
+                <Typography variant="subtitle2" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Download color="success" /> Learning Materials
+                </Typography>
                 <List dense>
-                  {selectedLesson.external_resources.map((resource: any, idx: number) => (
-                    <ListItem key={idx}>
-                      <Link href={resource.url} target="_blank" rel="noopener">{resource.title}</Link>
+                  {selectedLesson.materials.map((material: any, idx: number) => (
+                    <ListItem key={idx} sx={{ px: 0 }}>
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        startIcon={<Download />}
+                        href={material.url}
+                        target="_blank"
+                        rel="noopener"
+                        fullWidth
+                        sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                        aria-label={`Download ${material.name} - ${material.type}`}
+                      >
+                        {material.name} ({material.type.toUpperCase()})
+                      </Button>
                     </ListItem>
                   ))}
                 </List>
-              </Box>
+                <Typography variant="caption" display="block" sx={{ mt: 2, color: 'text.secondary' }}>
+                  💡 All materials are screen reader compatible and available in accessible formats
+                </Typography>
+              </Paper>
+            )}
+
+            {selectedLesson.externalLinks && selectedLesson.externalLinks.length > 0 && (
+              <Paper variant="outlined" sx={{ p: 3, mb: 3, bgcolor: '#e3f2fd' }}>
+                <Typography variant="subtitle2" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Forum color="info" /> External Resources & Support
+                </Typography>
+                <List dense>
+                  {selectedLesson.externalLinks.map((resource: any, idx: number) => (
+                    <ListItem key={idx} sx={{ px: 0 }}>
+                      <Button
+                        variant="outlined"
+                        color="info"
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener"
+                        fullWidth
+                        sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                        aria-label={`Visit ${resource.name} - ${resource.description || 'External resource'}`}
+                      >
+                        {resource.name}
+                      </Button>
+                      {resource.description && (
+                        <Typography variant="caption" display="block" sx={{ mt: 0.5, ml: 2, color: 'text.secondary' }}>
+                          {resource.description}
+                        </Typography>
+                      )}
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
             )}
 
             {selectedLesson.practice_activity && (
@@ -297,46 +372,125 @@ export const CourseDetailPage: React.FC = () => {
   const renderResourcesTab = () => (
     <Box>
       <Typography variant="h6" gutterBottom>Learning Resources</Typography>
+      
+      {/* Course-Level Resources */}
+      {course.resources && course.resources.length > 0 && (
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Typography variant="subtitle1" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Download color="primary" /> Course Materials
+            </Typography>
+            <List>
+              {course.resources.map((resource: any, idx: number) => (
+                <ListItem key={idx} sx={{ px: 0 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Download />}
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener"
+                    fullWidth
+                    sx={{ justifyContent: 'flex-start', textAlign: 'left', mb: 1 }}
+                    aria-label={`Download ${resource.name} - ${resource.description}`}
+                  >
+                    <Box sx={{ textAlign: 'left', width: '100%' }}>
+                      <Typography variant="body2" fontWeight="600">{resource.name}</Typography>
+                      <Typography variant="caption" color="text.secondary">{resource.description}</Typography>
+                    </Box>
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+            <Alert severity="info" sx={{ mt: 2 }}>
+              All materials are accessible and screen reader compatible
+            </Alert>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* External Links */}
+      {course.externalLinks && course.externalLinks.length > 0 && (
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Typography variant="subtitle1" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Forum color="info" /> External Resources & Tutorials
+            </Typography>
+            <List>
+              {course.externalLinks.map((link: any, idx: number) => (
+                <ListItem key={idx} sx={{ px: 0 }}>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener"
+                    fullWidth
+                    sx={{ justifyContent: 'flex-start', textAlign: 'left', mb: 1 }}
+                    aria-label={`Visit ${link.name} - ${link.description}`}
+                  >
+                    <Box sx={{ textAlign: 'left', width: '100%' }}>
+                      <Typography variant="body2" fontWeight="600">{link.name}</Typography>
+                      <Typography variant="caption" color="text.secondary">{link.description}</Typography>
+                    </Box>
+                  </Button>
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Learning Outcomes */}
+      {course.learningOutcomes && course.learningOutcomes.length > 0 && (
+        <Card sx={{ mb: 2 }}>
+          <CardContent>
+            <Typography variant="subtitle1" fontWeight="600" gutterBottom>🎯 What You'll Learn</Typography>
+            <List>
+              {course.learningOutcomes.map((outcome: string, idx: number) => (
+                <ListItem key={idx}>
+                  <CheckCircle sx={{ mr: 2, color: 'success.main' }} />
+                  <Typography variant="body2">{outcome}</Typography>
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Accessibility Features */}
       <Card sx={{ mb: 2 }}>
         <CardContent>
-          <Typography variant="subtitle1" fontWeight="600" gutterBottom>📄 Course Materials</Typography>
-          <List>
-            <ListItem>
-              <Download sx={{ mr: 1 }} />
-              <Link href="#" onClick={(e) => { e.preventDefault(); alert('Download feature coming soon'); }}>
-                {course.title} - Complete Syllabus.pdf
-              </Link>
-            </ListItem>
-            <ListItem>
-              <Download sx={{ mr: 1 }} />
-              <Link href="#" onClick={(e) => { e.preventDefault(); alert('Download feature coming soon'); }}>
-                Study Guide and Practice Exercises.pdf
-              </Link>
-            </ListItem>
-          </List>
+          <Typography variant="subtitle1" fontWeight="600" gutterBottom>♿ Accessibility Features</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {(course.accessibilityFeatures || []).map((feature: string) => (
+              <Chip 
+                key={feature} 
+                label={feature.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} 
+                color="primary" 
+                variant="outlined"
+                icon={<AccessibilityIcon />}
+              />
+            ))}
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            This course is designed to be fully accessible with screen readers, keyboard navigation, captions, and more.
+          </Typography>
         </CardContent>
       </Card>
-      <Card sx={{ mb: 2 }}>
-        <CardContent>
-          <Typography variant="subtitle1" fontWeight="600" gutterBottom>🔗 External Resources</Typography>
-          <List>
-            {course.learningOutcomes?.slice(0, 3).map((outcome, idx) => (
-              <ListItem key={idx}>
-                <Link href="#" onClick={(e) => { e.preventDefault(); alert('External link feature coming soon'); }}>
-                  Resource: {outcome}
-                </Link>
-              </ListItem>
-            )) || <ListItem><Typography color="text.secondary">No external resources yet</Typography></ListItem>}
-          </List>
-        </CardContent>
-      </Card>
+
+      {/* Additional Resources */}
       <Card>
         <CardContent>
-          <Typography variant="subtitle1" fontWeight="600" gutterBottom>📚 Recommended Courses</Typography>
+          <Typography variant="subtitle1" fontWeight="600" gutterBottom>📚 Continue Learning</Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            Continue your learning journey with these related courses
+            Explore related courses to expand your knowledge
           </Typography>
-          <Button variant="outlined" onClick={() => navigate('/courses')} sx={{ mt: 2 }}>
+          <Button 
+            variant="contained" 
+            onClick={() => navigate('/courses')} 
+            sx={{ mt: 2 }}
+            aria-label="Browse more courses"
+          >
             Browse More Courses
           </Button>
         </CardContent>
