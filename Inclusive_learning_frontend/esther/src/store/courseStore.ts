@@ -15,6 +15,7 @@ interface CourseState {
   error: string | null;
   fetchCourses: () => Promise<void>;
   enrollInCourse: (courseId: string) => Promise<void>;
+  unenrollFromCourse: (courseId: string) => Promise<void>;
   updateProgress: (courseId: string, moduleId: string, percentage: number) => void;
   getCourseById: (courseId: string) => Course | undefined;
   getEnrolledCourses: () => Course[];
@@ -2039,23 +2040,40 @@ export const useCourseStore = create<CourseState>((set, get) => ({
   fetchCourses: async () => {
     set({ isLoading: true, error: null });
     try {
-      // Try to fetch from real API
-      const { api } = await import('../services/api');
-      const response = await api.get('/courses');
-      const courses = response.data;
+      // Try to fetch from API
+      try {
+        const { api } = await import('../services/api');
+        const response = await api.get('/courses');
+        const apiCourses = response.data || [];
+        
+        // Transform API courses to match Course type
+        const transformedCourses: Course[] = apiCourses.map((c: any) => ({
+          id: c.id,
+          title: c.title,
+          description: c.description || '',
+          category: c.category as any,
+          instructorId: c.instructor_id || c.instructorId || '',
+          modules: c.modules || [],
+          duration: c.duration || 0,
+          difficulty: c.difficulty as 'beginner' | 'intermediate' | 'advanced',
+          accessibilityFeatures: c.accessibility_features || [],
+          createdAt: c.created_at ? new Date(c.created_at) : new Date(),
+          updatedAt: c.updated_at ? new Date(c.updated_at) : new Date(),
+        }));
       
-      const savedEnrollments = localStorage.getItem('enrolledCourses');
-      const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
-      
-      set({
-        courses: courses,
-        enrolledCourses: enrolled,
-        isLoading: false,
-        error: null,
-      });
-    } catch (error) {
-      // Fallback to mock data if API fails
-      console.warn('API failed, using mock data:', error);
+      // Load enrolled courses from localStorage
+        const savedEnrollments = localStorage.getItem('enrolledCourses');
+        const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
+        
+        set({
+          courses: transformedCourses.length > 0 ? transformedCourses : mockCourses, // Fallback to mock if API returns empty
+          enrolledCourses: enrolled,
+          isLoading: false,
+          error: null,
+        });
+      } catch (apiError) {
+        // If API fails, use mock data as fallback
+        console.warn('Failed to fetch courses from API, using mock data', apiError);
       const savedEnrollments = localStorage.getItem('enrolledCourses');
       const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
       
@@ -2064,6 +2082,12 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         enrolledCourses: enrolled,
         isLoading: false,
         error: null,
+      });
+      }
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : 'Failed to fetch courses',
+        isLoading: false,
       });
     }
   },
@@ -2075,6 +2099,27 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         return; // Already enrolled
       }
 
+      // Try to enroll via backend API first
+      try {
+        const { api } = await import('../services/api');
+        await api.post(`/enrollments/${courseId}`);
+        console.log('Successfully enrolled in course via backend API');
+      } catch (apiError: any) {
+        // If API call fails (e.g., not authenticated, network error), 
+        // still save to localStorage for offline access
+        console.warn('Failed to enroll via backend API, saving to localStorage only:', apiError?.response?.data || apiError?.message);
+        
+        // If it's a 400 (already enrolled), that's okay - continue
+        if (apiError?.response?.status === 400 && apiError?.response?.data?.detail?.includes('Already enrolled')) {
+          console.log('Already enrolled in backend, syncing with localStorage');
+        } else if (apiError?.response?.status !== 401) {
+          // If it's not a 401 (unauthorized), throw the error
+          // 401 means not logged in, which is okay for localStorage fallback
+          throw apiError;
+        }
+      }
+
+      // Update localStorage and store
       const newEnrollments = [...enrolledCourses, courseId];
       localStorage.setItem('enrolledCourses', JSON.stringify(newEnrollments));
 
@@ -2099,6 +2144,77 @@ export const useCourseStore = create<CourseState>((set, get) => ({
       set({
         error: error instanceof Error ? error.message : 'Failed to enroll in course',
       });
+      throw error; // Re-throw so calling code can handle it
+    }
+  },
+
+  unenrollFromCourse: async (courseId: string) => {
+    try {
+      const { enrolledCourses } = get();
+      
+      // Normalize IDs for comparison
+      const normalizeId = (id: string) => String(id).toLowerCase().trim();
+      const courseIdNormalized = normalizeId(courseId);
+      const isEnrolled = enrolledCourses.some(id => normalizeId(id) === courseIdNormalized);
+      
+      if (!isEnrolled) {
+        console.log('Not enrolled in course, nothing to unenroll');
+        return; // Not enrolled
+      }
+
+      // Try to unenroll via backend API first
+      try {
+        const { api } = await import('../services/api');
+        await api.delete(`/enrollments/${courseId}`);
+        console.log('Successfully unenrolled from course via backend API');
+      } catch (apiError: any) {
+        // If API call fails, check the error type
+        const status = apiError?.response?.status;
+        const errorDetail = apiError?.response?.data?.detail || apiError?.message;
+        
+        // If it's a 404 (not enrolled), that's okay - continue with local cleanup
+        if (status === 404) {
+          console.log('Not enrolled in backend, removing from localStorage');
+        } 
+        // If it's a 401 (unauthorized), don't throw - let the auth interceptor handle it
+        // but still remove from local state since the user might have been logged out
+        else if (status === 401) {
+          console.warn('Unauthorized during unenroll - may need to re-authenticate');
+          // Don't throw - continue with local cleanup
+        }
+        // For other errors, log but continue with local cleanup
+        else {
+          console.warn('Failed to unenroll via backend API, removing from localStorage only:', errorDetail);
+          // Don't throw - continue with local cleanup
+        }
+      }
+
+      // Remove from localStorage and store (always do this, even if API call failed)
+      const normalizeIdForFilter = (id: string) => String(id).toLowerCase().trim();
+      const newEnrollments = enrolledCourses.filter(id => normalizeIdForFilter(id) !== courseIdNormalized);
+      localStorage.setItem('enrolledCourses', JSON.stringify(newEnrollments));
+
+      // Remove progress
+      set((state) => {
+        const newProgress = { ...state.progress };
+        // Remove progress for all variations of the course ID
+        Object.keys(newProgress).forEach(key => {
+          if (normalizeIdForFilter(key) === courseIdNormalized) {
+            delete newProgress[key];
+          }
+        });
+        return {
+          enrolledCourses: newEnrollments,
+          progress: newProgress,
+          error: null, // Clear any previous errors
+        };
+      });
+    } catch (error) {
+      console.error('Error in unenrollFromCourse:', error);
+      set({
+        error: error instanceof Error ? error.message : 'Failed to unenroll from course',
+      });
+      throw error; // Re-throw so calling code can handle it
     }
   },
 

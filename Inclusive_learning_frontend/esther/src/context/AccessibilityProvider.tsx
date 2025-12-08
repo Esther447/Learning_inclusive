@@ -45,7 +45,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
     }
 
     // Apply font size
-    document.documentElement.setAttribute('data-font-size', settings.fontSize);
+    document.documentElement.setAttribute('data-font-size', settings.fontSize || 'medium');
 
     // Apply color theme
     document.documentElement.setAttribute('data-theme', settings.colorTheme);

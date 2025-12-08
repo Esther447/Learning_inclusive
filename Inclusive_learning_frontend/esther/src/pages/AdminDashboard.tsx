@@ -36,8 +36,10 @@ import {
   Person as PersonIcon,
 } from '@mui/icons-material';
 import { useAuthStore } from '../store/authStore';
+import { useAccessibilityStore } from '../store/accessibilityStore';
+import { useTextToSpeech } from '../hooks/useTextToSpeech';
 import { api } from '../services/api';
-import { UserRole } from '../types';
+import type { UserRole } from '../types';
 
 interface User {
   id: string;
@@ -48,6 +50,8 @@ interface User {
 }
 
 export const AdminDashboard: React.FC = () => {
+  const { settings } = useAccessibilityStore();
+  const { speak } = useTextToSpeech();
   const { user } = useAuthStore();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,6 +63,13 @@ export const AdminDashboard: React.FC = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  // Announce page for screen readers and TTS
+  useEffect(() => {
+    if (settings.textToSpeechEnabled) {
+      speak('Admin dashboard. Manage users and assign roles.');
+    }
+  }, [settings.textToSpeechEnabled, speak]);
 
   const fetchUsers = async () => {
     try {
@@ -187,7 +198,7 @@ export const AdminDashboard: React.FC = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box>
                 <Typography color="text.secondary" gutterBottom>
-                  Teachers/Mentors
+                  Mentors
                 </Typography>
                 <Typography variant="h4">{stats.mentors}</Typography>
               </Box>
@@ -286,7 +297,7 @@ export const AdminDashboard: React.FC = () => {
                             disabled={updatingUserId === userItem.id || userItem.id === user?.id}
                           >
                             <MenuItem value="learner">Learner</MenuItem>
-                            <MenuItem value="mentor">Teacher/Mentor</MenuItem>
+                            <MenuItem value="mentor">Mentor</MenuItem>
                             <MenuItem value="administrator">Administrator</MenuItem>
                           </Select>
                         </FormControl>
@@ -314,5 +325,6 @@ export const AdminDashboard: React.FC = () => {
     </Container>
   );
 };
+
 
 

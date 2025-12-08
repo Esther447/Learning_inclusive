@@ -8,8 +8,8 @@ from enum import Enum
 
 class UserRole(str, Enum):
     learner = "learner"
-    mentor = "mentor"
-    administrator = "administrator"
+    instructor = "instructor"
+    admin = "admin"
 
 class CourseCategory(str, Enum):
     general = "general"
@@ -44,6 +44,9 @@ class CourseDocument(BaseModel):
     instructor_id: str
     accessibility_features: Optional[Dict[str, Any]] = None
     captions: Optional[Dict[str, Any]] = None
+    duration: Optional[int] = 0
+    modules: Optional[List[Dict[str, Any]]] = []
+    is_published: Optional[bool] = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     

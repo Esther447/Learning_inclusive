@@ -2,10 +2,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from typing import List
 from pydantic import BaseModel
+from uuid import UUID
 from backend_python.mongodb_db import (
     get_users_collection, get_courses_collection,
-    get_enrollments_collection, get_progress_collection,
-    dict_to_user
+    get_enrollments_collection, get_progress_collection
 )
 from backend_python.auth_utils import get_current_user
 from backend_python.mongodb_models import UserDocument, UserRole
@@ -44,13 +44,12 @@ async def get_all_users(current_user: UserDocument = Depends(require_role(["admi
     cursor = users_collection.find({})
     users = []
     async for doc in cursor:
-        user = dict_to_user(doc)
         users.append(UserResponse(
-            id=user.id,
-            email=user.email,
-            name=user.name,
-            role=user.role.value,
-            created_at=user.created_at
+            id=UUID(doc.get("_id")),
+            email=doc.get("email"),
+            name=doc.get("name"),
+            role=doc.get("role", "learner"),
+            created_at=doc.get("created_at")
         ))
     return users
 
@@ -81,12 +80,11 @@ async def update_user_role(
     
     # Fetch updated user
     updated_doc = await users_collection.find_one({"_id": user_id})
-    updated_user = dict_to_user(updated_doc)
     
     return UserResponse(
-        id=updated_user.id,
-        email=updated_user.email,
-        name=updated_user.name,
-        role=updated_user.role.value,
+        id=UUID(updated_doc.get("_id")),
+        email=updated_doc.get("email"),
+        name=updated_doc.get("name"),
+        role=updated_doc.get("role", "learner"),
         created_at=updated_user.created_at
     )

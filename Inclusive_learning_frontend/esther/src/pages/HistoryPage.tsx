@@ -151,8 +151,8 @@ export const HistoryPage: React.FC = () => {
         </Typography>
 
         {/* Stats Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={4}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3, mb: 4 }}>
+          <Box>
             <Card>
               <CardContent>
                 <Typography variant="h4" color="primary.main" fontWeight="bold">
@@ -163,8 +163,8 @@ export const HistoryPage: React.FC = () => {
                 </Typography>
               </CardContent>
             </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          </Box>
+          <Box>
             <Card>
               <CardContent>
                 <Typography variant="h4" color="success.main" fontWeight="bold">
@@ -180,8 +180,8 @@ export const HistoryPage: React.FC = () => {
                 />
               </CardContent>
             </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
+          </Box>
+          <Box>
             <Card>
               <CardContent>
                 <Typography variant="h4" color="info.main" fontWeight="bold">
@@ -192,8 +192,8 @@ export const HistoryPage: React.FC = () => {
                 </Typography>
               </CardContent>
             </Card>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         {/* Timeline */}
         <Card>

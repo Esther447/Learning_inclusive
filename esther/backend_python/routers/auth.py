@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException, Body
-from pydantic import BaseModel, EmailStr, constr
-from uuid import uuid4
+# routers/auth.py
+from fastapi import APIRouter, HTTPException, status, Depends
+from pydantic import BaseModel, EmailStr, Field
+from uuid import uuid4, UUID
+from datetime import datetime
+from typing import Optional
 
-from backend_python.mongodb_db import get_users_collection, user_to_dict, dict_to_user
-from backend_python.mongodb_models import UserDocument, UserRole
+from backend_python.mongodb_db import get_users_collection
+from backend_python.mongodb_models import UserRole
 from backend_python.auth_utils import (
     get_password_hash,
     verify_password,
@@ -11,138 +14,171 @@ from backend_python.auth_utils import (
     create_refresh_token,
     decode_token
 )
-from backend_python.schemas import UserResponse, TokenOut
 
 router = APIRouter()
 
-
-# ==================== Request Schemas ====================
-
 class SignupIn(BaseModel):
     email: EmailStr
-    password: constr(min_length=6) 
+    password: str = Field(..., min_length=6)
     name: str | None = None
-
 
 class LoginIn(BaseModel):
     email: EmailStr
     password: str
+
+class TokenOut(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+class UserResponse(BaseModel):
+    id: str
+    email: str
+    name: str | None
+    role: str
+    created_at: datetime
+
+class LoginResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+    user: UserResponse
 
 
 class RefreshIn(BaseModel):
     refresh_token: str
 
 
+class RefreshOut(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
 
+@router.post("/login", response_model=LoginResponse)
+async def login(payload: LoginIn):
+    users_collection = get_users_collection()
+    
+    try:
+        normalized_email = payload.email.lower().strip()
+        user_doc = await users_collection.find_one(
+            {"email": {"$regex": f"^{normalized_email}$", "$options": "i"}}
+        )
+        
+        if not user_doc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
+        
+        # Verify password hash exists and matches
+        password_hash = user_doc.get("password_hash")
+        if not password_hash or not verify_password(payload.password, password_hash):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
 
+        access_token = create_access_token(str(user_doc["_id"]))
+        refresh_token = create_refresh_token(str(user_doc["_id"]))
 
-# ==================== AUTH ROUTES ====================
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+            "user": {
+                "id": str(user_doc["_id"]),
+                "email": user_doc.get("email"),
+                "name": user_doc.get("name"),
+                "role": user_doc.get("role", "learner"),
+                "created_at": user_doc.get("created_at", datetime.utcnow())
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 
 @router.post("/signup", response_model=UserResponse)
 async def signup(payload: SignupIn):
     users_collection = get_users_collection()
     
-    # Check if email exists
-    existing = await users_collection.find_one({"email": payload.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    # Create user document with UUID
-    user_doc = UserDocument(
-        email=payload.email,
-        name=payload.name,
-        role=UserRole.learner,
-        password_hash=get_password_hash(payload.password)
-    )
-    
-    # Insert into MongoDB
-    user_dict = user_to_dict(user_doc)
-    # Remove None values
-    user_dict = {k: v for k, v in user_dict.items() if v is not None}
-    
-    result = await users_collection.insert_one(user_dict)
-    
-    # Fetch the created user by id field
-    created_user = await users_collection.find_one({"id": user_doc.id})
-    
-    # Convert to UserResponse format
-    user_data = dict_to_user(created_user)
-    return UserResponse(
-        id=user_data.id,
-        email=user_data.email,
-        name=user_data.name,
-        role=user_data.role.value,
-        created_at=user_data.created_at
-    )
-
-
-@router.post("/login", response_model=TokenOut)
-async def login(payload: LoginIn):
     try:
-        users_collection = get_users_collection()
-        
-        # Find user by email
-        user_doc = await users_collection.find_one({"email": payload.email})
-        
-        if not user_doc:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
-        
-        user = dict_to_user(user_doc)
-        
-        if not verify_password(payload.password, user.password_hash):
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+        normalized_email = payload.email.lower().strip()
+        existing = await users_collection.find_one(
+            {"email": {"$regex": f"^{normalized_email}$", "$options": "i"}}
+        )
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
 
-        access = create_access_token(str(user.id))
-        refresh = create_refresh_token(str(user.id))
-
-        return {
-            "access_token": access,
-            "refresh_token": refresh,
-            "token_type": "bearer",
-            "user": {
-                "id": str(user.id),
-                "email": user.email,
-                "name": user.name,
-                "role": user.role.value if hasattr(user.role, 'value') else user.role,
-                "created_at": user.created_at.isoformat() if user.created_at else None
-            }
+        user_id = str(uuid4())
+        hashed_password = get_password_hash(payload.password)
+        
+        now = datetime.utcnow()
+        user_data = {
+            "_id": user_id,
+            "email": normalized_email,
+            "password_hash": hashed_password,
+            "name": payload.name,
+            "role": UserRole.LEARNER.value,
+            "created_at": now
         }
+        
+        await users_collection.insert_one(user_data)
+        
+        return {
+            "id": user_id,
+            "email": normalized_email,
+            "name": payload.name,
+            "role": UserRole.LEARNER.value,
+            "created_at": now
+        }
+        
     except HTTPException:
         raise
     except Exception as e:
-        import traceback
-        print(f"Login error: {e}")
-        print(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
-
-
-@router.post("/refresh", response_model=TokenOut)
-async def refresh_token(payload: RefreshIn = Body(...)):
-    decoded = decode_token(payload.refresh_token, refresh=True)
-
-    if not decoded or decoded.get("type") != "refresh":
-        raise HTTPException(status_code=401, detail="Invalid refresh token")
-
-    sub = decoded.get("sub")
-    users_collection = get_users_collection()
-    # Query by the string ID stored in MongoDB
-    user_doc = await users_collection.find_one({"id": sub})
-
-    if not user_doc:
-        raise HTTPException(status_code=401, detail="User not found")
-
-    user = dict_to_user(user_doc)
-    access = create_access_token(str(user.id))
-    refresh = create_refresh_token(str(user.id))
-
-    return TokenOut(
-        access_token=access,
-        refresh_token=refresh,
-        user=UserResponse(
-            id=user.id,
-            email=user.email,
-            name=user.name,
-            role=user.role.value,
-            created_at=user.created_at
+        print(f"Signup error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
         )
-    )
+
+
+@router.post("/refresh", response_model=RefreshOut)
+async def refresh_token(payload: RefreshIn):
+    """Exchange a valid refresh token for a new access token (and rotate refresh token)."""
+    try:
+        token_payload = decode_token(payload.refresh_token, refresh=True)
+        if not token_payload or token_payload.get("type") != "refresh":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
+
+        user_id = token_payload.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
+
+        users_collection = get_users_collection()
+        user_doc = await users_collection.find_one({"_id": user_id})
+        if not user_doc:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+
+        new_access = create_access_token(str(user_id))
+        new_refresh = create_refresh_token(str(user_id))
+
+        return {
+            "access_token": new_access,
+            "refresh_token": new_refresh,
+            "token_type": "bearer"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Refresh token error: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
