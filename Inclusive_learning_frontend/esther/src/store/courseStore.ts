@@ -2099,24 +2099,14 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         return; // Already enrolled
       }
 
-      // Try to enroll via backend API first
+      // Try to enroll via backend API first (but don't fail if unavailable)
       try {
         const { api } = await import('../services/api');
         await api.post(`/enrollments/${courseId}`);
         console.log('Successfully enrolled in course via backend API');
       } catch (apiError: any) {
-        // If API call fails (e.g., not authenticated, network error), 
-        // still save to localStorage for offline access
-        console.warn('Failed to enroll via backend API, saving to localStorage only:', apiError?.response?.data || apiError?.message);
-        
-        // If it's a 400 (already enrolled), that's okay - continue
-        if (apiError?.response?.status === 400 && apiError?.response?.data?.detail?.includes('Already enrolled')) {
-          console.log('Already enrolled in backend, syncing with localStorage');
-        } else if (apiError?.response?.status !== 401) {
-          // If it's not a 401 (unauthorized), throw the error
-          // 401 means not logged in, which is okay for localStorage fallback
-          throw apiError;
-        }
+        // Backend unavailable - continue with localStorage only
+        console.log('Backend unavailable, using localStorage for enrollment');
       }
 
       // Update localStorage and store
@@ -2144,7 +2134,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
       set({
         error: error instanceof Error ? error.message : 'Failed to enroll in course',
       });
-      throw error; // Re-throw so calling code can handle it
+      throw error;
     }
   },
 
@@ -2152,61 +2142,31 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     try {
       const { enrolledCourses } = get();
       
-      // Normalize IDs for comparison
-      const normalizeId = (id: string) => String(id).toLowerCase().trim();
-      const courseIdNormalized = normalizeId(courseId);
-      const isEnrolled = enrolledCourses.some(id => normalizeId(id) === courseIdNormalized);
-      
-      if (!isEnrolled) {
-        console.log('Not enrolled in course, nothing to unenroll');
+      if (!enrolledCourses.includes(courseId)) {
         return; // Not enrolled
       }
 
-      // Try to unenroll via backend API first
+      // Try to unenroll via backend API (but don't fail if unavailable)
       try {
         const { api } = await import('../services/api');
         await api.delete(`/enrollments/${courseId}`);
         console.log('Successfully unenrolled from course via backend API');
       } catch (apiError: any) {
-        // If API call fails, check the error type
-        const status = apiError?.response?.status;
-        const errorDetail = apiError?.response?.data?.detail || apiError?.message;
-        
-        // If it's a 404 (not enrolled), that's okay - continue with local cleanup
-        if (status === 404) {
-          console.log('Not enrolled in backend, removing from localStorage');
-        } 
-        // If it's a 401 (unauthorized), don't throw - let the auth interceptor handle it
-        // but still remove from local state since the user might have been logged out
-        else if (status === 401) {
-          console.warn('Unauthorized during unenroll - may need to re-authenticate');
-          // Don't throw - continue with local cleanup
-        }
-        // For other errors, log but continue with local cleanup
-        else {
-          console.warn('Failed to unenroll via backend API, removing from localStorage only:', errorDetail);
-          // Don't throw - continue with local cleanup
-        }
+        console.log('Backend unavailable, using localStorage for unenrollment');
       }
 
-      // Remove from localStorage and store (always do this, even if API call failed)
-      const normalizeIdForFilter = (id: string) => String(id).toLowerCase().trim();
-      const newEnrollments = enrolledCourses.filter(id => normalizeIdForFilter(id) !== courseIdNormalized);
+      // Remove from localStorage and store
+      const newEnrollments = enrolledCourses.filter(id => id !== courseId);
       localStorage.setItem('enrolledCourses', JSON.stringify(newEnrollments));
 
       // Remove progress
       set((state) => {
         const newProgress = { ...state.progress };
-        // Remove progress for all variations of the course ID
-        Object.keys(newProgress).forEach(key => {
-          if (normalizeIdForFilter(key) === courseIdNormalized) {
-            delete newProgress[key];
-          }
-        });
+        delete newProgress[courseId];
         return {
           enrolledCourses: newEnrollments,
           progress: newProgress,
-          error: null, // Clear any previous errors
+          error: null,
         };
       });
     } catch (error) {
@@ -2214,7 +2174,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
       set({
         error: error instanceof Error ? error.message : 'Failed to unenroll from course',
       });
-      throw error; // Re-throw so calling code can handle it
+      throw error;
     }
   },
 

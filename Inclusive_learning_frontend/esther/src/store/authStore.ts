@@ -21,9 +21,29 @@ interface AuthState {
   updateUser: (user: User | Learner | Mentor | Administrator) => void;
 }
 
+// Initialize auth state from localStorage
+const initializeAuth = () => {
+  const token = localStorage.getItem('access_token');
+  const savedUser = localStorage.getItem('user');
+  
+  if (token && savedUser) {
+    try {
+      const user = JSON.parse(savedUser);
+      return { user, isAuthenticated: true };
+    } catch (e) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+    }
+  }
+  return { user: null, isAuthenticated: false };
+};
+
+const initialAuth = initializeAuth();
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
+  user: initialAuth.user,
+  isAuthenticated: initialAuth.isAuthenticated,
   isLoading: false,
   error: null,
 
@@ -36,9 +56,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (!user) {
         throw new Error('No user data in login response');
       }
-      
-      // Use setTokens to store both access and refresh tokens consistently
-      setTokens(access_token, refresh_token);
       
       // Convert user response to Learner type with full object
       const authenticatedUser = {
@@ -70,6 +87,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         progress: [],
         certifications: [],
       };
+      
+      // Use setTokens to store both access and refresh tokens consistently
+      setTokens(access_token, refresh_token);
+      
+      // Save user to localStorage for persistence
+      localStorage.setItem('user', JSON.stringify(authenticatedUser));
       
       set({
         user: authenticatedUser,
@@ -170,6 +193,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         certifications: [],
       };
 
+      // Save user to localStorage
+      localStorage.setItem('user', JSON.stringify(newUser));
+      localStorage.setItem('access_token', 'mock_token_' + Date.now());
+      
       set({
         user: newUser,
         isAuthenticated: true,
@@ -188,6 +215,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
     set({
       user: null,
       isAuthenticated: false,
