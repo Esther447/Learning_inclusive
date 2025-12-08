@@ -134,8 +134,17 @@ export const LoginPage: React.FC = () => {
               disabled={isLoading}
               startIcon={isLoading ? <CircularProgress size={20} color="inherit" aria-hidden="true" /> : null}
               aria-label={isLoading ? 'Logging in, please wait' : 'Login button'}
+              sx={{ mb: 2 }}
             >
               {isLoading ? 'Logging in...' : 'Login'}
+            </Button>
+            <Button
+              fullWidth
+              variant="text"
+              onClick={() => navigate('/forgot-password')}
+              aria-label="Forgot password"
+            >
+              Forgot Password?
             </Button>
           </Box>
         ) : (

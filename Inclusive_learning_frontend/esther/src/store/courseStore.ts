@@ -2040,13 +2040,16 @@ export const useCourseStore = create<CourseState>((set, get) => ({
   fetchCourses: async () => {
     set({ isLoading: true, error: null });
     try {
+      // Get current user to load their specific enrollments
+      const savedUser = localStorage.getItem('user');
+      const userId = savedUser ? JSON.parse(savedUser).id : null;
+      
       // Try to fetch from API
       try {
         const { api } = await import('../services/api');
         const response = await api.get('/courses');
         const apiCourses = response.data || [];
         
-        // Transform API courses to match Course type
         const transformedCourses: Course[] = apiCourses.map((c: any) => ({
           id: c.id,
           title: c.title,
@@ -2061,28 +2064,30 @@ export const useCourseStore = create<CourseState>((set, get) => ({
           updatedAt: c.updated_at ? new Date(c.updated_at) : new Date(),
         }));
       
-      // Load enrolled courses from localStorage
-        const savedEnrollments = localStorage.getItem('enrolledCourses');
+        // Load user-specific enrollments
+        const enrollmentKey = userId ? `enrolledCourses_${userId}` : 'enrolledCourses';
+        const savedEnrollments = localStorage.getItem(enrollmentKey);
         const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
         
         set({
-          courses: transformedCourses.length > 0 ? transformedCourses : mockCourses, // Fallback to mock if API returns empty
+          courses: transformedCourses.length > 0 ? transformedCourses : mockCourses,
           enrolledCourses: enrolled,
           isLoading: false,
           error: null,
         });
       } catch (apiError) {
-        // If API fails, use mock data as fallback
         console.warn('Failed to fetch courses from API, using mock data', apiError);
-      const savedEnrollments = localStorage.getItem('enrolledCourses');
-      const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
+        // Load user-specific enrollments
+        const enrollmentKey = userId ? `enrolledCourses_${userId}` : 'enrolledCourses';
+        const savedEnrollments = localStorage.getItem(enrollmentKey);
+        const enrolled = savedEnrollments ? JSON.parse(savedEnrollments) : [];
       
-      set({
-        courses: mockCourses,
-        enrolledCourses: enrolled,
-        isLoading: false,
-        error: null,
-      });
+        set({
+          courses: mockCourses,
+          enrolledCourses: enrolled,
+          isLoading: false,
+          error: null,
+        });
       }
     } catch (error) {
       set({
@@ -2099,19 +2104,23 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         return; // Already enrolled
       }
 
+      // Get current user ID
+      const savedUser = localStorage.getItem('user');
+      const userId = savedUser ? JSON.parse(savedUser).id : null;
+
       // Try to enroll via backend API first (but don't fail if unavailable)
       try {
         const { api } = await import('../services/api');
         await api.post(`/enrollments/${courseId}`);
         console.log('Successfully enrolled in course via backend API');
       } catch (apiError: any) {
-        // Backend unavailable - continue with localStorage only
         console.log('Backend unavailable, using localStorage for enrollment');
       }
 
-      // Update localStorage and store
+      // Update user-specific localStorage and store
       const newEnrollments = [...enrolledCourses, courseId];
-      localStorage.setItem('enrolledCourses', JSON.stringify(newEnrollments));
+      const enrollmentKey = userId ? `enrolledCourses_${userId}` : 'enrolledCourses';
+      localStorage.setItem(enrollmentKey, JSON.stringify(newEnrollments));
 
       // Initialize progress
       const newProgress: LearnerProgress = {
@@ -2146,6 +2155,10 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         return; // Not enrolled
       }
 
+      // Get current user ID
+      const savedUser = localStorage.getItem('user');
+      const userId = savedUser ? JSON.parse(savedUser).id : null;
+
       // Try to unenroll via backend API (but don't fail if unavailable)
       try {
         const { api } = await import('../services/api');
@@ -2155,9 +2168,10 @@ export const useCourseStore = create<CourseState>((set, get) => ({
         console.log('Backend unavailable, using localStorage for unenrollment');
       }
 
-      // Remove from localStorage and store
+      // Remove from user-specific localStorage and store
       const newEnrollments = enrolledCourses.filter(id => id !== courseId);
-      localStorage.setItem('enrolledCourses', JSON.stringify(newEnrollments));
+      const enrollmentKey = userId ? `enrolledCourses_${userId}` : 'enrolledCourses';
+      localStorage.setItem(enrollmentKey, JSON.stringify(newEnrollments));
 
       // Remove progress
       set((state) => {
