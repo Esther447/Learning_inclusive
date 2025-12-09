@@ -11,6 +11,8 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  status?: 'active' | 'pending' | 'suspended';
+  requirePasswordChange?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -41,6 +43,7 @@ export type Learner = Omit<User, 'role'> & {
 
 export type Mentor = Omit<User, 'role'> & {
   role: typeof USER_ROLES.MENTOR;
+  status: 'active' | 'pending' | 'suspended';
   specialization: string[];
   assignedLearners: string[];
   courses: string[];
@@ -49,7 +52,9 @@ export type Mentor = Omit<User, 'role'> & {
 
 export type Administrator = Omit<User, 'role'> & {
   role: typeof USER_ROLES.ADMINISTRATOR;
+  status: 'active';
   permissions: Permission[];
+  requirePasswordChange?: boolean;
 };
 
 // --------------------

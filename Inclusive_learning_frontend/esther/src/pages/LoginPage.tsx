@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Paper, Typography, TextField, Button, Box, Tabs, Tab, CircularProgress } from '@mui/material';
+import { Container, Paper, Typography, TextField, Button, Box, Tabs, Tab, CircularProgress, MenuItem, Grid as MuiGrid, Card, CardContent } from '@mui/material';
+import { School, Accessibility, People, EmojiObjects } from '@mui/icons-material';
+const Grid: any = MuiGrid as any;
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useAccessibilityStore } from '../store/accessibilityStore';
@@ -14,6 +16,7 @@ export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [role, setRole] = useState<'learner' | 'mentor' | 'administrator'>('learner');
 
   // Announce page for screen readers and TTS
   useEffect(() => {
@@ -26,9 +29,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      // Get updated user after login
       const currentUser = useAuthStore.getState().user;
-      // Redirect based on role
       if (currentUser?.role === 'administrator') {
         navigate('/admin/dashboard');
       } else if (currentUser?.role === 'mentor') {
@@ -36,42 +37,91 @@ export const LoginPage: React.FC = () => {
       } else {
         navigate('/dashboard');
       }
-    } catch (err) {
-      console.error('Login failed');
+    } catch (err: any) {
+      console.error('Login failed:', err.message);
     }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signup({ email, password, name });
-      // Switch to login tab after successful signup
-      setTab(0);
-      // Clear form fields
-      setName('');
-      setPassword('');
-      setEmail('');
-    } catch (err) {
-      console.error('Signup failed');
+      await signup({ email, password, name, role });
+      if (role === 'mentor') {
+        alert('Your mentor account has been created and is pending admin approval. You will be notified once approved.');
+        setTab(0);
+        return;
+      }
+      await login({ email, password });
+      navigate('/dashboard');
+    } catch (err: any) {
+      console.error('Signup failed:', err.message);
     }
   };
 
   return (
-    <Container 
-      maxWidth="sm" 
-      sx={{ py: 8 }}
-      role="main"
-      aria-label="Login and sign up page"
-    >
-      <Paper sx={{ p: 4 }} role="region" aria-label="Authentication form">
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', py: 6 }}>
+      <Container maxWidth="lg">
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography variant="h2" sx={{ color: 'white', fontWeight: 700, mb: 2 }}>
+            Welcome to Inclusive Learning
+          </Typography>
+          <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.9)', mb: 4 }}>
+            Accessible Education for Everyone in Rwanda
+          </Typography>
+        </Box>
+
+        <Grid container spacing={4} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+              <CardContent>
+                <School sx={{ fontSize: 48, color: '#667eea', mb: 2 }} />
+                <Typography variant="h6" gutterBottom>Quality Courses</Typography>
+                <Typography variant="body2" color="textSecondary">Technology, Vocational & Soft Skills</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+              <CardContent>
+                <Accessibility sx={{ fontSize: 48, color: '#667eea', mb: 2 }} />
+                <Typography variant="h6" gutterBottom>Fully Accessible</Typography>
+                <Typography variant="body2" color="textSecondary">Screen readers, captions & more</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+              <CardContent>
+                <People sx={{ fontSize: 48, color: '#667eea', mb: 2 }} />
+                <Typography variant="h6" gutterBottom>Expert Mentors</Typography>
+                <Typography variant="body2" color="textSecondary">Get guidance from professionals</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Card sx={{ height: '100%', textAlign: 'center', bgcolor: 'rgba(255,255,255,0.95)' }}>
+              <CardContent>
+                <EmojiObjects sx={{ fontSize: 48, color: '#667eea', mb: 2 }} />
+                <Typography variant="h6" gutterBottom>Interactive Learning</Typography>
+                <Typography variant="body2" color="textSecondary">Hands-on projects & quizzes</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        <Container maxWidth="sm">
+          <Paper sx={{ p: 4, borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }} role="region" aria-label="Authentication form">
         <Typography 
           variant="h4" 
           align="center" 
-          sx={{ mb: 3 }}
+          sx={{ mb: 1, fontWeight: 600 }}
           component="h1"
           id="login-page-title"
         >
-          Welcome
+          Get Started
+        </Typography>
+        <Typography variant="body2" align="center" color="textSecondary" sx={{ mb: 3 }}>
+          Join thousands of learners building their future
         </Typography>
 
         <Tabs 
@@ -168,6 +218,19 @@ export const LoginPage: React.FC = () => {
             />
             <TextField
               fullWidth
+              select
+              label="I am a..."
+              value={role}
+              onChange={(e) => setRole(e.target.value as any)}
+              sx={{ mb: 2 }}
+              aria-label="Select your role"
+              helperText={role === 'mentor' ? 'Mentor accounts require admin approval' : ''}
+            >
+              <MenuItem value="learner">Learner</MenuItem>
+              <MenuItem value="mentor">Mentor (Requires Approval)</MenuItem>
+            </TextField>
+            <TextField
+              fullWidth
               label="Email"
               type="email"
               value={email}
@@ -203,8 +266,9 @@ export const LoginPage: React.FC = () => {
             </Button>
           </Box>
         )}
-
       </Paper>
-    </Container>
+      </Container>
+      </Container>
+    </Box>
   );
 };

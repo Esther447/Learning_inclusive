@@ -1,559 +1,322 @@
-/**
- * Mentor Dashboard
- * Allows mentors to manage their courses and modules
- */
-
-import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  Card,
-  CardContent,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  IconButton,
-  Alert,
-  CircularProgress,
-  Tabs,
-  Tab,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  List,
-  ListItem,
-  ListItemText,
-} from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  ExpandMore as ExpandMoreIcon,
-  School as SchoolIcon,
-  Book as BookIcon,
-  Publish as PublishIcon,
-  Unpublished as UnpublishedIcon,
-} from '@mui/icons-material';
-import { useAuthStore } from '../store/authStore';
-import { useAccessibilityStore } from '../store/accessibilityStore';
-import { useTextToSpeech } from '../hooks/useTextToSpeech';
-import { api } from '../services/api';
-import { useNavigate } from 'react-router-dom';
-
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  difficulty: string;
-  instructor_id: string;
-  duration: number;
-  modules: Module[];
-  is_published: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Module {
-  id: string;
-  title: string;
-  description?: string;
-  content: any[];
-  order: number;
-  estimated_time: number;
-}
+import React, { useState } from 'react';
+import { Box, Grid as MuiGrid, Card, CardContent, Typography, Table, TableBody, TableCell, TableHead, TableRow, Button, IconButton, Chip, TextField, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Avatar, List, ListItem, ListItemAvatar, ListItemText, LinearProgress } from '@mui/material';
+import { People, Event, QuestionAnswer, Assignment, VideoCall, Send, Schedule, Star } from '@mui/icons-material';
+const Grid: any = MuiGrid as any;
 
 export const MentorDashboard: React.FC = () => {
-  const { user } = useAuthStore();
-  const { settings } = useAccessibilityStore();
-  const { speak } = useTextToSpeech();
-  const navigate = useNavigate();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [tab, setTab] = useState(0);
+  const [sessionDialog, setSessionDialog] = useState(false);
+  const [messageDialog, setMessageDialog] = useState(false);
+  const [selectedLearner, setSelectedLearner] = useState<any>(null);
 
-  // Announce page for screen readers and TTS
-  useEffect(() => {
-    if (settings.textToSpeechEnabled) {
-      speak('Mentor dashboard. Manage your courses and modules.');
-    }
-  }, [settings.textToSpeechEnabled, speak]);
-  
-  // Course creation dialog
-  const [courseDialogOpen, setCourseDialogOpen] = useState(false);
-  const [courseForm, setCourseForm] = useState({
-    title: '',
-    description: '',
-    category: 'general',
-    difficulty: 'beginner',
-    duration: 0,
-  });
-  
-  // Module management
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [moduleDialogOpen, setModuleDialogOpen] = useState(false);
-  const [moduleForm, setModuleForm] = useState({
-    title: '',
-    description: '',
-    order: 0,
-    estimated_time: 0,
-  });
-  const [editingModule, setEditingModule] = useState<Module | null>(null);
+  const stats = [
+    { title: 'Active Learners', value: '12', icon: <People />, color: '#1976d2' },
+    { title: 'Sessions Today', value: '2', icon: <Event />, color: '#2e7d32' },
+    { title: 'Pending Questions', value: '5', icon: <QuestionAnswer />, color: '#ed6c02' },
+    { title: 'Courses Mentoring', value: '3', icon: <Assignment />, color: '#9c27b0' },
+  ];
 
-  useEffect(() => {
-    if (user?.role === 'mentor' || user?.role === 'administrator') {
-      fetchMyCourses();
-    }
-  }, [user]);
+  const learners = [
+    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', courses: ['Web Dev'], progress: 75, lastSession: '2024-01-10', status: 'active' },
+    { id: 2, name: 'Bob Smith', email: 'bob@example.com', courses: ['Mobile Dev'], progress: 45, lastSession: '2024-01-08', status: 'needs-attention' },
+    { id: 3, name: 'Carol White', email: 'carol@example.com', courses: ['Web Dev'], progress: 90, lastSession: '2024-01-12', status: 'active' },
+  ];
 
-  const fetchMyCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await api.get('/courses/instructor/my-courses');
-      setCourses(response.data || []);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to fetch courses');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const sessions = [
+    { id: 1, learner: 'Alice Johnson', date: '2024-01-20', time: '10:00 AM', topic: 'JavaScript Basics', status: 'scheduled' },
+    { id: 2, learner: 'Bob Smith', date: '2024-01-20', time: '2:00 PM', topic: 'React Components', status: 'scheduled' },
+  ];
 
-  const handleCreateCourse = async () => {
-    try {
-      setError(null);
-      const response = await api.post('/courses', courseForm);
-      setSuccess('Course created successfully!');
-      setCourseDialogOpen(false);
-      setCourseForm({ title: '', description: '', category: 'general', difficulty: 'beginner', duration: 0 });
-      fetchMyCourses();
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to create course');
-    }
-  };
+  const messages = [
+    { id: 1, from: 'Alice Johnson', message: 'Can we reschedule our session?', time: '10 mins ago', unread: true },
+    { id: 2, from: 'Bob Smith', message: 'Thank you for the feedback!', time: '1 hour ago', unread: false },
+    { id: 3, from: 'Carol White', message: 'I have a question about the assignment', time: '2 hours ago', unread: true },
+  ];
 
-  const handleAddModule = async () => {
-    if (!selectedCourse) return;
-    
-    try {
-      setError(null);
-      await api.post(`/courses/${selectedCourse.id}/modules`, moduleForm);
-      setSuccess('Module added successfully!');
-      setModuleDialogOpen(false);
-      setModuleForm({ title: '', description: '', order: 0, estimated_time: 0 });
-      setEditingModule(null);
-      fetchMyCourses();
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to add module');
-    }
-  };
-
-  const handleUpdateModule = async () => {
-    if (!selectedCourse || !editingModule) return;
-    
-    try {
-      setError(null);
-      await api.put(`/courses/${selectedCourse.id}/modules/${editingModule.id}`, moduleForm);
-      setSuccess('Module updated successfully!');
-      setModuleDialogOpen(false);
-      setModuleForm({ title: '', description: '', order: 0, estimated_time: 0 });
-      setEditingModule(null);
-      fetchMyCourses();
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to update module');
-    }
-  };
-
-  const handleDeleteModule = async (courseId: string, moduleId: string) => {
-    if (!confirm('Are you sure you want to delete this module?')) return;
-    
-    try {
-      setError(null);
-      await api.delete(`/courses/${courseId}/modules/${moduleId}`);
-      setSuccess('Module deleted successfully!');
-      fetchMyCourses();
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to delete module');
-    }
-  };
-
-  const handleTogglePublish = async (courseId: string, currentStatus: boolean) => {
-    try {
-      setError(null);
-      await api.patch(`/courses/${courseId}/publish`);
-      setSuccess(`Course ${currentStatus ? 'unpublished' : 'published'} successfully!`);
-      fetchMyCourses();
-      setTimeout(() => setSuccess(null), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to update course status');
-    }
-  };
-
-  const openModuleDialog = (course: Course, module?: Module) => {
-    setSelectedCourse(course);
-    if (module) {
-      setEditingModule(module);
-      setModuleForm({
-        title: module.title,
-        description: module.description || '',
-        order: module.order,
-        estimated_time: module.estimated_time,
-      });
-    } else {
-      setEditingModule(null);
-      setModuleForm({
-        title: '',
-        description: '',
-        order: (course.modules?.length || 0) + 1,
-        estimated_time: 0,
-      });
-    }
-    setModuleDialogOpen(true);
-  };
-
-  if (user?.role !== 'mentor' && user?.role !== 'administrator') {
-    return (
-      <Container sx={{ mt: 4 }}>
-        <Alert severity="error">You must be a mentor to access this page.</Alert>
-      </Container>
-    );
-  }
+  const feedback = [
+    { id: 1, learner: 'Alice Johnson', rating: 5, comment: 'Very helpful and patient!', date: '2024-01-15' },
+    { id: 2, learner: 'Bob Smith', rating: 4, comment: 'Good explanations', date: '2024-01-14' },
+  ];
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1">
-          <SchoolIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Mentor Dashboard
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setCourseDialogOpen(true)}
-        >
-          Create Course
-        </Button>
-      </Box>
+    <Box sx={{ p: 3 }}>
+        {/* Quick Stats */}
+        <Typography variant="h5" fontWeight="600" gutterBottom>Quick Overview</Typography>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {stats.map((stat, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card>
+                <CardContent>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                    <Box sx={{ color: stat.color, fontSize: 48, mb: 1 }}>{stat.icon}</Box>
+                    <Typography variant="h4" fontWeight="bold">{stat.value}</Typography>
+                    <Typography color="textSecondary" variant="body2">{stat.title}</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-          {error}
-        </Alert>
-      )}
-
-      {success && (
-        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(null)}>
-          {success}
-        </Alert>
-      )}
-
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }}>
-        <Tab label="My Courses" />
-        <Tab label="Manage Modules" />
-      </Tabs>
-
-      {loading ? (
-        <Box display="flex" justifyContent="center" p={4}>
-          <CircularProgress />
-        </Box>
-      ) : tab === 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Difficulty</TableCell>
-                <TableCell>Modules</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {courses.length === 0 ? (
+        {/* My Learners */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="600" gutterBottom>My Learners</Typography>
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    <Typography color="text.secondary" sx={{ py: 4 }}>
-                      No courses yet. Create your first course to get started!
-                    </Typography>
-                  </TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Courses</TableCell>
+                  <TableCell>Progress</TableCell>
+                  <TableCell>Last Session</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
-              ) : (
-                courses.map((course) => (
-                  <TableRow key={course.id}>
+              </TableHead>
+              <TableBody>
+                {learners.map((learner) => (
+                  <TableRow key={learner.id}>
                     <TableCell>
-                      <Typography variant="subtitle2" fontWeight={600}>
-                        {course.title}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {course.description || 'No description'}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip label={course.category} size="small" />
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={course.difficulty}
-                        size="small"
-                        color={
-                          course.difficulty === 'beginner' ? 'success' :
-                          course.difficulty === 'intermediate' ? 'warning' : 'error'
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>{course.modules?.length || 0}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={course.is_published ? 'Published' : 'Draft'}
-                        color={course.is_published ? 'success' : 'default'}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleTogglePublish(course.id, course.is_published)}
-                          title={course.is_published ? 'Unpublish' : 'Publish'}
-                        >
-                          {course.is_published ? <UnpublishedIcon /> : <PublishIcon />}
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => navigate(`/course/${course.id}`)}
-                          title="View Course"
-                        >
-                          <EditIcon />
-                        </IconButton>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 32, height: 32 }}>{learner.name.charAt(0)}</Avatar>
+                        <Box>
+                          <Typography variant="body2">{learner.name}</Typography>
+                          <Typography variant="caption" color="textSecondary">{learner.email}</Typography>
+                        </Box>
                       </Box>
                     </TableCell>
+                    <TableCell>
+                      {learner.courses.map((course, i) => (
+                        <Chip key={i} label={course} size="small" sx={{ mr: 0.5 }} />
+                      ))}
+                    </TableCell>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <LinearProgress variant="determinate" value={learner.progress} sx={{ flexGrow: 1, height: 8, borderRadius: 4 }} />
+                        <Typography variant="body2">{learner.progress}%</Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{learner.lastSession}</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={learner.status} 
+                        size="small" 
+                        color={learner.status === 'active' ? 'success' : 'warning'} 
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button 
+                        size="small" 
+                        variant="outlined" 
+                        sx={{ mr: 1 }}
+                        onClick={() => { setSelectedLearner(learner); setSessionDialog(true); }}
+                      >
+                        Schedule
+                      </Button>
+                      <Button 
+                        size="small" 
+                        variant="outlined"
+                        onClick={() => { setSelectedLearner(learner); setMessageDialog(true); }}
+                      >
+                        Message
+                      </Button>
+                    </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Box>
-          {courses.length === 0 ? (
-            <Alert severity="info">Create a course first to manage modules.</Alert>
-          ) : (
-            courses.map((course) => (
-              <Accordion key={course.id} sx={{ mb: 2 }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <SchoolIcon sx={{ mr: 2 }} />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6">{course.title}</Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {course.modules?.length || 0} modules
-                      </Typography>
-                    </Box>
-                    <Button
-                      size="small"
-                      startIcon={<AddIcon />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModuleDialog(course);
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Upcoming Sessions */}
+        <Card sx={{ mb: 3 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" fontWeight="600">Upcoming Sessions</Typography>
+              <Button variant="contained" startIcon={<Schedule />} size="small">
+                Schedule New
+              </Button>
+            </Box>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Learner</TableCell>
+                  <TableCell>Date</TableCell>
+                  <TableCell>Time</TableCell>
+                  <TableCell>Topic</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sessions.map((session) => (
+                  <TableRow key={session.id}>
+                    <TableCell>{session.learner}</TableCell>
+                    <TableCell>{session.date}</TableCell>
+                    <TableCell>{session.time}</TableCell>
+                    <TableCell>{session.topic}</TableCell>
+                    <TableCell>
+                      <Chip label={session.status} size="small" color="primary" />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton size="small" color="primary">
+                        <VideoCall />
+                      </IconButton>
+                      <Button size="small">Reschedule</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Communication & Messages */}
+        <Grid container spacing={3} sx={{ mb: 3 }}>
+          <Grid item xs={12} md={5}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" fontWeight="600" gutterBottom>Recent Messages</Typography>
+                <List>
+                  {messages.map((msg) => (
+                    <ListItem 
+                      key={msg.id} 
+                      sx={{ 
+                        bgcolor: msg.unread ? 'action.hover' : 'transparent',
+                        borderRadius: 1,
+                        mb: 1
                       }}
-                      sx={{ mr: 2 }}
                     >
-                      Add Module
-                    </Button>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {course.modules && course.modules.length > 0 ? (
-                    <List>
-                      {course.modules
-                        .sort((a, b) => a.order - b.order)
-                        .map((module) => (
-                          <ListItem
-                            key={module.id}
-                            secondaryAction={
-                              <Box>
-                                <IconButton
-                                  edge="end"
-                                  onClick={() => openModuleDialog(course, module)}
-                                  sx={{ mr: 1 }}
-                                >
-                                  <EditIcon />
-                                </IconButton>
-                                <IconButton
-                                  edge="end"
-                                  onClick={() => handleDeleteModule(course.id, module.id)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Box>
-                            }
-                          >
-                            <ListItemText
-                              primary={
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                  <BookIcon fontSize="small" />
-                                  <Typography variant="subtitle1">
-                                    {module.title} (Order: {module.order})
-                                  </Typography>
-                                </Box>
-                              }
-                              secondary={
-                                <Typography variant="body2" color="text.secondary">
-                                  {module.description || 'No description'} • ~{module.estimated_time} min
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
+                      <ListItemAvatar>
+                        <Avatar>{msg.from.charAt(0)}</Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={msg.from}
+                        secondary={
+                          <>
+                            <Typography variant="body2" color="textSecondary">
+                              {msg.message}
+                            </Typography>
+                            <Typography variant="caption" color="textSecondary">
+                              {msg.time}
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={7}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" fontWeight="600" gutterBottom>Send Message</Typography>
+                <TextField fullWidth select size="small" SelectProps={{ displayEmpty: true }} sx={{ mb: 2 }}>
+                  <MenuItem value="">Select Learner</MenuItem>
+                  {learners.map((l) => (
+                    <MenuItem key={l.id} value={l.id}>{l.name}</MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={6}
+                  placeholder="Type your message..."
+                  sx={{ mb: 2 }}
+                />
+                <Button variant="contained" startIcon={<Send />}>
+                  Send Message
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Performance & Feedback */}
+        <Card>
+          <CardContent>
+            <Typography variant="h6" fontWeight="600" gutterBottom>My Performance</Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={4}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography variant="h6" gutterBottom>Overall Rating</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
+                    <Typography variant="h2">4.8</Typography>
+                    <Box>
+                      <Typography variant="body2" color="textSecondary">
+                        Based on 24 reviews
+                      </Typography>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star key={star} sx={{ color: '#f57c00', fontSize: 20 }} />
                         ))}
-                    </List>
-                  ) : (
-                    <Typography color="text.secondary">No modules yet. Add your first module!</Typography>
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            ))
-          )}
-        </Box>
-      )}
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={8}>
+                <Typography variant="subtitle1" fontWeight="600" gutterBottom>Recent Feedback</Typography>
+                {feedback.map((item) => (
+                  <Card key={item.id} sx={{ mb: 2 }} variant="outlined">
+                    <CardContent>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="subtitle2">{item.learner}</Typography>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          {[...Array(item.rating)].map((_, i) => (
+                            <Star key={i} sx={{ color: '#f57c00', fontSize: 18 }} />
+                          ))}
+                        </Box>
+                      </Box>
+                      <Typography variant="body2" color="textSecondary" gutterBottom>
+                        {item.comment}
+                      </Typography>
+                      <Typography variant="caption" color="textSecondary">
+                        {item.date}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
 
-      {/* Create Course Dialog */}
-      <Dialog open={courseDialogOpen} onClose={() => setCourseDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Create New Course</DialogTitle>
+      {/* Schedule Session Dialog */}
+      <Dialog open={sessionDialog} onClose={() => setSessionDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Schedule Session with {selectedLearner?.name}</DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            label="Course Title"
-            value={courseForm.title}
-            onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            value={courseForm.description}
-            onChange={(e) => setCourseForm({ ...courseForm, description: e.target.value })}
-            margin="normal"
-            multiline
-            rows={3}
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Category</InputLabel>
-            <Select
-              value={courseForm.category}
-              onChange={(e) => setCourseForm({ ...courseForm, category: e.target.value })}
-            >
-              <MenuItem value="general">General</MenuItem>
-              <MenuItem value="technology">Technology</MenuItem>
-              <MenuItem value="vocational">Vocational</MenuItem>
-              <MenuItem value="soft-skills">Soft Skills</MenuItem>
-              <MenuItem value="literacy">Literacy</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Difficulty</InputLabel>
-            <Select
-              value={courseForm.difficulty}
-              onChange={(e) => setCourseForm({ ...courseForm, difficulty: e.target.value })}
-            >
-              <MenuItem value="beginner">Beginner</MenuItem>
-              <MenuItem value="intermediate">Intermediate</MenuItem>
-              <MenuItem value="advanced">Advanced</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            label="Duration (hours)"
-            type="number"
-            value={courseForm.duration}
-            onChange={(e) => setCourseForm({ ...courseForm, duration: parseInt(e.target.value) || 0 })}
-            margin="normal"
-          />
+          <TextField fullWidth label="Topic" sx={{ mt: 2, mb: 2 }} />
+          <TextField fullWidth type="date" label="Date" InputLabelProps={{ shrink: true }} sx={{ mb: 2 }} />
+          <TextField fullWidth type="time" label="Time" InputLabelProps={{ shrink: true }} sx={{ mb: 2 }} />
+          <TextField fullWidth multiline rows={3} label="Notes" />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setCourseDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleCreateCourse} variant="contained" disabled={!courseForm.title}>
-            Create
-          </Button>
+          <Button onClick={() => setSessionDialog(false)}>Cancel</Button>
+          <Button variant="contained" onClick={() => setSessionDialog(false)}>Schedule</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Module Dialog */}
-      <Dialog open={moduleDialogOpen} onClose={() => setModuleDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editingModule ? 'Edit Module' : 'Add Module'}</DialogTitle>
+      {/* Message Dialog */}
+      <Dialog open={messageDialog} onClose={() => setMessageDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Send Message to {selectedLearner?.name}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
-            label="Module Title"
-            value={moduleForm.title}
-            onChange={(e) => setModuleForm({ ...moduleForm, title: e.target.value })}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            value={moduleForm.description}
-            onChange={(e) => setModuleForm({ ...moduleForm, description: e.target.value })}
-            margin="normal"
             multiline
-            rows={2}
-          />
-          <TextField
-            fullWidth
-            label="Order"
-            type="number"
-            value={moduleForm.order}
-            onChange={(e) => setModuleForm({ ...moduleForm, order: parseInt(e.target.value) || 0 })}
-            margin="normal"
-            required
-          />
-          <TextField
-            fullWidth
-            label="Estimated Time (minutes)"
-            type="number"
-            value={moduleForm.estimated_time}
-            onChange={(e) => setModuleForm({ ...moduleForm, estimated_time: parseInt(e.target.value) || 0 })}
-            margin="normal"
+            rows={6}
+            placeholder="Type your message..."
+            sx={{ mt: 2 }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            setModuleDialogOpen(false);
-            setEditingModule(null);
-          }}>Cancel</Button>
-          <Button
-            onClick={editingModule ? handleUpdateModule : handleAddModule}
-            variant="contained"
-            disabled={!moduleForm.title}
-          >
-            {editingModule ? 'Update' : 'Add'}
+          <Button onClick={() => setMessageDialog(false)}>Cancel</Button>
+          <Button variant="contained" startIcon={<Send />} onClick={() => setMessageDialog(false)}>
+            Send
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </Box>
   );
 };

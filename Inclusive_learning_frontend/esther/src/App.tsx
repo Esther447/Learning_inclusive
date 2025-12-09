@@ -5,7 +5,11 @@ import { AccessibilityProvider } from './context/AccessibilityProvider';
 import { useAccessibilityStore } from './store/accessibilityStore';
 import { MainLayout } from './components/MainLayout';
 import { CourseLayout } from './components/CourseLayout';
+import { AdminLayout } from './components/AdminLayout';
+import { MentorLayout } from './components/MentorLayout';
 import { AccessibilityToolbar } from './components/AccessibilityToolbar';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { bootstrapInitialAdmin } from './utils/bootstrapAdmin';
 import './App.css';
 
 // Pages
@@ -17,7 +21,9 @@ import { ProfilePage } from './pages/ProfilePage';
 import { SignupPage } from './pages/SignupPage';
 import { NewDashboardPage as DashboardPage } from './pages/NewDashboardPage';
 import { CourseDetailPage } from './pages/CourseDetailPage';
-import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminDashboardNew } from './pages/AdminDashboardNew';
+import { MentorDashboard } from './pages/MentorDashboard';
+import { Box, Typography } from '@mui/material';
 import { HelpPage } from './pages/HelpPage';
 import { CalendarPage } from './pages/CalendarPage';
 import { InboxPage } from './pages/InboxPage';
@@ -31,6 +37,26 @@ import { useAuthStore } from './store/authStore';
 
 function App() {
   const { settings } = useAccessibilityStore();
+  const [hasError, setHasError] = React.useState(false);
+
+  if (hasError) {
+    return (
+      <div style={{ padding: '20px', textAlign: 'center' }}>
+        <h1>Something went wrong</h1>
+        <button onClick={() => { setHasError(false); window.location.reload(); }}>Reload</button>
+      </div>
+    );
+  }
+
+  // Bootstrap initial admin on first load
+  React.useEffect(() => {
+    try {
+      bootstrapInitialAdmin();
+    } catch (error) {
+      console.error('Bootstrap error:', error);
+      setHasError(true);
+    }
+  }, []);
 
   // Apply accessibility classes to body
   React.useEffect(() => {
@@ -107,12 +133,25 @@ function App() {
     },
     components: {
       MuiButton: {
+        defaultProps: {
+          disableRipple: true,
+        },
         styleOverrides: {
           root: {
             textTransform: 'none',
             fontWeight: 600,
             borderRadius: 8,
           },
+        },
+      },
+      MuiIconButton: {
+        defaultProps: {
+          disableRipple: true,
+        },
+      },
+      MuiListItemButton: {
+        defaultProps: {
+          disableRipple: true,
         },
       },
       MuiCard: {
@@ -126,7 +165,7 @@ function App() {
     },
   });
 
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
 
   return (
     <ThemeProvider theme={theme}>
@@ -146,19 +185,24 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             
             {/* Protected routes with main sidebar */}
-            <Route path="/dashboard" element={<MainLayout><DashboardPage /></MainLayout>} />
-            <Route path="/profile" element={<MainLayout><ProfilePage /></MainLayout>} />
-            <Route path="/courses" element={<MainLayout><CoursesPage /></MainLayout>} />
-            <Route path="/calendar" element={<MainLayout><CalendarPage /></MainLayout>} />
-            <Route path="/inbox" element={<MainLayout><InboxPage /></MainLayout>} />
-            <Route path="/history" element={<MainLayout><HistoryPage /></MainLayout>} />
-            <Route path="/help" element={<MainLayout><HelpPage /></MainLayout>} />
-            <Route path="/mentorship" element={<MainLayout><MentorshipPage /></MainLayout>} />
-            <Route path="/accessibility" element={<MainLayout><AccessibilityPage /></MainLayout>} />
-            <Route path="/admin/dashboard" element={<MainLayout><AdminDashboard /></MainLayout>} />
+            <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['learner']}><MainLayout><DashboardPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute allowedRoles={['learner', 'mentor', 'administrator']}><MainLayout><ProfilePage /></MainLayout></ProtectedRoute>} />
+            <Route path="/courses" element={<ProtectedRoute allowedRoles={['learner']}><MainLayout><CoursesPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute allowedRoles={['learner', 'mentor']}><MainLayout><CalendarPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/inbox" element={<ProtectedRoute allowedRoles={['learner', 'mentor', 'administrator']}><MainLayout><InboxPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/history" element={<ProtectedRoute allowedRoles={['learner']}><MainLayout><HistoryPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/help" element={<ProtectedRoute allowedRoles={['learner', 'mentor', 'administrator']}><MainLayout><HelpPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/mentorship" element={<ProtectedRoute allowedRoles={['learner', 'mentor']}><MainLayout><MentorshipPage /></MainLayout></ProtectedRoute>} />
+            <Route path="/accessibility" element={<ProtectedRoute allowedRoles={['learner', 'mentor', 'administrator']}><MainLayout><AccessibilityPage /></MainLayout></ProtectedRoute>} />
+            
+            {/* Admin routes with admin sidebar */}
+            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['administrator']}><AdminLayout><AdminDashboardNew /></AdminLayout></ProtectedRoute>} />
+            
+            {/* Mentor routes with mentor sidebar */}
+            <Route path="/mentor/dashboard" element={<ProtectedRoute allowedRoles={['mentor']}><MentorLayout><MentorDashboard /></MentorLayout></ProtectedRoute>} />
             
             {/* Course routes with course sidebar */}
-            <Route path="/courses/:courseId" element={<CourseLayout><CourseDetailPage /></CourseLayout>} />
+            <Route path="/courses/:courseId" element={<ProtectedRoute allowedRoles={['learner']}><CourseLayout><CourseDetailPage /></CourseLayout></ProtectedRoute>} />
             <Route path="/courses/:courseId/search" element={<CourseLayout><div>Smart Search</div></CourseLayout>} />
             <Route path="/courses/:courseId/announcements" element={<CourseLayout><AnnouncementsPage /></CourseLayout>} />
             <Route path="/courses/:courseId/assignments" element={<CourseLayout><AssignmentsPage /></CourseLayout>} />
@@ -172,7 +216,20 @@ function App() {
             <Route path="/courses/:courseId/grades" element={<CourseLayout><div>Grades</div></CourseLayout>} />
             <Route path="/courses/:courseId/badges" element={<CourseLayout><div>Badges</div></CourseLayout>} />
             
-            <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/"} replace />} />
+            <Route path="*" element={
+              <Navigate 
+                to={
+                  isAuthenticated 
+                    ? user?.role === 'administrator' 
+                      ? '/admin/dashboard' 
+                      : user?.role === 'mentor' 
+                        ? '/mentor/dashboard' 
+                        : '/dashboard'
+                    : '/'
+                } 
+                replace 
+              />
+            } />
           </Routes>
         </Router>
       </AccessibilityProvider>
